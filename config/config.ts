@@ -67,7 +67,7 @@ export default defineConfig({
               path: '/chain',
               name: 'chain',
               icon: 'smile',
-              component: './Chain',
+              // component: './Chain',
               routes: [
                 {
                   path: '/chain/list',
@@ -97,7 +97,7 @@ export default defineConfig({
               path: '/accrossChain',
               name: 'accrossChain',
               icon: 'smile',
-              component: './AccrossChain',
+              // component: './AccrossChain',
               routes: [
                 {
                   path: '/accrossChain/regist-record',
@@ -116,24 +116,24 @@ export default defineConfig({
                 },
               ],
             },
-            {
-              path: '/blockBrowser',
-              name: 'blockBrowser',
-              icon: 'smile',
-              component: './BlockBrowser',
-              routes: [
-                {
-                  path: '/blockBrowser/block-list',
-                  name: 'blockList',
-                  component: './BlockBrowser/BlockList',
-                },
-                {
-                  path: '/blockBrowser/trade-query',
-                  name: 'tradeQuery',
-                  component: './BlockBrowser/TradeQuery',
-                },
-              ],
-            },
+            // {
+            //   path: '/blockBrowser',
+            //   name: 'blockBrowser',
+            //   icon: 'smile',
+            //   component: './BlockBrowser',
+            //   routes: [
+            //     {
+            //       path: '/blockBrowser/block-list',
+            //       name: 'blockList',
+            //       component: './BlockBrowser/BlockList',
+            //     },
+            //     {
+            //       path: '/blockBrowser/trade-query',
+            //       name: 'tradeQuery',
+            //       component: './BlockBrowser/TradeQuery',
+            //     },
+            //   ],
+            // },
             {
               path: '/wallet',
               name: 'wallet',

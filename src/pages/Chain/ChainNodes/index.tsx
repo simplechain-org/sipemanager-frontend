@@ -1,5 +1,10 @@
 import React from 'react';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 export default function ChainNodes() {
-  return <div>链节点配置</div>;
+  return (
+    <PageHeaderWrapper>
+      <div>链节点配置</div>;
+    </PageHeaderWrapper>
+  );
 }
