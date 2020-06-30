@@ -1,10 +1,10 @@
 import React from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-export default function DataMonitoring() {
+export default function AccrossChain(props: any) {
   return (
     <PageHeaderWrapper>
-      <div>数据监测</div>
+      <div>{props.children}</div>
     </PageHeaderWrapper>
   );
 }

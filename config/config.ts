@@ -55,6 +55,13 @@ export default defineConfig({
               name: 'monitoring',
               icon: 'smile',
               component: './DataMonitoring',
+              routes: [
+                {
+                  path: '/data-monitoring',
+                  name: 'monitor',
+                  component: './DataMonitoring',
+                },
+              ],
             },
             {
               path: '/chain',
@@ -67,30 +74,100 @@ export default defineConfig({
                   name: 'chainList',
                   component: './Chain/ChainList',
                 },
-              ]
-            },
-            {
-              path: '/admin',
-              name: 'admin',
-              icon: 'crown',
-              component: './Admin',
-              authority: ['admin'],
-              routes: [
                 {
-                  path: '/admin/sub-page',
-                  name: 'sub-page',
-                  icon: 'smile',
-                  component: './Welcome',
-                  authority: ['admin'],
+                  path: '/chain/chain-nodes',
+                  name: 'chainNodes',
+                  component: './Chain/ChainNodes',
                 },
               ],
             },
             {
-              name: 'list.table-list',
-              icon: 'table',
-              path: '/list',
-              component: './ListTableList',
+              path: '/contract',
+              name: 'contract',
+              icon: 'smile',
+              routes: [
+                {
+                  path: '/contract',
+                  name: 'contractManage',
+                  component: './Contract/ContractManage',
+                },
+              ],
             },
+            {
+              path: '/accrossChain',
+              name: 'accrossChain',
+              icon: 'smile',
+              component: './AccrossChain',
+              routes: [
+                {
+                  path: '/accrossChain/regist-record',
+                  name: 'registRecord',
+                  component: './AccrossChain/RegistRecord',
+                },
+                {
+                  path: '/accrossChain/anchor-nodes',
+                  name: 'anchorNodes',
+                  component: './AccrossChain/AnchorNodes',
+                },
+                {
+                  path: '/accrossChain/task',
+                  name: 'task',
+                  component: './AccrossChain/Task',
+                },
+              ],
+            },
+            {
+              path: '/blockBrowser',
+              name: 'blockBrowser',
+              icon: 'smile',
+              component: './BlockBrowser',
+              routes: [
+                {
+                  path: '/blockBrowser/block-list',
+                  name: 'blockList',
+                  component: './BlockBrowser/BlockList',
+                },
+                {
+                  path: '/blockBrowser/trade-query',
+                  name: 'tradeQuery',
+                  component: './BlockBrowser/TradeQuery',
+                },
+              ],
+            },
+            {
+              path: '/wallet',
+              name: 'wallet',
+              icon: 'smile',
+              routes: [
+                {
+                  path: '/wallet',
+                  name: 'walletManage',
+                  component: './Wallet/WalletManage',
+                },
+              ],
+            },
+            // {
+            //   path: '/admin',
+            //   name: 'admin',
+            //   icon: 'crown',
+            //   component: './Admin',
+            //   authority: ['admin'],
+            //   routes: [
+            //     {
+            //       path: '/admin/sub-page',
+            //       name: 'sub-page',
+            //       icon: 'smile',
+            //       component: './Welcome',
+            //       authority: ['admin'],
+            //     },
+            //   ],
+            // },
+            // {
+            //   name: 'list.table-list',
+            //   icon: 'table',
+            //   path: '/list',
+            //   component: './ListTableList',
+            // },
             {
               component: './404',
             },
