@@ -44,7 +44,6 @@ export default defineConfig({
         {
           path: '/',
           component: '../layouts/BasicLayout',
-          authority: ['admin'],
           routes: [
             {
               path: '/',
@@ -55,25 +54,27 @@ export default defineConfig({
               name: 'monitoring',
               icon: 'smile',
               component: './DataMonitoring',
+              authority: ['admin'],
             },
             {
               path: '/chain',
               name: 'chain',
               icon: 'smile',
-              component: './Chain',
+              // component: './Chain',
+              authority: ['admin'],
               routes: [
                 {
                   path: '/chain/list',
                   name: 'chainList',
                   component: './Chain/ChainList',
+                  authority: ['admin'],
                 },
-              ]
+              ],
             },
             {
               path: '/admin',
               name: 'admin',
               icon: 'crown',
-              component: './Admin',
               authority: ['admin'],
               routes: [
                 {

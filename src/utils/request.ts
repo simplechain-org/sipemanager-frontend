@@ -27,7 +27,6 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = (error: { response: Response }): Response => {
-  console.log(error);
   const { response } = error;
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
@@ -52,6 +51,18 @@ const errorHandler = (error: { response: Response }): Response => {
 const request = extend({
   errorHandler, // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
+});
+
+request.interceptors.request.use((url, options) => {
+  return {
+    url,
+    options: {
+      ...options,
+      headers: {
+        Authorization: localStorage.getItem('accessToken') || '',
+      },
+    },
+  };
 });
 
 export default request;

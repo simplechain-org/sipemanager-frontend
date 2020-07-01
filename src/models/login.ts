@@ -75,7 +75,7 @@ const Model: LoginModelType = {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority('admin');
+      setAuthority(payload.data.token);
       return {
         ...state,
         status: payload.status,

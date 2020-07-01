@@ -1,6 +1,6 @@
 import { Alert, Checkbox } from 'antd';
 import React, { useState } from 'react';
-import { Link, connect, Dispatch } from 'umi';
+import { connect, Dispatch } from 'umi';
 import { StateType } from '@/models/login';
 import { LoginParamsType } from '@/services/login';
 import { ConnectState } from '@/models/connect';
@@ -8,7 +8,7 @@ import LoginForm from './components/Login';
 
 import styles from './style.less';
 
-const { Tab, UserName, Password,  Submit } = LoginForm;
+const { Tab, UserName, Password, Submit } = LoginForm;
 interface LoginProps {
   dispatch: Dispatch;
   userLogin: StateType;
@@ -42,10 +42,10 @@ const Login: React.FC<LoginProps> = (props) => {
   };
   return (
     <div className={styles.main}>
-      <LoginForm activeKey={'account'} onSubmit={handleSubmit}>
+      <LoginForm activeKey="account" onSubmit={handleSubmit}>
         <Tab key="account" tab="账户密码登录">
           {status === 'error' && loginType === 'account' && !submitting && (
-            <LoginMessage content="账户或密码错误（admin/ant.design）" />
+            <LoginMessage content="账户或密码错误" />
           )}
 
           <UserName
