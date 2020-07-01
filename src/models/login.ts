@@ -59,9 +59,18 @@ const Model: LoginModelType = {
       }
     },
 
-    logout() {
+    *logout({ put }) {
+      console.log(put);
       const { redirect } = getPageQuery();
       // Note: There may be security issues, please note
+      yield put({
+        type: 'changeLoginStatus',
+        payload: {
+          data: {
+            token: '',
+          },
+        },
+      });
       if (window.location.pathname !== '/user/login' && !redirect) {
         history.replace({
           pathname: '/user/login',
@@ -75,7 +84,7 @@ const Model: LoginModelType = {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority('admin');
+      setAuthority(payload.data.token);
       return {
         ...state,
         status: payload.status,
