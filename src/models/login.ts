@@ -59,17 +59,13 @@ const Model: LoginModelType = {
       }
     },
 
-    *logout({ put }) {
-      console.log(put);
+    *logout({ payload }, { put }) {
+      console.log('3', payload);
       const { redirect } = getPageQuery();
       // Note: There may be security issues, please note
       yield put({
         type: 'changeLoginStatus',
-        payload: {
-          data: {
-            token: '',
-          },
-        },
+        payload,
       });
       if (window.location.pathname !== '/user/login' && !redirect) {
         history.replace({
