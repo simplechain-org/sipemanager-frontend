@@ -7,13 +7,9 @@ export async function queryRule(params?: TableListParams) {
   });
 }
 
-export async function removeRule(params: { key: number[] }) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'delete',
-    },
+export async function removeRule(id: number) {
+  return request(`/api/v1/chain/${id}`, {
+    method: 'DELETE',
   });
 }
 

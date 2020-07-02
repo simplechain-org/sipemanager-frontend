@@ -52,7 +52,7 @@ export default defineConfig({
             {
               path: '/data-monitoring',
               name: 'monitoring',
-              icon: 'smile',
+              icon: 'dashboard',
               routes: [
                 {
                   path: '/data-monitoring',
@@ -64,7 +64,7 @@ export default defineConfig({
             {
               path: '/chain',
               name: 'chain',
-              icon: 'smile',
+              icon: 'nodeIndex',
               // component: './Chain',
               authority: ['admin'],
               routes: [
@@ -84,7 +84,7 @@ export default defineConfig({
             {
               path: '/contract',
               name: 'contract',
-              icon: 'smile',
+              icon: 'audit',
               routes: [
                 {
                   path: '/contract',
@@ -96,7 +96,7 @@ export default defineConfig({
             {
               path: '/accrossChain',
               name: 'accrossChain',
-              icon: 'smile',
+              icon: 'swap',
               // component: './AccrossChain',
               routes: [
                 {
@@ -137,7 +137,7 @@ export default defineConfig({
             {
               path: '/wallet',
               name: 'wallet',
-              icon: 'smile',
+              icon: 'wallet',
               routes: [
                 {
                   path: '/wallet',
