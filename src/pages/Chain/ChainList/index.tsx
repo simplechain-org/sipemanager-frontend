@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Divider } from 'antd';
+import { Button, Divider, Popconfirm, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { TableListItem } from './data.d';
-import { queryRule } from './service';
+import { queryRule, removeRule } from './service';
 import CreateForm from './components/CreateForm';
 
 const formLayout = {
@@ -85,7 +85,8 @@ export default function ChainList() {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: () => (
+      width: 150,
+      render: (_, record) => (
         <>
           <a
             onClick={() => {
@@ -96,7 +97,18 @@ export default function ChainList() {
             编辑
           </a>
           <Divider type="vertical" />
-          <a>删除</a>
+          <Popconfirm
+            title="确定删除吗?"
+            onConfirm={async () => {
+              const res = await removeRule(record.ID);
+              console.log(res);
+              message.success('删除成功');
+            }}
+            okText="确定"
+            cancelText="取消"
+          >
+            <a>删除</a>
+          </Popconfirm>
         </>
       ),
     },

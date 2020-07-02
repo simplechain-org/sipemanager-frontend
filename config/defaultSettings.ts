@@ -7,16 +7,16 @@ type DefaultSettings = ProSettings & {
 const proSettings: DefaultSettings = {
   navTheme: 'dark',
   // 拂晓蓝
-  primaryColor: '#ff00cc',
+  primaryColor: '#1890FF',
   layout: 'sidemenu',
   contentWidth: 'Fluid',
-  fixedHeader: false,
-  fixSiderbar: false,
+  fixedHeader: true,
+  fixSiderbar: true,
   colorWeak: false,
   menu: {
     locale: true,
   },
-  title: 'Ant Design Pro',
+  title: '区块链管理系统',
   pwa: false,
   iconfontUrl: '',
 };
