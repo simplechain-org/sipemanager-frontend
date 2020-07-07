@@ -3,7 +3,7 @@
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
 import { extend } from 'umi-request';
-import { notification } from 'antd';
+import { Modal, notification } from 'antd';
 import { setAuthority } from './authority';
 
 const codeMessage = {
@@ -71,10 +71,10 @@ request.interceptors.response.use(async (response) => {
   const data = await response.clone().json();
   if (data.msg === 'Unauthorized access to this resource') {
     setAuthority(undefined);
-    notification.error({
-      description: '您的登录凭证已过期，请重新登录',
-      message: '通知',
-      onClose: () => {
+    Modal.error({
+      title: '通知',
+      content: '您的登录凭证已过期，请重新登录',
+      onOk: () => {
         window.location.reload();
       },
     });

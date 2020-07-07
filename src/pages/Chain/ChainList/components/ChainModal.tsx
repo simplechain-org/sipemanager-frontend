@@ -52,10 +52,10 @@ const ChainModal: FC<ChainModalProps> = (props) => {
 
   return (
     <Modal
+      forceRender
       title={`${current ? '编辑' : '新增'}链`}
       width={640}
       bodyStyle={{ padding: '28px 0 0' }}
-      destroyOnClose
       visible={visible}
       onOk={handleSubmit}
       onCancel={onCancel}

@@ -1,0 +1,42 @@
+import React from 'react';
+import { Row, Col } from 'antd';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import NodeCard from './components/NodeCard';
+import SignatureCard from './components/SignatureCard';
+import PoundageCard from './components/PoundageCard';
+import AbnormalCard from './components/AbnormalCard';
+import TransactionsCard from './components/TransactionsCard';
+
+export default function DataMonitoring() {
+  return (
+    <PageHeaderWrapper>
+      <NodeCard />
+      <Row
+        gutter={24}
+        style={{
+          marginTop: 24,
+        }}
+      >
+        <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+          <SignatureCard />
+        </Col>
+        <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+          <PoundageCard />
+        </Col>
+      </Row>
+      <Row
+        gutter={24}
+        style={{
+          marginTop: 24,
+        }}
+      >
+        <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+          <AbnormalCard />
+        </Col>
+        <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+          <TransactionsCard />
+        </Col>
+      </Row>
+    </PageHeaderWrapper>
+  );
+}

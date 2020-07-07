@@ -13,7 +13,7 @@ export default function ChainList() {
   const [contractList, setContractList] = useState([]);
   const actionRef = useRef<ActionType>();
 
-  const alertMsg = (type: string, msg: string) => {
+  const alertMsg = (type: 'success' | 'error', msg: string) => {
     message[type](msg);
     if (type === 'success' && actionRef.current) {
       actionRef.current.reload();
