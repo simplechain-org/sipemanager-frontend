@@ -13,22 +13,28 @@ export async function removeRule(id: number) {
   });
 }
 
-export async function addRule(params: TableListItem) {
-  return request('/api/rule', {
+export async function addRule(params: Partial<TableListItem>) {
+  return request('/api/v1/chain/create', {
     method: 'POST',
     data: {
       ...params,
-      method: 'post',
     },
   });
 }
 
-export async function updateRule(params: TableListParams) {
+export async function updateRule(params: any) {
   return request('/api/rule', {
     method: 'POST',
     data: {
       ...params,
-      method: 'update',
+    },
+  });
+}
+
+export async function queryContract(chain_id: number) {
+  return request('/api/v1/contract/chain', {
+    params: {
+      chain_id,
     },
   });
 }

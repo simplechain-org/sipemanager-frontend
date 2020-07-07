@@ -4,6 +4,7 @@
  */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
+import { setAuthority } from './authority';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -27,6 +28,7 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = (error: { response: Response }): Response => {
+  console.log('111');
   const { response } = error;
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
@@ -63,6 +65,21 @@ request.interceptors.request.use((url, options) => {
       },
     },
   };
+});
+
+request.interceptors.response.use(async (response) => {
+  const data = await response.clone().json();
+  if (data.msg === 'Unauthorized access to this resource') {
+    setAuthority(undefined);
+    notification.error({
+      description: '您的登录凭证已过期，请重新登录',
+      message: '通知',
+      onClose: () => {
+        window.location.reload();
+      },
+    });
+  }
+  return response;
 });
 
 export default request;
