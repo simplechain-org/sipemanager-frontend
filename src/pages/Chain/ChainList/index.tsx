@@ -4,16 +4,21 @@ import { Button, Divider, Popconfirm, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { TableListItem } from './data.d';
-import { queryRule, removeRule } from './service';
-import CreateForm from './components/CreateForm';
-
-const formLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
-};
+import { queryRule, addRule, updateRule, removeRule, queryContract } from './service';
+import ChainModal from './components/ChainModal';
 
 export default function ChainList() {
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [visible, setVisible] = useState<boolean>(false);
+  const [current, setCurrent] = useState<Partial<TableListItem> | undefined>(undefined);
+  const [contractList, setContractList] = useState([]);
+  const actionRef = useRef<ActionType>();
+
+  const alertMsg = (type: string, msg: string) => {
+    message[type](msg);
+    if (type === 'success' && actionRef.current) {
+      actionRef.current.reload();
+    }
+  };
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -45,42 +50,8 @@ export default function ChainList() {
     {
       title: '跨链合约地址',
       dataIndex: 'DeletedAt',
+      hideInForm: true,
     },
-    // {
-    //   title: '服务调用次数',
-    //   dataIndex: 'callNo',
-    //   sorter: true,
-    //   hideInForm: true,
-    //   renderText: (val: string) => `${val} 万`,
-    // },
-    // {
-    //   title: '状态',
-    //   dataIndex: 'status',
-    //   hideInForm: true,
-    //   valueEnum: {
-    //     0: { text: '关闭', status: 'Default' },
-    //     1: { text: '运行中', status: 'Processing' },
-    //     2: { text: '已上线', status: 'Success' },
-    //     3: { text: '异常', status: 'Error' },
-    //   },
-    // },
-    // {
-    //   title: '上次调度时间',
-    //   dataIndex: 'updatedAt',
-    //   sorter: true,
-    //   valueType: 'dateTime',
-    //   hideInForm: true,
-    //   // renderFormItem: (item, { defaultRender, ...rest }, form) => {
-    //   //   const status = form.getFieldValue('status');
-    //   //   if (`${status}` === '0') {
-    //   //     return false;
-    //   //   }
-    //   //   if (`${status}` === '3') {
-    //   //     return <Input {...rest} placeholder="请输入异常原因！" />;
-    //   //   }
-    //   //   return defaultRender(item);
-    //   // },
-    // },
     {
       title: '操作',
       dataIndex: 'option',
@@ -89,9 +60,11 @@ export default function ChainList() {
       render: (_, record) => (
         <>
           <a
-            onClick={() => {
-              // handleUpdateModalVisible(true);
-              // setStepFormValues(record);
+            onClick={async () => {
+              setCurrent(record);
+              const res = await queryContract(record.ID);
+              setContractList(res.data || []);
+              setVisible(true);
             }}
           >
             编辑
@@ -102,7 +75,7 @@ export default function ChainList() {
             onConfirm={async () => {
               const res = await removeRule(record.ID);
               console.log(res);
-              message.success('删除成功');
+              alertMsg('success', '删除成功');
             }}
             okText="确定"
             cancelText="取消"
@@ -114,7 +87,35 @@ export default function ChainList() {
     },
   ];
 
-  const actionRef = useRef<ActionType>();
+  const handleCancel = () => {
+    setVisible(false);
+    setCurrent(undefined);
+  };
+
+  const handleSubmit = async (values: Partial<TableListItem>) => {
+    const id = current ? current.ID : '';
+    console.log(typeof values.network_id);
+    if (id) {
+      const res: any = await updateRule({
+        ...values,
+        id,
+      });
+      if (res.code === 0) {
+        alertMsg('success', '编辑成功');
+        handleCancel();
+      } else {
+        alertMsg('error', res.msg || '编辑失败');
+      }
+    } else {
+      const res: any = await addRule(values);
+      if (res.code === 0) {
+        alertMsg('success', '新建成功');
+        handleCancel();
+      } else {
+        alertMsg('error', res.msg || '新建失败');
+      }
+    }
+  };
 
   return (
     <PageHeaderWrapper>
@@ -124,7 +125,7 @@ export default function ChainList() {
         rowKey="ID"
         toolBarRender={() => {
           return [
-            <Button type="primary" onClick={() => handleModalVisible(true)}>
+            <Button type="primary" onClick={() => setVisible(true)}>
               <PlusOutlined /> 新建
             </Button>,
           ];
@@ -139,26 +140,13 @@ export default function ChainList() {
         columns={columns}
         rowSelection={false}
       />
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
-        <ProTable<TableListItem, TableListItem>
-          onSubmit={async (value) => {
-            console.log(value);
-            // const success = await handleAdd(value);
-            // if (success) {
-            //   handleModalVisible(false);
-            //   if (actionRef.current) {
-            //     actionRef.current.reload();
-            //   }
-            // }
-          }}
-          rowKey="ID"
-          type="form"
-          form={{
-            ...formLayout,
-          }}
-          columns={columns}
-        />
-      </CreateForm>
+      <ChainModal
+        current={current}
+        visible={visible}
+        onCancel={handleCancel}
+        onSubmit={handleSubmit}
+        contractList={contractList}
+      />
     </PageHeaderWrapper>
   );
 }
