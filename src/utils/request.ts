@@ -3,7 +3,7 @@
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
 import { extend } from 'umi-request';
-import { Modal, notification } from 'antd';
+import { Modal, notification, message } from 'antd';
 import { setAuthority } from './authority';
 
 const codeMessage = {
@@ -69,6 +69,7 @@ request.interceptors.request.use((url, options) => {
 
 request.interceptors.response.use(async (response) => {
   const data = await response.clone().json();
+  console.log(data);
   if (data.msg === 'Unauthorized access to this resource') {
     setAuthority(undefined);
     Modal.error({
@@ -78,6 +79,9 @@ request.interceptors.response.use(async (response) => {
         window.location.reload();
       },
     });
+  }
+  if (data.code === -1) {
+    message.error(data.msg || '请求失败，请稍候再试');
   }
   return response;
 });
