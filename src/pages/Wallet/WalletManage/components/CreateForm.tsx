@@ -1,13 +1,15 @@
 import React from 'react';
-import { Modal } from 'antd';
+import { Modal, Button } from 'antd';
 
 interface CreateFormProps {
   modalVisible: boolean;
   onCancel: () => void;
+  onReset: () => void;
+  submitHandle: () => void;
 }
 
 const CreateForm: React.FC<CreateFormProps> = (props) => {
-  const { modalVisible, onCancel } = props;
+  const { modalVisible, onCancel, onReset, submitHandle } = props;
 
   return (
     <Modal
@@ -15,7 +17,14 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       title="新增钱包账户"
       visible={modalVisible}
       onCancel={() => onCancel()}
-      footer={null}
+      footer={
+        <>
+          <Button onClick={onReset}>重置</Button>
+          <Button type="primary" onClick={submitHandle}>
+            提交
+          </Button>
+        </>
+      }
     >
       {props.children}
     </Modal>
