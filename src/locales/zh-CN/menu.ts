@@ -1,6 +1,7 @@
 export default {
   'menu.monitoring': '数据监控',
   'menu.monitoring.monitor': '数据监控',
+  'menu.monitoring.poundage': 'MakeFinish手续费记录',
   'menu.more-blocks': '更多区块',
   'menu.home': '首页',
   // 'menu.admin': '合约管理',

@@ -1,6 +1,26 @@
 import React, { useState } from 'react';
-import { Card } from 'antd';
+import { Card, Select } from 'antd';
 import { Chart, Legend, Axis, Tooltip, Geom } from 'bizcharts';
+
+function TitleContent() {
+  return (
+    <>
+      <span>签名监控</span>
+      <Select
+        style={{
+          float: 'right',
+          width: 180,
+          marginRight: 16,
+        }}
+        size="small"
+        placeholder="选择跨链对"
+        allowClear
+      >
+        <Select.Option value="demo">Demo</Select.Option>
+      </Select>
+    </>
+  );
+}
 
 export default function SignatureCard() {
   const [loading] = useState(false);
@@ -137,7 +157,7 @@ export default function SignatureCard() {
   };
 
   return (
-    <Card loading={loading} bordered={false} title="签名监控">
+    <Card loading={loading} bordered={false} title={<TitleContent />}>
       <div>
         <Chart height={400} data={data} scale={cols} forceFit>
           <Legend />

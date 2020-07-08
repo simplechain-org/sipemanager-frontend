@@ -1,5 +1,25 @@
+import { Card, Select, Table } from 'antd';
 import React, { useState } from 'react';
-import { Card, Table } from 'antd';
+
+function TitleContent() {
+  return (
+    <>
+      <span>锚定节点监控</span>
+      <Select
+        style={{
+          float: 'right',
+          width: 180,
+          marginRight: 16,
+        }}
+        size="small"
+        placeholder="选择跨链对"
+        allowClear
+      >
+        <Select.Option value="demo">Demo</Select.Option>
+      </Select>
+    </>
+  );
+}
 
 export default function NodeCard() {
   const [loading] = useState(false);
@@ -34,7 +54,7 @@ export default function NodeCard() {
   ];
 
   return (
-    <Card loading={loading} bordered={false} title="锚定节点监控">
+    <Card loading={loading} bordered={false} title={<TitleContent />}>
       <Table<any>
         rowKey={(record) => record.index}
         size="small"
