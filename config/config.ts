@@ -59,6 +59,12 @@ export default defineConfig({
                   name: 'monitor',
                   component: './DataMonitoring',
                 },
+                {
+                  path: '/data-monitoring/poundage',
+                  name: 'poundage',
+                  component: './DataMonitoring/Poundage',
+                  hideInMenu: true,
+                },
               ],
             },
             {
