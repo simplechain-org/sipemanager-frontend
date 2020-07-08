@@ -5,11 +5,11 @@ interface UpdateFormProps {
   modalVisible: boolean;
   onCancel: () => void;
   onReset: () => void;
-  updatePassword: () => void;
+  submitHandle: () => void;
 }
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
-  const { modalVisible, onCancel, onReset, updatePassword } = props;
+  const { modalVisible, onCancel, onReset, submitHandle } = props;
 
   return (
     <Modal
@@ -20,7 +20,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       footer={
         <>
           <Button onClick={onReset}>重置</Button>
-          <Button type="primary" onClick={updatePassword}>
+          <Button type="primary" onClick={submitHandle}>
             提交
           </Button>
         </>

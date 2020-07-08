@@ -1,4 +1,4 @@
-import { Button, Divider, message, Input, Form } from 'antd';
+import { Button, Divider, Input, Form } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone, PlusOutlined } from '@ant-design/icons';
 import React, { useState, useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -8,25 +8,7 @@ import { SorterResult } from 'antd/es/table/interface';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import { TableListItem } from './data.d';
-import { queryRule, addRule } from './service';
-
-/**
- * 添加节点
- * @param fields
- */
-const handleAdd = async (fields: TableListItem) => {
-  const hide = message.loading('正在添加');
-  try {
-    await addRule({ ...fields });
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
+import { queryRule } from './service';
 
 const handleRemove = async (value: number) => {
   console.log(`删除key为${value}的列表项`);
@@ -72,43 +54,6 @@ const WalletManage: React.FC<{}> = () => {
       hideInForm: true,
     },
     {
-      title: '私钥/助记词/keystore文件',
-      dataIndex: 'content',
-      key: 'content',
-      hideInTable: true,
-      valueType: 'textarea',
-      rules: [
-        {
-          required: true,
-          message: '请输入私钥/助记词/keystore文件',
-        },
-      ],
-    },
-    {
-      title: '账户名称',
-      dataIndex: 'name',
-      key: 'name',
-      hideInTable: true,
-      rules: [
-        {
-          required: true,
-          message: '请输入账户名称',
-        },
-      ],
-    },
-    {
-      title: '钱包密码',
-      dataIndex: 'passwors',
-      key: 'password',
-      hideInTable: true,
-      rules: [
-        {
-          required: true,
-          message: '请输入钱包密码',
-        },
-      ],
-    },
-    {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
@@ -135,7 +80,7 @@ const WalletManage: React.FC<{}> = () => {
     },
   ];
 
-  const updatePassword = () => {
+  const submitHandle = () => {
     validateFields()
       .then((values) => {
         console.log('表单验证通过啦~  提交表单值', values, currentItem);
@@ -164,7 +109,13 @@ const WalletManage: React.FC<{}> = () => {
         }}
         search={false}
         toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
+          <Button
+            type="primary"
+            onClick={() => {
+              onReset();
+              handleModalVisible(true);
+            }}
+          >
             <PlusOutlined /> 新建
           </Button>,
         ]}
@@ -172,28 +123,56 @@ const WalletManage: React.FC<{}> = () => {
         request={(params) => queryRule(params)}
         columns={columns}
       />
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
-        <ProTable<TableListItem, TableListItem>
-          onSubmit={async (value) => {
-            const success = await handleAdd(value);
-            if (success) {
-              handleModalVisible(false);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          rowKey="key"
-          type="form"
-          columns={columns}
-          rowSelection={{}}
-        />
+      <CreateForm
+        submitHandle={submitHandle}
+        onReset={onReset}
+        onCancel={() => handleModalVisible(false)}
+        modalVisible={createModalVisible}
+      >
+        <Form form={form}>
+          <Form.Item
+            label="私钥/助记词/keystore文件"
+            name="content"
+            rules={[
+              {
+                required: true,
+                message: '请输入私钥/助记词/keystore文件',
+              },
+            ]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item
+            label="账户名称"
+            name="wallet"
+            rules={[
+              {
+                required: true,
+                message: '请输入账户名称',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="钱包密码"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: '请输入钱包密码',
+              },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+        </Form>
       </CreateForm>
       <UpdateForm
         onCancel={() => handleUpdateModalVisible(false)}
         modalVisible={updateModalVisible}
         onReset={onReset}
-        updatePassword={updatePassword}
+        submitHandle={submitHandle}
       >
         <Form form={form}>
           <Form.Item label="账户名称">name</Form.Item>
