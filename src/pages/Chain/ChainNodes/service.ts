@@ -7,13 +7,13 @@ export async function queryRule(params?: TableListParams) {
   });
 }
 
-export async function removeRule(params: { key: number[] }) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'delete',
-    },
+export async function removeRule(ID: number) {
+  return request(`/api/v1/node/${ID}`, {
+    method: 'DELETE',
+    // data: {
+    //   ...params,
+    //   method: 'delete',
+    // },
   });
 }
 
@@ -22,7 +22,7 @@ export async function addRule(params: TableListItem) {
     method: 'POST',
     data: {
       ...params,
-      method: 'post',
+      // method: 'post',
     },
   });
 }
@@ -34,5 +34,11 @@ export async function updateRule(params: TableListParams) {
       ...params,
       method: 'update',
     },
+  });
+}
+
+export async function queryChain(params?: TableListParams) {
+  return request('/api/v1/chain/list', {
+    params,
   });
 }

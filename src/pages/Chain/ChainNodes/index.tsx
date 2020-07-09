@@ -1,29 +1,61 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, Input, Form, Select } from 'antd';
-import React, { useState, useRef } from 'react';
+import { Button, Divider, Input, Form, Select, message, Popconfirm } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import UpdateForm from './components/UpdateForm';
-import { TableListItem } from './data.d';
-import { queryRule } from './service';
-
-const handleRemove = async (value: number) => {
-  console.log(`删除key为${value}的列表项`);
-};
+import { TableListItem, ChainListItem } from './data.d';
+import { queryRule, queryChain, addRule, removeRule } from './service';
 
 const WalletManage: React.FC<{}> = () => {
-  const [sorter] = useState<string>('');
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [currentItem, setCurrentItem] = useState({});
+  const [currentItem, setCurrentItem] = useState<TableListItem | undefined>(undefined);
   const [modalTitle, setModalTitle] = useState('新增节点');
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm();
   const { setFieldsValue, validateFields } = form;
+  const [chainList, setChainList] = useState<ChainListItem[]>([]);
 
   const onReset = () => {
     form.resetFields();
   };
+
+  const alertMsg = (type: 'success' | 'error', msg: string) => {
+    message[type](msg);
+    if (type === 'success' && actionRef.current) {
+      actionRef.current.reload();
+    }
+  };
+
+  const getChainList = async () => {
+    const res = await queryChain();
+    setChainList(res.data);
+  };
+
+  const handleRemove = async (value: number) => {
+    const res = await removeRule(value);
+    if (res?.code === 0) {
+      actionRef.current?.reload();
+      alertMsg('success', '删除成功');
+    } else {
+      alertMsg('error', '删除失败');
+    }
+  };
+
+  const addHandle = async (params: any) => {
+    const ID = currentItem?.ID;
+    const res = await addRule(ID ? { ...currentItem, ...params } : params);
+    if (res.code === 0) {
+      alertMsg('success', ID ? '编辑成功' : '添加成功');
+    } else {
+      alertMsg('error', res.msg || (ID ? '编辑失败' : '添加失败'));
+    }
+  };
+
+  useEffect(() => {
+    getChainList();
+  }, []);
 
   const updClick = (record: TableListItem) => {
     setModalTitle('编辑节点');
@@ -36,8 +68,8 @@ const WalletManage: React.FC<{}> = () => {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '创建时间',
-      dataIndex: 'createAt',
-      key: 'createAt',
+      dataIndex: 'CreatedAt',
+      key: 'CreatedAt',
       valueType: 'date',
       hideInForm: true,
     },
@@ -53,14 +85,13 @@ const WalletManage: React.FC<{}> = () => {
     },
     {
       title: '端口',
-      dataIndex: 'content',
-      key: 'content',
+      dataIndex: 'port',
+      key: 'port',
     },
     {
       title: '接入链',
-      dataIndex: 'chain_id',
-      key: 'chain_id',
-      valueEnum: {},
+      dataIndex: 'chain_name',
+      key: 'chain_name',
     },
     {
       title: '操作',
@@ -76,14 +107,18 @@ const WalletManage: React.FC<{}> = () => {
             编辑
           </a>
           <Divider type="vertical" />
-          <a
-            onClick={() => {
-              handleRemove(record.key || 0);
+          <Popconfirm
+            title="确定删除吗？"
+            onConfirm={() => {
+              handleRemove(record.ID || 0);
               console.log('删除');
             }}
+            onCancel={() => {}}
+            okText="确定"
+            cancelText="取消"
           >
-            删除
-          </a>
+            <a>删除</a>
+          </Popconfirm>
         </>
       ),
     },
@@ -92,8 +127,10 @@ const WalletManage: React.FC<{}> = () => {
   const submitHandle = () => {
     validateFields()
       .then((values) => {
-        console.log('修改密码表单值', values, currentItem);
+        console.log('  values', values);
+        addHandle(values);
         handleModalVisible(false);
+        setCurrentItem(undefined);
         actionRef.current?.reload();
       })
       .catch((error) => {
@@ -106,10 +143,7 @@ const WalletManage: React.FC<{}> = () => {
       <ProTable<TableListItem>
         headerTitle="链节点列表"
         actionRef={actionRef}
-        rowKey="key"
-        params={{
-          sorter,
-        }}
+        rowKey="ID"
         search={false}
         toolBarRender={() => [
           <Button
@@ -141,7 +175,11 @@ const WalletManage: React.FC<{}> = () => {
             rules={[{ required: true, message: '请选择接入链!' }]}
           >
             <Select>
-              <Select.Option value={1}>111</Select.Option>
+              {chainList.map((item) => (
+                <Select.Option key={item.ID} value={item.ID}>
+                  {item.name}
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
           <Form.Item
@@ -159,7 +197,20 @@ const WalletManage: React.FC<{}> = () => {
             <Input />
           </Form.Item>
           <Form.Item name="port" label="端口" rules={[{ required: true, message: '请输入端口!' }]}>
-            <Input />
+            <Input
+              onChange={(e) => {
+                if (e.target.value === '') {
+                  return;
+                }
+                const newNumber = parseInt(e.target.value || '0', 10);
+                if (Number.isNaN(newNumber)) {
+                  return;
+                }
+                form.setFieldsValue({
+                  port: newNumber,
+                });
+              }}
+            />
           </Form.Item>
         </Form>
       </UpdateForm>
