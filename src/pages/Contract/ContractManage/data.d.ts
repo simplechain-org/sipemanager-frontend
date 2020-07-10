@@ -3,10 +3,10 @@ export interface TableListItem {
   DeletedAt: Date;
   ID: number;
   UpdatedAt: Date;
-  coin_name: string;
-  name: string;
-  network_id: number;
-  symbol: string;
+  abi: string;
+  bin: string;
+  description: string;
+  sol: string;
 }
 
 export interface TableListPagination {

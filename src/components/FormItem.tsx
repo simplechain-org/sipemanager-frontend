@@ -10,7 +10,7 @@ interface Item {
   formItemYype: string;
   formItemLabel: string;
   fieldName: string;
-  isRequire: boolean;
+  isSelect: boolean;
   dataSource: any[];
   extra?: string;
 }
@@ -25,15 +25,15 @@ const FormItem: React.FC<FormItemProps> = (props) => {
       case 'text':
         return <Input />;
       case 'password':
-        return <Input.Password />;
+        return <Input type="password" />;
       case 'textarea':
         return <Input.TextArea />;
       case 'select':
         return (
           <Select>
             {item.dataSource.map((option) => (
-              <Option value={option.value} key={option.value}>
-                {option.label}
+              <Option value={option.ID} key={option.ID}>
+                {option.name}
               </Option>
             ))}
           </Select>
@@ -41,25 +41,6 @@ const FormItem: React.FC<FormItemProps> = (props) => {
       default:
         return null;
     }
-  };
-
-  const checkRules = (item: Item) => {
-    if (item.isRequire) {
-      switch (item.formItemYype) {
-        case '':
-          return [];
-        case 'text':
-          return [{ required: true, message: `请输入${item.formItemLabel}！` }];
-        case 'textarea':
-          return [{ required: true, message: `请输入${item.formItemLabel}！` }];
-        case 'password':
-          return [{ required: true, message: `请输入${item.formItemLabel}！` }];
-        case 'select':
-          return [{ required: true, message: `请选择${item.formItemLabel}！` }];
-        default:
-      }
-    }
-    return false;
   };
 
   return (
@@ -70,7 +51,11 @@ const FormItem: React.FC<FormItemProps> = (props) => {
           name={item.fieldName}
           label={item.formItemLabel}
           extra={item.extra || ''}
-          rules={checkRules(item) || []}
+          rules={
+            item.formItemYype === ''
+              ? []
+              : [{ required: true, message: `请输入${item.formItemLabel}！` }]
+          }
         >
           {formType(item)}
         </Form.Item>
