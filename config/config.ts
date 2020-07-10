@@ -93,9 +93,14 @@ export default defineConfig({
               icon: 'audit',
               routes: [
                 {
-                  path: '/contract',
+                  path: '/contract/manage',
                   name: 'contractManage',
                   component: './Contract/ContractManage',
+                },
+                {
+                  path: '/contract/chain',
+                  name: 'contractChain',
+                  component: './Contract/ContractChain',
                 },
               ],
             },

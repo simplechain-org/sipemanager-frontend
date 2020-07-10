@@ -56,6 +56,7 @@ export default {
   'menu.chain.chainNodes': '链节点配置',
   'menu.contract': '合约管理',
   'menu.contract.contractManage': '合约管理',
+  'menu.contract.contractChain': '合约上链',
   'menu.accrossChain': '跨链管理',
   'menu.accrossChain.registRecord': '跨链注册记录',
   'menu.accrossChain.anchorNodes': '锚定节点管理',
