@@ -25,7 +25,7 @@ const FormItem: React.FC<FormItemProps> = (props) => {
       case 'text':
         return <Input />;
       case 'password':
-        return <Input.Password />;
+        return <Input.Password autoComplete="new-password" />;
       case 'textarea':
         return <Input.TextArea />;
       case 'select':

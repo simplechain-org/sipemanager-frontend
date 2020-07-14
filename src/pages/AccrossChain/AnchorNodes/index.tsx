@@ -573,8 +573,6 @@ const AnchorNode: React.FC<{}> = () => {
           >
             查看
           </a>
-          {/* <Divider type="vertical" />
-          <a onClick={() => {}}>部署</a> */}
           <Divider type="vertical" />
           <a onClick={deleteModal}>删除</a>
         </>
@@ -807,7 +805,7 @@ const AnchorNode: React.FC<{}> = () => {
           <ProTable<TableListItem>
             headerTitle="锚定节点列表"
             actionRef={actionRef}
-            rowKey="key"
+            rowKey="name"
             options={false}
             onChange={(_, _filter, _sorter) => {
               const sorterResult = _sorter as SorterResult<TableListItem>;
@@ -824,6 +822,7 @@ const AnchorNode: React.FC<{}> = () => {
               </Button>,
             ]}
             request={(params) => queryRule(params)}
+            // dataSource={[{ name: 'hhhh' }]}
             columns={firstColumns}
           />
           <CreateForm
@@ -845,7 +844,7 @@ const AnchorNode: React.FC<{}> = () => {
             <FormItem form={form} formPropsList={formPropsList} />
           </CreateForm>
           <Drawer
-            title="详细信息"
+            title="查看锚定节点"
             width={450}
             onClose={() => handleDrawerVisible(false)}
             visible={drawerVisible}
@@ -857,9 +856,6 @@ const AnchorNode: React.FC<{}> = () => {
                 }}
               >
                 <Button onClick={() => handleDrawerVisible(false)} style={{ marginRight: 8 }}>
-                  取消
-                </Button>
-                <Button onClick={() => {}} type="primary">
                   确定
                 </Button>
               </div>

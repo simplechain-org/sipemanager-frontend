@@ -164,7 +164,7 @@ const WalletManage: React.FC<{}> = () => {
               },
             ]}
           >
-            <Input.Password />
+            <Input.Password autoComplete="new-password" />
           </Form.Item>
         </Form>
       </CreateForm>
@@ -183,6 +183,7 @@ const WalletManage: React.FC<{}> = () => {
             rules={[{ required: true, message: '请输入原密码!' }]}
           >
             <Input.Password
+              autoComplete="new-password"
               iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
             />
           </Form.Item>
@@ -193,6 +194,7 @@ const WalletManage: React.FC<{}> = () => {
             rules={[{ required: true, message: '请输入新密码!' }]}
           >
             <Input.Password
+              autoComplete="new-password"
               iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
             />
           </Form.Item>
@@ -214,6 +216,7 @@ const WalletManage: React.FC<{}> = () => {
             ]}
           >
             <Input.Password
+              autoComplete="new-password"
               iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
             />
           </Form.Item>

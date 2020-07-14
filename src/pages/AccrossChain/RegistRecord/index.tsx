@@ -1,17 +1,18 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Divider, Input, Form, Row, Col, Select } from 'antd';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import DetailsForm from './components/DetailsForm';
 import { TableListItem } from './data';
-import { queryRule } from './service';
+import { queryRule, queryChain } from './service';
 
 const RegistRecord: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [drawerVisible, handleDrawerVisible] = useState<boolean>(false);
   const [currentRecord, setCurrentHandle] = useState(null);
+  const [chainList, setChainList] = useState([]);
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm();
   // 动态控制表单项，默认渲染两项，数组的元素无意义，只要长度为2即可
@@ -52,7 +53,7 @@ const RegistRecord: React.FC<{}> = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record) => (
+      render: (_, record: any) => (
         <>
           <a
             onClick={() => {
@@ -76,9 +77,33 @@ const RegistRecord: React.FC<{}> = () => {
 
   const btnBindHandle = (index: number) => {
     if (index === 0) {
+      // 将新增表单项置空
+      form.resetFields([
+        [`${list.length}`, 'anchor_node_address'],
+        [`${list.length}`, 'address'],
+      ]);
       setList(Array.from({ length: list.length + 1 }));
+      // form.setFieldsValue({
+      //   [list.length]: {
+      //     address: 'hhhh',
+      //     anchor_node_address: 'iiii',
+      //   },
+      // });
     } else {
-      setList(Array.from({ length: list.length - 1 }));
+      // setList(Array.from({ length: list.length - 1 }));
+      // 每次删除都是删除最后一项，手动反填
+      const valuesList = {};
+      for (let i = index + 1; i < list.length; i += 1) {
+        valuesList[i - 1] = form.getFieldsValue([`${i}`])[i];
+      }
+      console.log(valuesList);
+      list.splice(index, 1);
+      setList(new Array(...list));
+      for (let i = index; i < list.length; i += 1) {
+        form.setFieldsValue({
+          [i]: valuesList[i],
+        });
+      }
     }
   };
 
@@ -87,8 +112,9 @@ const RegistRecord: React.FC<{}> = () => {
       <Row gutter={16} key={index}>
         <Col span={10}>
           <Form.Item
+            key={`anchor_node_${index + 1}`}
             label={`锚定节点地址${index + 1}`}
-            name={`anchor_node_${index + 1}`}
+            name={[`${index}`, 'anchor_node_address']}
             rules={[{ required: true, message: `请输入锚定节点地址${index + 1}` }]}
           >
             <Input />
@@ -96,17 +122,29 @@ const RegistRecord: React.FC<{}> = () => {
         </Col>
         <Col span={10}>
           <Form.Item
+            key={`address_node_${index + 1}`}
             label={`地址${index + 1}名称`}
-            name={`address_node_${index + 1}`}
+            name={[`${index}`, 'address']}
             rules={[{ required: true, message: `请输入地址${index + 1}名称` }]}
           >
             <Input />
           </Form.Item>
         </Col>
-        <Button onClick={() => btnBindHandle(index)}>{index === 0 ? '增加' : '删除'}</Button>
+        <Button onClick={() => btnBindHandle(index)} disabled={index === 1}>
+          {index === 0 ? '增加' : '删除'}
+        </Button>
       </Row>
     ));
   };
+
+  const getChainList = async () => {
+    const res = await queryChain();
+    setChainList(res.data);
+  };
+
+  useEffect(() => {
+    getChainList();
+  }, []);
 
   const onSubmit = () => {
     const { validateFields } = form;
@@ -118,6 +156,7 @@ const RegistRecord: React.FC<{}> = () => {
       })
       .catch((errorInfo) => {
         console.log('校验出错~', errorInfo);
+        console.log('构建参数', Object.keys(errorInfo.values));
       });
   };
 
@@ -159,9 +198,17 @@ const RegistRecord: React.FC<{}> = () => {
         <Form form={form}>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="name" label="链A" rules={[{ required: true, message: '请选择链A' }]}>
+              <Form.Item
+                name="source_chain_id"
+                label="链A"
+                rules={[{ required: true, message: '请选择链A' }]}
+              >
                 <Select>
-                  <Select.Option value="1111">1111</Select.Option>
+                  {chainList.map((item: any) => (
+                    <Select.Option value={item.ID} key={item.ID}>
+                      {item.name}
+                    </Select.Option>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>
@@ -180,12 +227,16 @@ const RegistRecord: React.FC<{}> = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="name_b"
+                name="target_chain_id"
                 label="链B"
                 rules={[{ required: true, message: '请选择链B' }]}
               >
                 <Select>
-                  <Select.Option value="1111">1111</Select.Option>
+                  {chainList.map((item: any) => (
+                    <Select.Option value={item.ID} key={item.ID}>
+                      {item.name}
+                    </Select.Option>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>
@@ -209,13 +260,13 @@ const RegistRecord: React.FC<{}> = () => {
                 name="money"
                 rules={[{ required: true, message: '请输入锚定节点质押金额' }]}
               >
-                <Input suffix="SIPC" />
+                <Input suffix="SIPC" autoFocus />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 label="最低签名数"
-                name="lowest"
+                name="sign_confirm_count"
                 rules={[
                   { required: true, message: '请输入最低签名数' },
                   () => ({
@@ -256,7 +307,7 @@ const RegistRecord: React.FC<{}> = () => {
                     name="password"
                     rules={[{ required: true, message: '请输入钱包密码' }]}
                   >
-                    <Input.Password />
+                    <Input.Password autoComplete="new-password" />
                   </Form.Item>
                 </Col>
               </Row>
