@@ -12,6 +12,7 @@ export default function ChainList() {
   const [current, setCurrent] = useState<Partial<TableListItem> | undefined>(undefined);
   const [contractList, setContractList] = useState([]);
   const actionRef = useRef<ActionType>();
+  const [pageCount, setPageCount] = useState(0);
 
   const alertMsg = (type: 'success' | 'error', msg: string) => {
     message[type](msg);
@@ -133,19 +134,25 @@ export default function ChainList() {
             </Button>,
           ];
         }}
-        request={(params, sorter, filter) => {
-          console.log(params);
-          return queryChainList({ ...params, sorter, filter });
+        request={(params) => {
+          return queryChainList({
+            page_size: params.pageSize || 10,
+            current_page: params.current || 1,
+          });
         }}
         postData={(data: any) => {
+          setPageCount(data.total_count);
           return data.page_data;
         }}
-        postData={(data: any) => data.page_data}
         search={false}
         options={false}
         tableAlertRender={false}
         columns={columns}
         rowSelection={false}
+        pagination={{
+          total: pageCount,
+          defaultPageSize: 10,
+        }}
       />
       <ChainModal
         current={current}

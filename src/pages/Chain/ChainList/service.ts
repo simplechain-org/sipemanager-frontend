@@ -23,8 +23,8 @@ export async function addRule(params: Partial<TableListItem>) {
 }
 
 export async function updateRule(params: any) {
-  return request('/api/rule', {
-    method: 'POST',
+  return request('/api/v1/chain/update', {
+    method: 'PUT',
     data: {
       ...params,
     },
