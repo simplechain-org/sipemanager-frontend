@@ -23,6 +23,7 @@ import {
   queryContract,
   addInstance,
 } from './service';
+import { getRandomIP } from '@/utils/utils';
 
 const ContractChain: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -40,7 +41,10 @@ const ContractChain: React.FC<{}> = () => {
     const walletRes = await queryWallet();
     const contractRes = await queryContract();
     setChainList({
-      ...chainRes.data.map((item: ChainListItem) => ({ text: item.name, value: item.ID })),
+      ...chainRes.data.page_data.map((item: ChainListItem) => ({
+        text: item.name,
+        value: item.ID,
+      })),
     });
     setNodeList(res.data.map((item: NodeListItem) => ({ label: item.name, value: item.ID })));
     setWalletList(
@@ -145,6 +149,7 @@ const ContractChain: React.FC<{}> = () => {
       dataIndex: 'address',
       key: 'address',
       hideInSearch: true,
+      initialValue: getRandomIP(),
       rules: [
         {
           required: true,

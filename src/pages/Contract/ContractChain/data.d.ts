@@ -63,6 +63,16 @@ export interface WalletListItem {
   address: string;
 }
 
+export interface ImportParams {
+  abi: string;
+  address: string;
+  bin: string;
+  chain_id: number;
+  description: string;
+  sol: string;
+  tx_hash: string;
+}
+
 export interface TableListPagination {
   total: number;
   pageSize: number;

@@ -18,7 +18,8 @@ export async function removeRule(params: { key: number[] }) {
 }
 
 export async function addRule(params: TableListItem) {
-  return request('/api/v1/contract/instance/add', {
+  // return request('/api/v1/contract/instance/add', {
+  return request('api/v1/contract/instance/import', {
     method: 'POST',
     data: {
       ...params,
