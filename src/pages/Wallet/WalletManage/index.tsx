@@ -83,6 +83,7 @@ const WalletManage: React.FC<{}> = () => {
               const res = await removeRule({ wallet_id: record.ID });
               if (res.code === 0) {
                 message.success('删除成功');
+                actionRef.current?.reload();
               } else {
                 message.error(res.msg || '删除失败');
               }
@@ -106,16 +107,13 @@ const WalletManage: React.FC<{}> = () => {
   const submitHandle = () => {
     validateFields()
       .then((values) => {
-        console.log(values);
         if (currentItem?.ID) {
-          alert('upd');
           updHandle({
             wallet_id: currentItem?.ID,
             old_password: values.old_password,
             new_password: values.new_password,
           });
         } else {
-          alert('add');
           addHandle(values as TableListItem);
         }
       })

@@ -41,7 +41,7 @@ const ContractChain: React.FC<{}> = () => {
     const walletRes = await queryWallet();
     const contractRes = await queryContract();
     setChainList({
-      ...chainRes.data.page_data.map((item: ChainListItem) => ({
+      ...(chainRes.data.page_data || []).map((item: ChainListItem) => ({
         text: item.name,
         value: item.ID,
       })),
@@ -149,6 +149,7 @@ const ContractChain: React.FC<{}> = () => {
       dataIndex: 'address',
       key: 'address',
       hideInSearch: true,
+      ellipsis: true,
       initialValue: getRandomIP(),
       rules: [
         {
@@ -162,6 +163,7 @@ const ContractChain: React.FC<{}> = () => {
       dataIndex: 'tx_hash',
       key: 'tx_hash',
       hideInSearch: true,
+      ellipsis: true,
       rules: [
         {
           required: true,
