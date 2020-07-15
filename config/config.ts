@@ -120,6 +120,11 @@ export default defineConfig({
                   name: 'anchorNodes',
                   component: './AccrossChain/AnchorNodes',
                 },
+                {
+                  path: '/accrossChain/anchor-nodes/details/:ID',
+                  hideInMenu: true,
+                  component: './AccrossChain/AnchorNodes/components/DetailsPage',
+                },
                 // {
                 //   path: '/accrossChain/task',
                 //   name: 'task',
