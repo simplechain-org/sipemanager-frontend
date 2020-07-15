@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
+// import { getRandomIP } from '@/utils/utils';
 import CreateForm from './components/CreateForm';
 import UploadForm from './components/UploadForm';
 import FormItem from '../components/FormItem';
@@ -23,7 +24,6 @@ import {
   queryContract,
   addInstance,
 } from './service';
-import { getRandomIP } from '@/utils/utils';
 
 const ContractChain: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -149,8 +149,7 @@ const ContractChain: React.FC<{}> = () => {
       dataIndex: 'address',
       key: 'address',
       hideInSearch: true,
-      ellipsis: true,
-      initialValue: getRandomIP(),
+      // initialValue: getRandomIP(),
       rules: [
         {
           required: true,

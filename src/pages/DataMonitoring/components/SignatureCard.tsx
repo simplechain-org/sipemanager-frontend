@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Select } from 'antd';
+import { Card, Select, Radio } from 'antd';
 import { Chart, Legend, Axis, Tooltip, Geom } from 'bizcharts';
 
 function TitleContent() {
@@ -22,8 +22,16 @@ function TitleContent() {
   );
 }
 
+const options = [
+  { label: 'Apple', value: 1 },
+  { label: 'Pear', value: 2 },
+  { label: 'Orange', value: 3 },
+];
+
 export default function SignatureCard() {
   const [loading] = useState(false);
+
+  const [filterType, setFilterType] = useState(1);
 
   const data = [
     {
@@ -156,12 +164,22 @@ export default function SignatureCard() {
     },
   };
 
+  const onChange = (e: any) => {
+    setFilterType(Number(e.nativeEvent.target.value));
+  };
+
   return (
     <Card loading={loading} bordered={false} title={<TitleContent />}>
       <div>
-        <Chart height={400} data={data} scale={cols} forceFit>
+        <Radio.Group options={options} onChange={onChange} value={filterType} />
+        <Chart height={400} data={data} scale={cols} autoFit>
           <Legend />
-          <Axis name="month" />
+          <Axis
+            name="month"
+            label={{
+              formatter: (val) => val + filterType,
+            }}
+          />
           <Axis
             name="revenue"
             label={{

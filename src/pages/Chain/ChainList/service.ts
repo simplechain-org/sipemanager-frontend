@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 import { TableListParams, TableListItem } from './data.d';
 
-export async function queryRule(params?: TableListParams) {
+export async function queryChainList(params?: TableListParams) {
   return request('/api/v1/chain/list', {
     params,
   });
@@ -23,8 +23,8 @@ export async function addRule(params: Partial<TableListItem>) {
 }
 
 export async function updateRule(params: any) {
-  return request('/api/rule', {
-    method: 'POST',
+  return request('/api/v1/chain/update', {
+    method: 'PUT',
     data: {
       ...params,
     },
