@@ -134,6 +134,7 @@ export default function ChainList() {
           console.log(params);
           return queryRule({ ...params, sorter, filter });
         }}
+        postData={(data: any) => data.page_data}
         search={false}
         options={false}
         tableAlertRender={false}

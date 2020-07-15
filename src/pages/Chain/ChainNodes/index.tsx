@@ -6,7 +6,8 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import UpdateForm from './components/UpdateForm';
 import { TableListItem, ChainListItem } from './data.d';
-import { queryRule, queryChain, addRule, removeRule } from './service';
+import { queryRule, queryChain, addRule, removeRule, updateRule } from './service';
+// import { getRandomIP, getRandomPort } from '@/utils/utils';
 
 const WalletManage: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -30,7 +31,7 @@ const WalletManage: React.FC<{}> = () => {
 
   const getChainList = async () => {
     const res = await queryChain();
-    setChainList(res.data);
+    setChainList(res.data.page_data);
   };
 
   const handleRemove = async (value: number) => {
@@ -44,12 +45,12 @@ const WalletManage: React.FC<{}> = () => {
   };
 
   const addHandle = async (params: any) => {
-    const ID = currentItem?.ID;
-    const res = await addRule(ID ? { ...currentItem, ...params } : params);
+    const id = currentItem?.ID;
+    const res = id ? await updateRule({ ...params, id }) : await addRule(params);
     if (res.code === 0) {
-      alertMsg('success', ID ? '编辑成功' : '添加成功');
+      alertMsg('success', id ? '编辑成功' : '添加成功');
     } else {
-      alertMsg('error', res.msg || (ID ? '编辑失败' : '添加失败'));
+      alertMsg('error', res.msg || (id ? '编辑失败' : '添加失败'));
     }
   };
 
@@ -128,7 +129,10 @@ const WalletManage: React.FC<{}> = () => {
     validateFields()
       .then((values) => {
         console.log('  values', values);
-        addHandle(values);
+        addHandle({
+          ...values,
+          port: Number(values.port),
+        });
         handleModalVisible(false);
         setCurrentItem(undefined);
         actionRef.current?.reload();
@@ -193,10 +197,16 @@ const WalletManage: React.FC<{}> = () => {
             name="address"
             label="IP地址"
             rules={[{ required: true, message: '请输入IP地址!' }]}
+            // initialValue={getRandomIP()}
           >
             <Input />
           </Form.Item>
-          <Form.Item name="port" label="端口" rules={[{ required: true, message: '请输入端口!' }]}>
+          <Form.Item
+            name="port"
+            label="端口"
+            rules={[{ required: true, message: '请输入端口!' }]}
+            // initialValue={getRandomPort()}
+          >
             <Input
               onChange={(e) => {
                 if (e.target.value === '') {
