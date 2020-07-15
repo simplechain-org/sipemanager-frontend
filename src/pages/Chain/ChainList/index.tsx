@@ -27,6 +27,7 @@ export default function ChainList() {
       valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
+      width: 200,
     },
     {
       title: '链的名称',
@@ -49,8 +50,10 @@ export default function ChainList() {
     },
     {
       title: '跨链合约地址',
-      dataIndex: 'DeletedAt',
+      dataIndex: 'address',
       hideInForm: true,
+      width: 180,
+      ellipsis: true,
     },
     {
       title: '操作',
@@ -133,6 +136,9 @@ export default function ChainList() {
         request={(params, sorter, filter) => {
           console.log(params);
           return queryChainList({ ...params, sorter, filter });
+        }}
+        postData={(data: any) => {
+          return data.page_data;
         }}
         search={false}
         options={false}

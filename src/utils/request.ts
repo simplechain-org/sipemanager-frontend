@@ -69,7 +69,7 @@ request.interceptors.request.use((url, options) => {
 
 request.interceptors.response.use(async (response) => {
   const data = await response.clone().json();
-  console.log('333', data);
+  // console.log('333', data);
   if (data.msg === 'Unauthorized access to this resource') {
     setAuthority(undefined);
     Modal.error({

@@ -124,7 +124,7 @@ const ChainModal: FC<ChainModalProps> = (props) => {
           <Input placeholder="请输入" />
         </Form.Item>
         {current ? (
-          <Form.Item name="type" label="设置跨链合约">
+          <Form.Item name="contract_instance_id" label="设置跨链合约">
             <RadioGroup>
               {contractList.map((item: any) => (
                 <Radio style={radioStyle} key={item.ID} value={item.ID}>

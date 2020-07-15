@@ -34,14 +34,13 @@ export default function PoundageCard() {
       chainId: 2,
       timeType: filterType,
     });
-    console.log('444', res);
+    console.log('fee', res);
     setChartData(res.data);
   };
 
   const getChainList = async () => {
     const res = await queryChainList();
-    // console.log(res.data, '3');
-    setChainList(res.data || []);
+    setChainList((res.data && res.data.page_data) || []);
   };
 
   useEffect(() => {
@@ -60,7 +59,7 @@ export default function PoundageCard() {
     },
     fee: {
       formatter: (value: number) => {
-        console.log(value);
+        // console.log(value);
         return Web3Utils.fromWei(value.toString());
       },
     },
