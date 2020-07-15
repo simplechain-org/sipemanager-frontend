@@ -4,7 +4,7 @@ import { Button, Divider, Popconfirm, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { TableListItem } from './data.d';
-import { queryRule, addRule, updateRule, removeRule, queryContract } from './service';
+import { queryChainList, addRule, updateRule, removeRule, queryContract } from './service';
 import ChainModal from './components/ChainModal';
 
 export default function ChainList() {
@@ -132,7 +132,7 @@ export default function ChainList() {
         }}
         request={(params, sorter, filter) => {
           console.log(params);
-          return queryRule({ ...params, sorter, filter });
+          return queryChainList({ ...params, sorter, filter });
         }}
         search={false}
         options={false}

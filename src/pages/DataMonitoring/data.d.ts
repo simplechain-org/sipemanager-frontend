@@ -17,3 +17,10 @@ export interface TableListParams {
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }
+
+export interface FeeChartParams {
+  startTime: string;
+  endTime: string;
+  chainId: number;
+  timeType: 'hour' | 'day' | 'week';
+}
