@@ -1,16 +1,22 @@
 export interface TableListItem {
-  key: number;
-  disabled?: boolean;
-  href: string;
-  avatar: string;
+  CreatedAt: Date;
+  DeletedAt: Date;
+  ID: number;
+  UpdatedAt: Date;
+  UserId: 1;
+  address: string;
+  content: string;
   name: string;
-  owner: string;
-  desc: string;
-  callNo: number;
-  status: number;
-  updatedAt: Date;
-  createdAt: Date;
-  progress: number;
+}
+
+export interface DeleteParams {
+  wallet_id: number;
+}
+
+export interface UpdParams {
+  wallet_id: number;
+  old_password: string;
+  new_password: string;
 }
 
 export interface TableListPagination {

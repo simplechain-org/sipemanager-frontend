@@ -1,16 +1,25 @@
 export interface TableListItem {
-  key: number;
-  disabled?: boolean;
-  href: string;
-  avatar: string;
-  name: string;
-  owner: string;
-  desc: string;
-  callNo: number;
+  ID: number;
+  CreatedAt: Date;
+  DeletedAt: Date;
+  UpdatedAt: Date;
+  address: string;
+  anchor_addresses: string;
+  confirm: number;
+  source_chain_id: number;
   status: number;
-  updatedAt: Date;
-  createdAt: Date;
-  progress: number;
+  status_text: string;
+  target_chain_id: number;
+  tx_hash: string;
+}
+
+export interface ChainListType {
+  name: string;
+  createdAt: string;
+  network_id: number;
+  ID: number;
+  coin_name: string;
+  symbol: string;
 }
 
 export interface TableListPagination {

@@ -5,13 +5,13 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import DetailsForm from './components/DetailsForm';
-import { TableListItem } from './data';
+import { TableListItem, ChainListType } from './data';
 import { queryRule, queryChain } from './service';
 
 const RegistRecord: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [drawerVisible, handleDrawerVisible] = useState<boolean>(false);
-  const [currentRecord, setCurrentHandle] = useState(null);
+  const [currentRecord, setCurrentHandle] = useState<TableListItem | undefined>(undefined);
   const [chainList, setChainList] = useState([]);
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm();
@@ -20,24 +20,24 @@ const RegistRecord: React.FC<{}> = () => {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '注册时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      valueType: 'textarea',
+      dataIndex: 'CreatedAt',
+      key: 'CreatedAt',
+      valueType: 'date',
     },
     {
       title: '发起链',
-      dataIndex: 'origin',
-      key: 'origin',
+      dataIndex: 'source_chain_id',
+      key: 'source_chain_id',
     },
     {
       title: '目标链',
-      dataIndex: 'purpose',
-      key: 'purpose',
+      dataIndex: 'target_chain_id',
+      key: 'target_chain_id',
     },
     {
       title: '最低签名数',
-      dataIndex: 'lowest',
-      key: 'lowest',
+      dataIndex: 'confirm',
+      key: 'confirm',
     },
     {
       title: '锚定节点数',
@@ -53,7 +53,7 @@ const RegistRecord: React.FC<{}> = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record: any) => (
+      render: (_, record) => (
         <>
           <a
             onClick={() => {
@@ -83,22 +83,13 @@ const RegistRecord: React.FC<{}> = () => {
         [`${list.length}`, 'address'],
       ]);
       setList(Array.from({ length: list.length + 1 }));
-      // form.setFieldsValue({
-      //   [list.length]: {
-      //     address: 'hhhh',
-      //     anchor_node_address: 'iiii',
-      //   },
-      // });
     } else {
-      // setList(Array.from({ length: list.length - 1 }));
       // 每次删除都是删除最后一项，手动反填
       const valuesList = {};
       for (let i = index + 1; i < list.length; i += 1) {
         valuesList[i - 1] = form.getFieldsValue([`${i}`])[i];
       }
-      console.log(valuesList);
-      list.splice(index, 1);
-      setList(new Array(...list));
+      setList(Array.from({ length: list.length - 1 }));
       for (let i = index; i < list.length; i += 1) {
         form.setFieldsValue({
           [i]: valuesList[i],
@@ -139,7 +130,7 @@ const RegistRecord: React.FC<{}> = () => {
 
   const getChainList = async () => {
     const res = await queryChain();
-    setChainList(res.data);
+    setChainList(res.data.page_data);
   };
 
   useEffect(() => {
@@ -152,7 +143,7 @@ const RegistRecord: React.FC<{}> = () => {
       .then((values) => {
         console.log('表单校验通过啦~', values, currentRecord);
         handleModalVisible(false);
-        setCurrentHandle(null);
+        setCurrentHandle(undefined);
       })
       .catch((errorInfo) => {
         console.log('校验出错~', errorInfo);
@@ -187,7 +178,7 @@ const RegistRecord: React.FC<{}> = () => {
       <CreateForm
         onCancel={() => {
           handleModalVisible(false);
-          setCurrentHandle(null);
+          setCurrentHandle(undefined);
         }}
         modalVisible={createModalVisible}
         onReset={onReset}
@@ -204,7 +195,7 @@ const RegistRecord: React.FC<{}> = () => {
                 rules={[{ required: true, message: '请选择链A' }]}
               >
                 <Select>
-                  {chainList.map((item: any) => (
+                  {chainList.map((item: ChainListType) => (
                     <Select.Option value={item.ID} key={item.ID}>
                       {item.name}
                     </Select.Option>
@@ -232,7 +223,7 @@ const RegistRecord: React.FC<{}> = () => {
                 rules={[{ required: true, message: '请选择链B' }]}
               >
                 <Select>
-                  {chainList.map((item: any) => (
+                  {chainList.map((item: ChainListType) => (
                     <Select.Option value={item.ID} key={item.ID}>
                       {item.name}
                     </Select.Option>

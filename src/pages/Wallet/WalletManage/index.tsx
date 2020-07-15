@@ -1,4 +1,4 @@
-import { Button, Divider, Input, Form } from 'antd';
+import { Button, Divider, Input, Form, message } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone, PlusOutlined } from '@ant-design/icons';
 import React, { useState, useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -7,24 +7,43 @@ import { SorterResult } from 'antd/es/table/interface';
 
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import { TableListItem } from './data.d';
-import { queryRule } from './service';
-
-const handleRemove = async (value: number) => {
-  console.log(`删除key为${value}的列表项`);
-};
+import { TableListItem, UpdParams } from './data.d';
+import { queryRule, addRule, updateRule, removeRule } from './service';
 
 const WalletManage: React.FC<{}> = () => {
   const [sorter, setSorter] = useState<string>('');
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [currentItem, setCurrentItem] = useState({});
+  const [currentItem, setCurrentItem] = useState<TableListItem | undefined>(undefined);
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm();
   const { validateFields } = form;
 
   const onReset = () => {
     form.resetFields();
+  };
+
+  const addHandle = async (values: TableListItem) => {
+    const addRes = await addRule(values);
+    if (addRes.code === 0) {
+      actionRef.current?.reload();
+      handleModalVisible(false);
+      message.success('操作成功');
+    } else {
+      message.error(addRes.msg || '操作失败');
+    }
+  };
+
+  const updHandle = async (values: UpdParams) => {
+    const addRes = await updateRule(values);
+    if (addRes.code === 0) {
+      actionRef.current?.reload();
+      handleUpdateModalVisible(false);
+      message.success('操作成功');
+      setCurrentItem(undefined);
+    } else {
+      message.error(addRes.msg || '操作失败');
+    }
   };
 
   const updClick = (record: TableListItem) => {
@@ -36,8 +55,8 @@ const WalletManage: React.FC<{}> = () => {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '创建时间',
-      dataIndex: 'createAt',
-      key: 'createAt',
+      dataIndex: 'CreatedAt',
+      key: 'CreatedAt',
       valueType: 'date',
       hideInForm: true,
     },
@@ -60,9 +79,13 @@ const WalletManage: React.FC<{}> = () => {
       render: (_, record) => (
         <>
           <a
-            onClick={() => {
-              handleRemove(record.key || 0);
-              // console.log('删除')
+            onClick={async () => {
+              const res = await removeRule({ wallet_id: record.ID });
+              if (res.code === 0) {
+                message.success('删除成功');
+              } else {
+                message.error(res.msg || '删除失败');
+              }
             }}
           >
             删除
@@ -83,9 +106,18 @@ const WalletManage: React.FC<{}> = () => {
   const submitHandle = () => {
     validateFields()
       .then((values) => {
-        console.log('表单验证通过啦~  提交表单值', values, currentItem);
-        handleUpdateModalVisible(false);
-        actionRef.current?.reload();
+        console.log(values);
+        if (currentItem?.ID) {
+          alert('upd');
+          updHandle({
+            wallet_id: currentItem?.ID,
+            old_password: values.old_password,
+            new_password: values.new_password,
+          });
+        } else {
+          alert('add');
+          addHandle(values as TableListItem);
+        }
       })
       .catch((error) => {
         console.log('错啦~', error);
@@ -97,7 +129,7 @@ const WalletManage: React.FC<{}> = () => {
       <ProTable<TableListItem>
         headerTitle="账户列表"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="ID"
         onChange={(_, _filter, _sorter) => {
           const sorterResult = _sorter as SorterResult<TableListItem>;
           if (sorterResult.field) {
@@ -144,7 +176,7 @@ const WalletManage: React.FC<{}> = () => {
           </Form.Item>
           <Form.Item
             label="账户名称"
-            name="wallet"
+            name="name"
             rules={[
               {
                 required: true,
@@ -175,9 +207,9 @@ const WalletManage: React.FC<{}> = () => {
         submitHandle={submitHandle}
       >
         <Form form={form}>
-          <Form.Item label="账户名称">name</Form.Item>
+          <Form.Item label="账户名称">{currentItem?.name}</Form.Item>
           <Form.Item
-            name="password"
+            name="old_password"
             label="原密码"
             hasFeedback
             rules={[{ required: true, message: '请输入原密码!' }]}
@@ -188,7 +220,7 @@ const WalletManage: React.FC<{}> = () => {
             />
           </Form.Item>
           <Form.Item
-            name="newPassword"
+            name="new_password"
             label="新密码"
             hasFeedback
             rules={[{ required: true, message: '请输入新密码!' }]}
@@ -202,12 +234,12 @@ const WalletManage: React.FC<{}> = () => {
             name="confirmPassword"
             label="确认密码"
             hasFeedback
-            dependencies={['newPassword']}
+            dependencies={['new_password']}
             rules={[
               { required: true, message: '请再次输入密码!' },
               ({ getFieldValue }) => ({
                 validator(rule, value) {
-                  if (!value || getFieldValue('newPassword') === value) {
+                  if (!value || getFieldValue('new_password') === value) {
                     return Promise.resolve();
                   }
                   return Promise.reject(new Error('两次密码输入不一致!'));

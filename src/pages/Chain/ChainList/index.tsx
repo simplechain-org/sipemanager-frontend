@@ -140,6 +140,7 @@ export default function ChainList() {
         postData={(data: any) => {
           return data.page_data;
         }}
+        postData={(data: any) => data.page_data}
         search={false}
         options={false}
         tableAlertRender={false}

@@ -8,7 +8,7 @@ export async function queryRule(params?: TableListParams) {
 }
 
 export async function removeRule(ID: number) {
-  return request(`/api/v1/node/${ID}`, {
+  return request(`/api/v1/node/remove/${ID}`, {
     method: 'DELETE',
     // data: {
     //   ...params,
@@ -28,11 +28,11 @@ export async function addRule(params: TableListItem) {
 }
 
 export async function updateRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
+  return request('/api/v1/node', {
+    method: 'PUT',
     data: {
       ...params,
-      method: 'update',
+      // method: 'update',
     },
   });
 }
