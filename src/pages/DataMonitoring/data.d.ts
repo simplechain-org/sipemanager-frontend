@@ -18,9 +18,38 @@ export interface TableListParams {
   sorter?: { [key: string]: any };
 }
 
-export interface FeeChartParams {
+interface ChartParams {
   startTime: string;
   endTime: string;
-  chainId: number;
   timeType: 'hour' | 'day' | 'week';
+}
+
+export interface FeeChartParams extends ChartParams {
+  chainId: number;
+}
+
+export interface SignatureChartParams extends ChartParams {
+  tokenKey: string;
+}
+
+export interface CrossChainItem {
+  Name: string;
+  ChainID: number;
+  Count: number;
+}
+
+export interface CrossChains {
+  [key: string]: CrossChainItem;
+}
+
+export interface TransactionsProps {
+  data: CrossChains | undefined;
+}
+export interface SignatureProps {
+  data: CrossChains | undefined;
+}
+
+export interface ChainItem {
+  ID: number;
+  name: string;
 }

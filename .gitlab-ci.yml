@@ -1,0 +1,18 @@
+stages:
+  - lint
+
+lint_code:
+  stage: lint
+  image:
+    name: kiwicom/sonar-scanner:4.3
+  allow_failure: true
+  only:
+    - master
+    - feat/chain_manage
+  variables:
+    SONAR_HOST_URL: 'http://sonar.dataqin.com/'
+    SONAR_LOGIN: 'dcbc13e150137793937d721a1c5dc9cacc8d2495'
+    SONAR_PROJECTKEY: 'block_chain_admin_frontend'
+    SONAR_SOURCES: './src'
+  script:
+    - sonar-scanner -X -Dsonar.projectKey=$SONAR_PROJECTKEY -Dsonar.sources=$SONAR_SOURCES -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN
