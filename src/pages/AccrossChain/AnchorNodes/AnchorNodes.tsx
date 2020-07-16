@@ -21,6 +21,7 @@ const AnchorNodes = () => {
   const [sourceNodeList, setSourceNodeList] = useState<NodeListItem[]>([]);
   const [targetNodeList, setTargetNodeList] = useState<NodeListItem[]>([]);
   const [anchorNodeList, setAnchorNodeList] = useState({});
+  const [nodeList, setNodeList] = useState({ sourceNode: [], targetNode: [] });
 
   const getOptionList = async () => {
     const chainRes = await queryChain();
@@ -62,14 +63,16 @@ const AnchorNodes = () => {
       });
   };
 
-  const deleteModal = async () => {
+  const deleteModal = async (record: TableListItem) => {
+    const sourceRes = await getNodeByChain({ chain_id: record.chain_a_id });
+    const targetRes = await getNodeByChain({ chain_id: record.chain_b_id });
+    setNodeList({ sourceNode: sourceRes.data, targetNode: targetRes.data });
     handleDeleteModalVisible(true);
   };
 
   const deleteHandle = () => {
     validateFields()
       .then(async (values) => {
-        console.log('删除锚定节点');
         const res = await removeRule(values as TableListItem);
         if (res.code === 0) {
           message.success('删除成功');
@@ -112,21 +115,21 @@ const AnchorNodes = () => {
     {
       formItemYype: 'select',
       formItemLabel: '选择链A节点',
-      fieldName: 'source_node_id ',
+      fieldName: 'source_node_id',
       isSelect: true,
-      dataSource: sourceNodeList,
+      dataSource: nodeList.sourceNode,
     },
     {
       formItemYype: 'select',
       formItemLabel: '选择链B节点',
-      fieldName: 'target_node_id ',
+      fieldName: 'target_node_id',
       isSelect: true,
-      dataSource: targetNodeList,
+      dataSource: nodeList.targetNode,
     },
     {
       formItemYype: 'select',
       formItemLabel: '选择账户',
-      fieldName: 'wallet_id ',
+      fieldName: 'wallet_id',
       isSelect: true,
       dataSource: wallestList,
     },
@@ -312,7 +315,7 @@ const AnchorNodes = () => {
             查看
           </a>
           <Divider type="vertical" />
-          <a onClick={deleteModal}>删除</a>
+          <a onClick={() => deleteModal(record)}>删除</a>
         </>
       ),
     },

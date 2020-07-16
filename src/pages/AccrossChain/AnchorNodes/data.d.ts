@@ -10,6 +10,14 @@ export interface TableListItem {
   target_chain_id: number;
   target_node_id: number;
   wallet_id: number;
+
+  chain_a: string;
+  chain_a_id: number;
+  chain_b: string;
+  chain_b_id: number;
+  created_at: Date;
+  pledge: string;
+  status: string;
 }
 
 export interface AnchorNodeItem {
