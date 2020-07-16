@@ -28,7 +28,14 @@ export default function AbnormalCard() {
   }, []);
 
   return (
-    <Card loading={loading} bordered={false} title="链分叉监控">
+    <Card
+      loading={loading}
+      bordered={false}
+      title="链分叉监控"
+      bodyStyle={{
+        height: 238,
+      }}
+    >
       <Table<any>
         rowKey={(record) => record.index}
         size="small"

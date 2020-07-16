@@ -1,29 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'umi';
-import { Card, Select, Radio } from 'antd';
+import { Card, Form, Select, Radio, Empty } from 'antd';
 import { Chart, Legend, Axis, Tooltip, Geom } from 'bizcharts';
 import { queryChainList } from '@/pages/Chain/ChainList/service';
 import moment from 'moment';
 import { queryFee } from '../service';
-import { FeeChartParams } from '../data.d';
+import { FeeChartParams, ChainItem } from '../data.d';
 
 const Web3Utils = require('web3-utils');
-
-console.log(moment().subtract(24, 'hours').format('YYYY-MM-DD hh:mm:ss'));
 
 const options = [
   { label: 'hour', value: 'hour' },
   { label: 'day', value: 'day' },
-  { label: 'week', value: 'week' },
+  // { label: 'week', value: 'week' },
 ];
 
-interface ChainItem {
-  ID: number;
-  name: string;
-}
-
 export default function PoundageCard() {
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<'hour' | 'day' | 'week'>('hour');
   const [chainList, setChainList] = useState<ChainItem[]>([]);
   const [curChain, setCurChain] = useState<undefined | number>(undefined);
@@ -31,8 +24,8 @@ export default function PoundageCard() {
 
   const getFee = async (params: FeeChartParams) => {
     const res = await queryFee(params);
-    console.log('fee', res);
-    setChartData(res.data);
+    setLoading(false);
+    setChartData(res.data || []);
   };
 
   const getChainList = async () => {
@@ -53,14 +46,15 @@ export default function PoundageCard() {
           startTime = moment().subtract(24, 'hours');
           break;
         case 'day':
+        default:
           formatStr = 'YYYY-MM-DD';
           startTime = moment().subtract(7, 'days');
           break;
-        case 'week':
-        default:
-          formatStr = 'YYYYww';
-          startTime = moment().subtract(7, 'weeks');
-          break;
+        // case 'week':
+        // default:
+        //   formatStr = 'YYYYww';
+        //   startTime = moment().subtract(7, 'weeks');
+        //   break;
       }
       getFee({
         startTime: startTime.format(formatStr),
@@ -97,16 +91,19 @@ export default function PoundageCard() {
       loading={loading}
       bordered={false}
       extra={<Link to="/data-monitoring/poundage">详情</Link>}
-      title={
-        <>
-          <span>MakeFinish手续费监控</span>
+      title="MakeFinish手续费监控"
+    >
+      <Form
+        layout="inline"
+        style={{
+          marginBottom: 15,
+        }}
+      >
+        <Form.Item label="选择Token">
           <Select
             style={{
-              float: 'right',
-              width: 180,
-              marginRight: 16,
+              width: 150,
             }}
-            size="small"
             placeholder="选择Token"
             allowClear
             value={curChain}
@@ -118,49 +115,67 @@ export default function PoundageCard() {
               </Select.Option>
             ))}
           </Select>
-        </>
-      }
-    >
-      <Radio.Group onChange={onChange} value={filterType}>
-        {options.map((option) => (
-          <Radio.Button key={option.value} value={option.value}>
-            {option.label}
-          </Radio.Button>
-        ))}
-      </Radio.Group>
-      <Chart height={360} data={chartData} scale={cols} autoFit>
-        <Legend
-        // marker={{
-        //   symbol: 'circle',
-        //   style: {
-        //     stroke: 'none',
-        //   },
-        // }}
-        />
-        <Axis name="date" />
-        <Axis
-          name="fee"
-          label={{
-            formatter: (val) => {
-              // console.log(val);
-              return val;
-            },
-          }}
-        />
-        <Tooltip showCrosshairs shared />
-        <Geom type="line" position="date*fee" size={2} color="name" />
-        <Geom
-          type="point"
-          position="date*fee"
-          size={4}
-          shape="circle"
-          color="name"
+        </Form.Item>
+        <Form.Item
           style={{
-            stroke: '#fff',
-            lineWidth: 1,
+            flex: 1,
+            marginRight: 0,
           }}
-        />
-      </Chart>
+        >
+          <Radio.Group
+            style={{
+              float: 'right',
+            }}
+            onChange={onChange}
+            value={filterType}
+          >
+            {options.map((option) => (
+              <Radio.Button key={option.value} value={option.value}>
+                {option.label}
+              </Radio.Button>
+            ))}
+          </Radio.Group>
+        </Form.Item>
+      </Form>
+      {chartData.length ? (
+        <Chart height={360} data={chartData} scale={cols} autoFit>
+          <Legend />
+          <Axis name="date" />
+          <Axis
+            name="fee"
+            label={{
+              formatter: (val) => {
+                // console.log(val);
+                return val;
+              },
+            }}
+          />
+          <Tooltip showCrosshairs shared />
+          <Geom type="line" position="date*fee" size={2} color="name" />
+          <Geom
+            type="point"
+            position="date*fee"
+            size={4}
+            shape="circle"
+            color="name"
+            style={{
+              stroke: '#fff',
+              lineWidth: 1,
+            }}
+          />
+        </Chart>
+      ) : (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: 360,
+          }}
+        >
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        </div>
+      )}
     </Card>
   );
 }
