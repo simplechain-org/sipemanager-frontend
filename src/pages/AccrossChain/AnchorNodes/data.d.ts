@@ -30,6 +30,16 @@ export interface FeeTableListItem {
   transactionHash: string;
 }
 
+export interface PunishListItem {
+  CreatedAt: string;
+  ID: number;
+  anchor_node_id: number;
+  anchor_node_name: string;
+  coin: string;
+  manage_type: string;
+  value: string;
+}
+
 export interface FeeCollectionType {
   accumulated_fee: string;
   current_fee: string;
@@ -97,10 +107,17 @@ export interface ChainListItem {
   symbol: string;
 }
 
+export interface QueryParamsType {
+  page_size: number;
+  current_page: number;
+  anchor_node_id: string | number;
+}
+
 export interface TableListPagination {
   total: number;
   pageSize: number;
   current: number;
+  [propsName: string]: string;
 }
 
 export interface BtnEleType {

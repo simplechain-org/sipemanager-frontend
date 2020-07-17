@@ -1,14 +1,18 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Drawer, Divider, Form, message } from 'antd';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { history } from 'umi';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import { queryRule, queryChain, queryWallet, addRule, getNodeByChain, removeRule } from './service';
+import { queryRule, addRule, getNodeByChain, removeRule } from './service';
 import FormItem from '../components/FormItem';
-import { TableListItem, FormPropsType, WalletListItem, ChainListItem, NodeListItem } from './data';
+import { TableListItem, FormPropsType, NodeListItem } from './data';
 import CreateForm from './components/CreateForm';
 
-const AnchorNodes = () => {
+interface PropsType {
+  publicList: any;
+}
+
+const AnchorNodes = (props: PropsType) => {
   const actionRef = useRef<ActionType>();
   const [pageCount, setPageCount] = useState(0);
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
@@ -16,29 +20,9 @@ const AnchorNodes = () => {
   const [drawerVisible, handleDrawerVisible] = useState(false);
   const [form] = Form.useForm();
   const { validateFields, resetFields } = form;
-  const [wallestList, setWalletList] = useState<WalletListItem[]>([]);
-  const [chainList, setChainList] = useState<ChainListItem[]>([]);
   const [sourceNodeList, setSourceNodeList] = useState<NodeListItem[]>([]);
   const [targetNodeList, setTargetNodeList] = useState<NodeListItem[]>([]);
-  const [anchorNodeList, setAnchorNodeList] = useState({});
   const [nodeList, setNodeList] = useState({ sourceNode: [], targetNode: [] });
-
-  const getOptionList = async () => {
-    const chainRes = await queryChain();
-    const res = await queryRule();
-    const walletRes = await queryWallet();
-    setChainList(chainRes.data.page_data || []);
-    setAnchorNodeList(
-      res.data.page_data.map((item: TableListItem) => ({
-        text: item.anchor_node_name,
-        value: item.ID,
-      })),
-    );
-    setWalletList(walletRes.data || []);
-  };
-  useEffect(() => {
-    getOptionList();
-  }, []);
 
   const onReset = () => {
     resetFields();
@@ -131,7 +115,7 @@ const AnchorNodes = () => {
       formItemLabel: '选择账户',
       fieldName: 'wallet_id',
       isSelect: true,
-      dataSource: wallestList,
+      dataSource: props.publicList.wallestList,
     },
     {
       formItemYype: 'password',
@@ -148,7 +132,7 @@ const AnchorNodes = () => {
       formItemLabel: '链A',
       fieldName: 'source_chain_id',
       isSelect: true,
-      dataSource: chainList,
+      dataSource: props.publicList.chainList,
       handle: sourceHandle,
       needChange: true,
     },
@@ -164,7 +148,8 @@ const AnchorNodes = () => {
       formItemLabel: '链B',
       fieldName: 'target_chain_id',
       isSelect: true,
-      dataSource: chainList,
+      dataSource: props.publicList.chainList,
+
       handle: targetHandle,
       needChange: true,
     },
@@ -194,7 +179,7 @@ const AnchorNodes = () => {
       formItemLabel: '选择钱包账户',
       fieldName: 'wallet_id',
       isSelect: false,
-      dataSource: wallestList,
+      dataSource: props.publicList.wallestList,
     },
     {
       formItemYype: 'password',
@@ -268,10 +253,10 @@ const AnchorNodes = () => {
     },
     {
       title: '锚定节点',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'anchor_node_id',
+      key: 'anchor_node_id',
       hideInTable: true,
-      valueEnum: anchorNodeList,
+      valueEnum: props.publicList.anchorNodeList,
     },
     {
       title: '归属链A',
@@ -339,11 +324,11 @@ const AnchorNodes = () => {
             <PlusOutlined /> 新增
           </Button>,
         ]}
-        request={(params) => {
+        request={(params: any) => {
           return queryRule({
             page_size: params.pageSize || 10,
             current_page: params.current || 1,
-            // filter,
+            anchor_node_id: props.publicList.anchorNodeList[params.anchor_node_id].ID || '',
           });
         }}
         postData={(data: any) => {
