@@ -1,7 +1,6 @@
 export interface TableListItem {
   anchor_node_name: string;
   ID: number;
-
   anchor_address: string;
   anchor_name: string;
   password: string;
@@ -10,7 +9,6 @@ export interface TableListItem {
   target_chain_id: number;
   target_node_id: number;
   wallet_id: number;
-
   chain_a: string;
   chain_a_id: number;
   chain_b: string;
@@ -20,15 +18,34 @@ export interface TableListItem {
   status: string;
 }
 
-export interface AnchorNodeItem {
+export interface FeeTableListItem {
   CreatedAt: Date;
-  DeletedAt: Date;
   ID: number;
-  UpdatedAt: Date;
-  coin_name: string;
-  name: string;
-  network_id: number;
-  symbol: string;
+  anchorNodeId: number;
+  anchorNodeName: string;
+  coin: string;
+  fee: string;
+  sender: string;
+  status: number;
+  transactionHash: string;
+}
+
+export interface FeeCollectionType {
+  accumulated_fee: string;
+  current_fee: string;
+  reimbursed_fee: string;
+}
+
+export interface AnchorNodeItem {
+  ID: number;
+  anchor_node_name: string;
+  chain_a: string;
+  chain_a_id: number;
+  chain_b: string;
+  chain_b_id: number;
+  created_at: Date;
+  pledge: string;
+  status: string;
 }
 
 export interface FormPropsType {
@@ -36,11 +53,13 @@ export interface FormPropsType {
   formItemLabel: string;
   fieldName: string;
   isSelect: boolean;
-  dataSource: NodeListItem[] | WalletListItem[] | ChainListItem[];
+  dataSource: any[];
   extra?: string;
   isTips?: boolean;
-  handle?: (value: number) => Promise<void> | null | undefined;
+  handle?: (value: number) => Promise<void> | null | undefined | void;
   needChange?: boolean;
+  children?: React.ReactNode | undefined;
+  // children?: any
 }
 
 export interface NodeListItem {
@@ -57,6 +76,7 @@ export interface NodeListItem {
   network_id: number;
   port: number;
   user_id: number;
+  coin_name: string;
 }
 
 export interface WalletListItem {

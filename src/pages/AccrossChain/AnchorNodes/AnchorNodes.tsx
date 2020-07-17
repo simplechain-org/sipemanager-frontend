@@ -10,7 +10,7 @@ import CreateForm from './components/CreateForm';
 
 const AnchorNodes = () => {
   const actionRef = useRef<ActionType>();
-  const [pageCount] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [drawerVisible, handleDrawerVisible] = useState(false);
@@ -346,7 +346,10 @@ const AnchorNodes = () => {
             // filter,
           });
         }}
-        postData={(data: any) => data.page_data}
+        postData={(data: any) => {
+          setPageCount(data.total_count);
+          return data.page_data;
+        }}
         columns={firstColumns}
         pagination={{
           total: pageCount,

@@ -7,8 +7,8 @@ export async function queryRule(params?: { current_page: number; page_size: numb
   });
 }
 
-export async function queryFee() {
-  return request('/api/v1/service/charge/list', {});
+export async function queryFee(params: any) {
+  return request('/api/v1/service/charge/list', { params });
 }
 
 export async function queryReward() {
@@ -33,6 +33,24 @@ export async function removeRule(params: TableListItem) {
     data: {
       ...params,
     },
+  });
+}
+
+export async function addFee(params: any) {
+  return request('/api/v1/service/charge/add', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function queryChargeFee(params: any) {
+  return request('/api/v1/service/charge/fee', {
+    // data: {
+    //   ...params,
+    // },
+    params,
   });
 }
 
