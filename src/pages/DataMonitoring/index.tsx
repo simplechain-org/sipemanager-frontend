@@ -23,7 +23,7 @@ export default function DataMonitoring() {
 
   return (
     <PageHeaderWrapper>
-      <NodeCard />
+      <NodeCard data={crossTxMap} />
       <Row
         gutter={24}
         style={{

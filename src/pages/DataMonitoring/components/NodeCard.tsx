@@ -1,28 +1,28 @@
+import React, { useState, useEffect } from 'react';
 import { Card, Select, Table } from 'antd';
-import React, { useState } from 'react';
+import { NodeProps } from '../data.d';
 
-function TitleContent() {
-  return (
-    <>
-      <span>锚定节点监控</span>
-      <Select
-        style={{
-          float: 'right',
-          width: 180,
-          marginRight: 16,
-        }}
-        size="small"
-        placeholder="选择跨链对"
-        allowClear
-      >
-        <Select.Option value="demo">Demo</Select.Option>
-      </Select>
-    </>
-  );
-}
+export default function NodeCard(props: NodeProps) {
+  const [loading, setLoading] = useState(true);
+  const { data } = props;
+  const [curCrossChain, setCurCrossChain] = useState<undefined | string>(undefined);
+  const [tableData] = useState([]);
 
-export default function NodeCard() {
-  const [loading] = useState(false);
+  useEffect(() => {
+    if (data && Object.keys(data).length) {
+      setCurCrossChain(Object.keys(data)[0]);
+    }
+  }, [data]);
+
+  const getNodeList = async () => {
+    // const res = await queryNodeList();
+    // setTableData(res.data || []);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getNodeList();
+  }, [curCrossChain]);
 
   const columns = [
     {
@@ -54,12 +54,38 @@ export default function NodeCard() {
   ];
 
   return (
-    <Card loading={loading} bordered={false} title={<TitleContent />}>
+    <Card
+      loading={loading}
+      bordered={false}
+      title={
+        <>
+          <span>锚定节点监控</span>
+          <Select
+            style={{
+              float: 'right',
+              width: 150,
+            }}
+            placeholder="选择跨链对"
+            allowClear
+            value={curCrossChain}
+            onChange={(value) => setCurCrossChain(value)}
+          >
+            {data
+              ? Object.keys(data).map((key) => (
+                  <Select.Option key={key} value={key}>
+                    {data[key].Name}
+                  </Select.Option>
+                ))
+              : null}
+          </Select>
+        </>
+      }
+    >
       <Table<any>
         rowKey={(record) => record.index}
         size="small"
         columns={columns}
-        dataSource={[]}
+        dataSource={tableData}
         pagination={{
           style: { marginBottom: 0 },
           pageSize: 5,

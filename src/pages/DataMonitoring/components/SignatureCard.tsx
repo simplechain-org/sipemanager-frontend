@@ -18,9 +18,9 @@ export default function SignatureCard(props: SignatureProps) {
   const [chartData, setChartData] = useState([]);
 
   const cols = {
-    AnchorId: {
-      // type: 'time',
-      // mask: filterType === 'hour' ? 'HH:mm' : 'MM-DD',
+    Date: {
+      type: 'time',
+      mask: filterType === 'hour' ? 'HH:mm' : 'MM-DD',
     },
     Count: {
       // formatter: (value: number) => {
@@ -32,9 +32,9 @@ export default function SignatureCard(props: SignatureProps) {
 
   const getChartData = async (params: SignatureChartParams) => {
     const res = await querySignature(params);
-    console.log('55', res.data);
+    console.log('55', res.data['1']);
     setLoading(false);
-    setChartData(res.data || []);
+    setChartData(res.data['1'] || []);
   };
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function SignatureCard(props: SignatureProps) {
       switch (filterType) {
         case 'hour':
           formatStr = 'YYYY-MM-DD hh:mm:ss';
-          startTime = moment().subtract(24, 'hours');
+          startTime = moment().subtract(48, 'hours');
           break;
         case 'day':
         default:
@@ -65,7 +65,7 @@ export default function SignatureCard(props: SignatureProps) {
       }
       getChartData({
         startTime: startTime.format(formatStr),
-        endTime: moment().format(formatStr),
+        endTime: moment().subtract(24, 'hours').format(formatStr),
         tokenKey: curCrossChain,
         timeType: filterType,
       });
@@ -123,7 +123,7 @@ export default function SignatureCard(props: SignatureProps) {
       {chartData.length ? (
         <Chart height={360} data={chartData} scale={cols} autoFit>
           <Legend />
-          <Axis name="AnchorId" />
+          <Axis name="Date" />
           <Axis
             name="Count"
             label={{
@@ -133,10 +133,10 @@ export default function SignatureCard(props: SignatureProps) {
             }}
           />
           <Tooltip showCrosshairs shared />
-          <Geom type="line" position="date*Count" size={2} color="AnchorId" />
+          <Geom type="line" position="Date*Count" size={2} color="AnchorId" />
           <Geom
             type="point"
-            position="date*Count"
+            position="Date*Count"
             size={4}
             shape="circle"
             color="AnchorId"
