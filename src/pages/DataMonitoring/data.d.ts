@@ -48,6 +48,9 @@ export interface TransactionsProps {
 export interface SignatureProps {
   data: CrossChains | undefined;
 }
+export interface NodeProps {
+  data: CrossChains | undefined;
+}
 
 export interface ChainItem {
   ID: number;
