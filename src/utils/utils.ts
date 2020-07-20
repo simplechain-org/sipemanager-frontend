@@ -63,3 +63,19 @@ export const getRouteAuthority = (path: string, routeData: Route[]) => {
   });
   return authorities;
 };
+
+// export const getRandomIP = () => {
+//   let ip = [];
+//   for (let i = 0; i < 4; i++) {
+//     ip = `${ip + Math.floor(Math.random() * 256)}${i === 3 ? '' : '.'}`;
+//   }
+//   return ip;
+// };
+
+// export const getRandomPort = () => {
+//   let port = [];
+//   for (let i = 0; i < 4; i++) {
+//     port = `${port}${Math.floor(Math.random() * 10)}`;
+//   }
+//   return port;
+// };

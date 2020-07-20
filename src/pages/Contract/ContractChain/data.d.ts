@@ -54,6 +54,7 @@ export interface ContractListItem {
   bin: string;
   description: string;
   sol: string;
+  name: string;
 }
 
 export interface WalletListItem {

@@ -1,20 +1,20 @@
 import request from '@/utils/request';
 import { TableListParams, TableListItem } from './data';
 
-export async function queryRule(params?: TableListParams) {
+export async function queryRule(params?: any) {
   return request('/api/v1/contract/list', {
     params,
   });
 }
 
 export async function removeRule(id: number) {
-  return request(`/api/v1/contract/${id}`, {
+  return request(`/api/v1/contract/remove/${id}`, {
     method: 'DELETE',
   });
 }
 
 export async function addRule(params: TableListItem) {
-  return request('/api/v1/contract', {
+  return request('/api/v1/contract/add', {
     method: 'POST',
     data: {
       ...params,
@@ -23,8 +23,8 @@ export async function addRule(params: TableListItem) {
 }
 
 export async function updateRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
+  return request('/api/v1/contract/update', {
+    method: 'PUT',
     data: {
       ...params,
     },

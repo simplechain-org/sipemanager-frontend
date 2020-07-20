@@ -1,8 +1,9 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, Input, Form, Row, Col, Select } from 'antd';
+import { Button, Input, Form, Row, Col, Select } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import { history } from 'umi';
 import CreateForm from './components/CreateForm';
 import DetailsForm from './components/DetailsForm';
 import { TableListItem, ChainListType } from './data';
@@ -15,6 +16,7 @@ const RegistRecord: React.FC<{}> = () => {
   const [chainList, setChainList] = useState([]);
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm();
+  const [pageCount, setPageCount] = useState(0);
   // 动态控制表单项，默认渲染两项，数组的元素无意义，只要长度为2即可
   const [list, setList] = useState<number[]>(Array.from({ length: 2 }));
   const columns: ProColumns<TableListItem>[] = [
@@ -26,13 +28,13 @@ const RegistRecord: React.FC<{}> = () => {
     },
     {
       title: '发起链',
-      dataIndex: 'source_chain_id',
-      key: 'source_chain_id',
+      dataIndex: 'source_chain_name',
+      key: 'source_chain_name',
     },
     {
       title: '目标链',
-      dataIndex: 'target_chain_id',
-      key: 'target_chain_id',
+      dataIndex: 'target_chain_name',
+      key: 'target_chain_name',
     },
     {
       title: '最低签名数',
@@ -41,8 +43,9 @@ const RegistRecord: React.FC<{}> = () => {
     },
     {
       title: '锚定节点数',
-      dataIndex: 'count',
-      key: 'count',
+      dataIndex: 'anchor_addresses',
+      key: 'anchor_addresses',
+      render: (text: any) => <span>{text.split(',').length}</span>,
     },
     {
       title: '注册TX哈希',
@@ -53,9 +56,9 @@ const RegistRecord: React.FC<{}> = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record) => (
+      render: (text, record) => (
         <>
-          <a
+          {/* <a
             onClick={() => {
               setCurrentHandle(record);
               handleModalVisible(true);
@@ -64,8 +67,17 @@ const RegistRecord: React.FC<{}> = () => {
           >
             编辑
           </a>
-          <Divider type="vertical" />
-          <a onClick={() => handleDrawerVisible(true)}>查看</a>
+          <Divider type="vertical" /> */}
+          {/* <a onClick={() => handleDrawerVisible(true)}>查看</a> */}
+
+          <a
+            onClick={() => {
+              console.log(record);
+              history.push(`/accrossChain/regist-record/details/${record.ID}`);
+            }}
+          >
+            查看
+          </a>
         </>
       ),
     },
@@ -172,7 +184,20 @@ const RegistRecord: React.FC<{}> = () => {
         ]}
         options={false}
         search={false}
-        request={(params) => queryRule(params)}
+        request={(params) =>
+          queryRule({
+            page_size: params.pageSize || 10,
+            current_page: params.current || 1,
+          })
+        }
+        postData={(data: any) => {
+          setPageCount(data.total_count);
+          return data.page_data;
+        }}
+        pagination={{
+          total: pageCount,
+          defaultPageSize: 10,
+        }}
         columns={columns}
       />
       <CreateForm
@@ -205,7 +230,7 @@ const RegistRecord: React.FC<{}> = () => {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="url"
+                name="source_node_id"
                 label="链A的节点"
                 rules={[{ required: true, message: '请选择链A的节点' }]}
               >
@@ -233,7 +258,7 @@ const RegistRecord: React.FC<{}> = () => {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="url_b"
+                name="target_node_id"
                 label="链B的节点"
                 rules={[{ required: true, message: '请选择链B的节点' }]}
               >
@@ -280,7 +305,7 @@ const RegistRecord: React.FC<{}> = () => {
                 <Col span={24}>
                   <Form.Item
                     label="选择钱包账户"
-                    name="wallet"
+                    name="wallet_id"
                     rules={[{ required: true, message: '请选择钱包账户' }]}
                   >
                     <Select>

@@ -116,6 +116,11 @@ export default defineConfig({
                   component: './AccrossChain/RegistRecord',
                 },
                 {
+                  path: '/accrossChain/regist-record/details/:id',
+                  hideInMenu: true,
+                  component: './AccrossChain/RegistRecord/components/DetailsPage',
+                },
+                {
                   path: '/accrossChain/anchor-nodes',
                   name: 'anchorNodes',
                   component: './AccrossChain/AnchorNodes',

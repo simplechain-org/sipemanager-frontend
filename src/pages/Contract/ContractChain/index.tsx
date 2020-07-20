@@ -34,6 +34,7 @@ const ContractChain: React.FC<{}> = () => {
   const [contractList, setContractList] = useState<ContractListItem[] | []>([]);
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm();
+  const [pageCount, setPageCount] = useState(0);
 
   const getOptionList = async () => {
     const chainRes = await queryChain();
@@ -51,8 +52,8 @@ const ContractChain: React.FC<{}> = () => {
       walletRes.data.map((item: WalletListItem) => ({ label: item.name, value: item.ID })),
     );
     setContractList(
-      contractRes.data.map((item: ContractListItem) => ({
-        label: item.description,
+      contractRes.data.page_data.map((item: ContractListItem) => ({
+        label: item.name,
         value: item.ID,
       })),
     );
@@ -82,6 +83,7 @@ const ContractChain: React.FC<{}> = () => {
   const handleAdd = async (params: TableListItem) => {
     const hide = message.loading('正在添加');
     try {
+      console.log('params---', params);
       await addRule({ ...params });
       hide();
       message.success('添加成功');
@@ -120,8 +122,8 @@ const ContractChain: React.FC<{}> = () => {
     },
     {
       title: '合约名称',
-      dataIndex: 'description',
-      key: 'description',
+      dataIndex: 'name',
+      key: 'name',
       hideInSearch: true,
       rules: [
         {
@@ -254,7 +256,21 @@ const ContractChain: React.FC<{}> = () => {
           </Space>,
         ]}
         options={false}
-        request={(params) => queryRule({ ...params })}
+        request={(params) =>
+          queryRule({
+            page_size: params.pageSize || 10,
+            current_page: params.current || 1,
+            // status: '',
+          })
+        }
+        postData={(data: any) => {
+          setPageCount(data.total_count);
+          return data.page_data;
+        }}
+        pagination={{
+          total: pageCount,
+          defaultPageSize: 10,
+        }}
         columns={columns}
       />
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>

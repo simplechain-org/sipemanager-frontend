@@ -22,6 +22,12 @@ export interface ChainListType {
   symbol: string;
 }
 
+export interface FormProps {
+  label: string;
+  name: string;
+  entiryLine?: boolean;
+}
+
 export interface TableListPagination {
   total: number;
   pageSize: number;

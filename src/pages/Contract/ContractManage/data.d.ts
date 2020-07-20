@@ -5,7 +5,7 @@ export interface TableListItem {
   UpdatedAt: Date;
   abi: string;
   bin: string;
-  description: string;
+  name: string;
   sol: string;
 }
 

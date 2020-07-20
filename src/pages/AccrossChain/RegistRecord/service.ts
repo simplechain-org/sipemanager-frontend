@@ -1,8 +1,8 @@
 import request from '@/utils/request';
 import { TableListParams, TableListItem } from './data';
 
-export async function queryRule(params?: TableListParams) {
-  return request('/api/v1/contract/register/list', {
+export async function queryRule(params?: any) {
+  return request('/api/v1/chain/register/list', {
     params,
   });
 }
@@ -39,6 +39,12 @@ export async function updateRule(params: TableListParams) {
 
 export async function queryChain(params?: TableListParams) {
   return request('/api/v1/chain/list', {
+    params,
+  });
+}
+
+export async function queryDetails(params: any) {
+  return request('/api/v1/chain/register/info', {
     params,
   });
 }

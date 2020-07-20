@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 import { TableListParams, TableListItem } from './data';
 
-export async function queryRule(params: TableListParams) {
+export async function queryRule(params?: any) {
   return request('/api/v1/contract/instance/list', {
     params,
   });
@@ -18,8 +18,7 @@ export async function removeRule(params: { key: number[] }) {
 }
 
 export async function addRule(params: TableListItem) {
-  // return request('/api/v1/contract/instance/add', {
-  return request('api/v1/contract/instance/import', {
+  return request('/api/v1/contract/instance/import', {
     method: 'POST',
     data: {
       ...params,

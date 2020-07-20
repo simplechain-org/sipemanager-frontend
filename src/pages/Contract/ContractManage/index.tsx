@@ -7,13 +7,14 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import UploadForm from './components/UploadForm';
 import FormItem from '../components/FormItem';
 import { TableListItem } from './data';
-import { queryRule, addRule, removeRule } from './service';
+import { queryRule, addRule, removeRule, updateRule } from './service';
 
 const ContractManage: React.FC<{}> = () => {
   const [uploadModalVisible, handleUploadModalVisible] = useState<boolean>(false);
   const [currentItem, setCurrentItem] = useState<TableListItem | undefined>(undefined);
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm();
+  const [pageCount, setPageCount] = useState(0);
 
   const onReset = () => {
     form.resetFields();
@@ -26,11 +27,11 @@ const ContractManage: React.FC<{}> = () => {
     }
   };
 
-  const addHandle = async (params: TableListItem) => {
+  const addHandle = async (params: any) => {
     const ID = currentItem ? currentItem.ID : null;
     let res;
     if (ID) {
-      res = await addRule({ ...params, ID });
+      res = await updateRule({ ...params, id: ID });
     } else {
       res = await addRule(params);
     }
@@ -76,8 +77,8 @@ const ContractManage: React.FC<{}> = () => {
     },
     {
       title: '合约名称',
-      dataIndex: 'description',
-      key: 'description',
+      dataIndex: 'name',
+      key: 'name',
       hideInSearch: true,
       rules: [
         {
@@ -120,7 +121,7 @@ const ContractManage: React.FC<{}> = () => {
     {
       formItemYype: 'text',
       formItemLabel: '合约名称',
-      fieldName: 'description',
+      fieldName: 'name',
       isRequire: true,
       dataSource: [],
     },
@@ -166,7 +167,19 @@ const ContractManage: React.FC<{}> = () => {
         ]}
         options={false}
         request={(params) => {
-          return queryRule({ ...params });
+          return queryRule({
+            page_size: params.pageSize || 10,
+            current_page: params.current || 1,
+            // status: '',
+          });
+        }}
+        postData={(data: any) => {
+          setPageCount(data.total_count);
+          return data.page_data;
+        }}
+        pagination={{
+          total: pageCount,
+          defaultPageSize: 10,
         }}
         columns={columns}
       />
