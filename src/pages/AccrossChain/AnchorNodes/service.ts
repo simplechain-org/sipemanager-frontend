@@ -1,22 +1,22 @@
 import request from '@/utils/request';
-import { TableListParams, TableListItem } from './data';
+import { TableListParams, TableListItem, QueryParamsType } from './data';
 
-export async function queryRule(params?: { current_page: number; page_size: number }) {
+export async function queryRule(params?: any) {
   return request('/api/v1/anchor/node/list', {
     params,
   });
 }
 
-export async function queryFee() {
-  return request('/api/v1/service/charge/list', {});
+export async function queryFee(params: any) {
+  return request('/api/v1/service/charge/list', { params });
 }
 
-export async function queryReward() {
-  return request('/api/v1/reward/list', {});
+export async function queryReward(params: QueryParamsType) {
+  return request('/api/v1/reward/list', { params });
 }
 
-export async function queryPunish() {
-  return request('/api/v1/punishment/list', {});
+export async function queryPunish(params: QueryParamsType) {
+  return request('/api/v1/punishment/list', { params });
 }
 
 export async function queryDetails(params: { anchor_node_id: number }) {
@@ -33,6 +33,30 @@ export async function removeRule(params: TableListItem) {
     data: {
       ...params,
     },
+  });
+}
+
+export async function addFee(params: any) {
+  return request('/api/v1/service/charge/add', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function addPunish(params: any) {
+  return request('/api/v1/punishment/add', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function queryChargeFee(params: any) {
+  return request('/api/v1/service/charge/fee', {
+    params,
   });
 }
 

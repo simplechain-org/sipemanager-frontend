@@ -1,24 +1,36 @@
 import { Tabs } from 'antd';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import AnchorNodes from './AnchorNodes';
 import Fee from './Fee';
 import AddReward from './AddReward';
 import Punish from './Punish';
+import { TableListItem } from './data.d';
+import { queryChain, queryRule, queryNode, queryWallet } from './service';
 
 const { TabPane } = Tabs;
 const AnchorNode: React.FC<{}> = () => {
-  // const getOptionList = async () => {
-  //   const chainRes = await queryChain();
-  //   const res = await queryNode();
-  //   const walletRes = await queryWallet();
-  //   setChainList(chainRes.data.page_data || []);
-  //   setNodeList(res.data || []);
-  //   setWalletList(walletRes.data || []);
-  // };
-  // useEffect(() => {
-  //   getOptionList();
-  // }, [])
+  const [publicList, setPublicList] = useState({});
+
+  const getOptionList = async () => {
+    const chainRes = await queryChain();
+    const nodeRes = await queryNode();
+    const walletRes = await queryWallet();
+    const anchorRes = await queryRule();
+    setPublicList({
+      nodeList: nodeRes.data || [],
+      wallestList: walletRes.data || [],
+      anchorNodeList: anchorRes.data.page_data.map((item: TableListItem) => ({
+        text: item.anchor_node_name,
+        name: item.anchor_node_name,
+        ...item,
+      })),
+      chainList: chainRes.data.page_data || [],
+    });
+  };
+  useEffect(() => {
+    getOptionList();
+  }, []);
 
   // const tabChange = (key: string): any => {
   //   switch (key) {
@@ -104,19 +116,19 @@ const AnchorNode: React.FC<{}> = () => {
         ))}   */}
 
         <TabPane tab="锚定节点管理" key="0">
-          <AnchorNodes />
+          <AnchorNodes publicList={publicList} />
         </TabPane>
 
         <TabPane tab="手续费报销" key="1">
-          <Fee />
+          <Fee publicList={publicList} />
         </TabPane>
 
         <TabPane tab="签名奖励" key="2">
-          <AddReward />
+          <AddReward publicList={publicList} />
         </TabPane>
 
         <TabPane tab="惩罚管理" key="3">
-          <Punish />
+          <Punish publicList={publicList} />
         </TabPane>
       </Tabs>
     </PageHeaderWrapper>

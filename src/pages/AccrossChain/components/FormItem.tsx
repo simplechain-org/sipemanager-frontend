@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Input, Select } from 'antd';
+// import { getRandomIP } from '@/utils/utils';
 
 interface FormItemProps {
   formPropsList: Item[];
@@ -13,6 +14,11 @@ interface Item {
   isSelect: boolean;
   dataSource: any[];
   extra?: string;
+  isTips?: boolean;
+  handle?: (value: number) => Promise<void> | null | undefined | void;
+  // handle?: any;
+  needChange?: boolean;
+  children?: React.ReactNode | undefined;
 }
 
 const { Option } = Select;
@@ -30,10 +36,17 @@ const FormItem: React.FC<FormItemProps> = (props) => {
         return <Input.TextArea />;
       case 'select':
         return (
-          <Select>
+          // <Select onChange={item.needChange ? ((value) => item.handle(value as number)) : () => {}}>
+          <Select
+            onChange={
+              item.needChange
+                ? (value) => (item.handle ? item.handle(value as number) : null)
+                : () => {}
+            }
+          >
             {item.dataSource.map((option) => (
-              <Option value={option.value} key={option.value}>
-                {option.label}
+              <Option value={option.ID} key={`${option.ID}${option.name}`}>
+                {option.name}
               </Option>
             ))}
           </Select>
@@ -46,19 +59,23 @@ const FormItem: React.FC<FormItemProps> = (props) => {
   return (
     <Form form={form}>
       {formPropsList.map((item) => (
-        <Form.Item
-          key={item.formItemLabel}
-          name={item.fieldName}
-          label={item.formItemLabel}
-          extra={item.extra || ''}
-          rules={
-            item.formItemYype === ''
-              ? []
-              : [{ required: true, message: `请输入${item.formItemLabel}！` }]
-          }
-        >
-          {formType(item)}
-        </Form.Item>
+        <>
+          {item.isTips && <span>{item.extra}</span>}
+          <Form.Item
+            key={item.formItemLabel}
+            name={item.isTips ? undefined : item.fieldName}
+            label={item.formItemLabel}
+            // initialValue={item.fieldName.includes('address' || 'ip' || 'IP') ? getRandomIP() : ''}
+            rules={
+              item.formItemYype === ''
+                ? []
+                : [{ required: true, message: `请输入${item.formItemLabel}！` }]
+            }
+          >
+            {formType(item)}
+          </Form.Item>
+          {item.children}
+        </>
       ))}
     </Form>
   );
