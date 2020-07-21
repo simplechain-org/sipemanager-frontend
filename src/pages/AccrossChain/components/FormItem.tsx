@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Form, Input, Select } from 'antd';
 
 interface FormItemProps {
@@ -57,10 +57,9 @@ const FormItem: React.FC<FormItemProps> = (props) => {
   return (
     <Form form={form}>
       {formPropsList.map((item) => (
-        <>
+        <Fragment key={`${item.formItemLabel}${item.fieldName}${item.formItemYype}`}>
           {/* {item.isTips && <span>{item.extra}</span>} */}
           <Form.Item
-            key={`${item.formItemLabel}${item.fieldName}${item.formItemYype}`}
             name={item.fieldName}
             label={item.formItemLabel}
             extra={item.extra}
@@ -73,7 +72,7 @@ const FormItem: React.FC<FormItemProps> = (props) => {
             {formType(item)}
           </Form.Item>
           {item.children}
-        </>
+        </Fragment>
       ))}
     </Form>
   );
