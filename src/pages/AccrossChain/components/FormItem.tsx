@@ -13,7 +13,7 @@ interface Item {
   isSelect: boolean;
   dataSource: any[];
   extra?: string;
-  isTips?: boolean;
+  // isTips?: boolean;
   handle?: (value: number) => Promise<void> | null | undefined | void;
   // handle?: any;
   needChange?: boolean;
@@ -58,10 +58,10 @@ const FormItem: React.FC<FormItemProps> = (props) => {
     <Form form={form}>
       {formPropsList.map((item) => (
         <>
-          {item.isTips && <span>{item.extra}</span>}
+          {/* {item.isTips && <span>{item.extra}</span>} */}
           <Form.Item
             key={`${item.formItemLabel}${item.fieldName}${item.formItemYype}`}
-            name={item.isTips ? undefined : item.fieldName}
+            name={item.fieldName}
             label={item.formItemLabel}
             extra={item.extra}
             rules={

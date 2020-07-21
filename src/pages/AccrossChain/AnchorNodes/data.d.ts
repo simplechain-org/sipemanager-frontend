@@ -65,7 +65,7 @@ export interface FormPropsType {
   isSelect: boolean;
   dataSource: any[];
   extra?: string;
-  isTips?: boolean;
+  // isTips?: boolean;
   handle?: (value: number) => Promise<void> | null | undefined | void;
   needChange?: boolean;
   children?: React.ReactNode | undefined;

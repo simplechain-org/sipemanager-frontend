@@ -93,7 +93,7 @@ const AnchorNodes = (props: PropsType) => {
       fieldName: '',
       isSelect: false,
       dataSource: [],
-      isTips: true,
+      // isTips: true,
       extra: '删除后，将从区块链上移除该锚定节点的签名资格，请再次确定是否要删除锚定节点。',
     },
     {
