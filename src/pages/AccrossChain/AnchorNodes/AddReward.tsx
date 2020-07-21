@@ -1,10 +1,16 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form, message, Divider } from 'antd';
-import React, { useState, useRef, Fragment } from 'react';
+import React, { useState, useRef, Fragment, useEffect } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import { queryReward, addRule } from './service';
+import {
+  queryReward,
+  rewardAdd,
+  queryRewardTotal,
+  queryRewardChain,
+  querySignatureCount,
+} from './service';
 import FormItem from '../components/FormItem';
-import { TableListItem, FormPropsType } from './data';
+import { TableListItem, FormPropsType, NodeListItem, AnchorNodeItem } from './data';
 import CreateForm from './components/CreateForm';
 
 interface PropsType {
@@ -16,6 +22,14 @@ const AddReward = (props: PropsType) => {
   const [provideModalVisible, handleProvideModalVisible] = useState<boolean>(false);
   const [signatureModalVisible, handleSignatureModalVisible] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState(0);
+  const [currentNode, setCurrentNode] = useState<NodeListItem | undefined>(undefined);
+  const [currentAnchorNode, setCurrentAnchorNode] = useState<AnchorNodeItem | undefined>(undefined);
+  // 剩余奖池总额
+  const [remianTotal, setRemainTotal] = useState(0);
+  // 单笔签名奖励
+  const [rewardChain, setRewardChain] = useState(0);
+  // 总签名数、工作量占比
+  const [signatureCount, setSignatureCount] = useState({ sign_count: '', rate: '' });
   const [form] = Form.useForm();
   const { validateFields, resetFields } = form;
 
@@ -24,14 +38,48 @@ const AddReward = (props: PropsType) => {
   };
 
   const addHandle = async (params: any) => {
-    const res = await addRule(params);
+    const res = await rewardAdd(params);
     if (res.code === 0) {
       message.success('添加成功');
     } else {
       message.error(res.msg || '添加失败');
     }
+    handleProvideModalVisible(false);
+    setCurrentNode(undefined);
+    setCurrentAnchorNode(undefined);
+    setRemainTotal(0);
+    setRewardChain(0);
+    setSignatureCount({ sign_count: '', rate: '' });
   };
-  const changeNode = async () => {};
+  const changeNode = (value: number) => {
+    console.log('node change', value);
+    setCurrentNode(props.publicList.nodeList.filter((item: NodeListItem) => item.ID === value)[0]);
+  };
+
+  const changeAnchorNode = (value: number) => {
+    console.log('anchor node change', value);
+    setCurrentAnchorNode(
+      props.publicList.anchorNodeList.filter((item: AnchorNodeItem) => item.ID === value)[0],
+    );
+  };
+
+  useEffect(() => {
+    async function getRemain() {
+      if (currentNode?.ID && currentAnchorNode?.ID) {
+        const params = {
+          anchor_node_id: currentAnchorNode.ID,
+          node_id: currentNode.ID,
+        };
+        const res = await queryRewardTotal(params);
+        setRemainTotal(res.data || 0);
+        const rewardRes = await queryRewardChain(params);
+        setRewardChain(rewardRes.data || 0);
+        const sigRes = await querySignatureCount(params);
+        setSignatureCount(sigRes.data || {});
+      }
+    }
+    getRemain();
+  }, [currentNode, currentAnchorNode]);
 
   const submitHandle = () => {
     validateFields()
@@ -110,10 +158,10 @@ const AddReward = (props: PropsType) => {
   const addChildren = (
     <Fragment>
       <Divider />
-      <p>剩余奖池总额：</p>
-      <p>单笔签名奖励：</p>
-      <p>本期总签名数：</p>
-      <p>签名工作量占比：</p>
+      <p>剩余奖池总额：{remianTotal}</p>
+      <p>单笔签名奖励：{rewardChain}</p>
+      <p>本期总签名数：{signatureCount.sign_count}</p>
+      <p>签名工作量占比：{signatureCount.rate}</p>
       <Divider />
     </Fragment>
   );
@@ -122,29 +170,33 @@ const AddReward = (props: PropsType) => {
     {
       formItemYype: 'select',
       formItemLabel: '选择节点',
-      fieldName: 'chain_a',
+      fieldName: 'node_id',
       isSelect: true,
       dataSource: props.publicList.nodeList,
+      needChange: true,
+      handle: changeNode,
     },
     {
       formItemYype: 'select',
       formItemLabel: '选择锚定节点',
-      fieldName: 'chain_a_node',
+      fieldName: 'anchor_node_id',
       isSelect: true,
       dataSource: props.publicList.anchorNodeList,
       children: addChildren,
+      needChange: true,
+      handle: changeAnchorNode,
     },
     {
       formItemYype: 'select',
       formItemLabel: '奖励Token类型',
-      fieldName: 'chain_b',
+      fieldName: 'coin',
       isSelect: true,
       dataSource: [],
     },
     {
       formItemYype: 'text',
       formItemLabel: '签名奖励值',
-      fieldName: 'chain_b_node',
+      fieldName: 'reward',
       isSelect: false,
       dataSource: [],
       extra: `本期建议奖励${'1.1111SIPC'}`,
@@ -152,7 +204,7 @@ const AddReward = (props: PropsType) => {
     {
       formItemYype: 'select',
       formItemLabel: '选择账户',
-      fieldName: 'wallet',
+      fieldName: 'wallet_id',
       isSelect: false,
       dataSource: props.publicList.wallestList,
     },

@@ -64,9 +64,22 @@ const ContractChain: React.FC<{}> = () => {
   }, []);
 
   const deployContract = async (params: TableListItem) => {
-    await addInstance(params);
-    handleUploadModalVisible(false);
-    actionRef.current?.reload();
+    const hide = message.loading('正在添加');
+    try {
+      const res = await addInstance(params);
+      hide();
+      if (res.code === 0) {
+        message.success('添加成功');
+        handleUploadModalVisible(false);
+        actionRef.current?.reload();
+      }
+      return true;
+    } catch (error) {
+      hide();
+      handleUploadModalVisible(false);
+      actionRef.current?.reload();
+      return false;
+    }
   };
 
   const submitHandle = () => {
@@ -83,7 +96,6 @@ const ContractChain: React.FC<{}> = () => {
   const handleAdd = async (params: TableListItem) => {
     const hide = message.loading('正在添加');
     try {
-      console.log('params---', params);
       await addRule({ ...params });
       hide();
       message.success('添加成功');
@@ -239,6 +251,7 @@ const ContractChain: React.FC<{}> = () => {
         headerTitle="合约上链列表"
         actionRef={actionRef}
         rowKey="tx_hash"
+        search={false}
         toolBarRender={() => [
           <Space>
             <Button type="primary" onClick={() => handleModalVisible(true)}>

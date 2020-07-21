@@ -1,24 +1,15 @@
 import request from '@/utils/request';
-import { TableListParams, TableListItem } from './data';
+import { TableListItem } from './data.d';
 
-export async function queryRule(params?: TableListParams) {
-  return request('/api/rule', {
-    params,
-  });
-}
-
-export async function removeRule(params: { key: number[] }) {
-  return request('/api/rule', {
+export async function queryRule(params: any) {
+  return request('/api/v1/retro/list', {
     method: 'POST',
-    data: {
-      ...params,
-      method: 'delete',
-    },
+    data: { ...params },
   });
 }
 
 export async function addRule(params: TableListItem) {
-  return request('/api/rule', {
+  return request('/api/v1/retro/add', {
     method: 'POST',
     data: {
       ...params,
@@ -27,12 +18,6 @@ export async function addRule(params: TableListItem) {
   });
 }
 
-export async function updateRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'update',
-    },
-  });
+export async function queryChain() {
+  return request('/api/v1/chain/list', {});
 }

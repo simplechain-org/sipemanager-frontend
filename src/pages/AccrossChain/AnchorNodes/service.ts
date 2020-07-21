@@ -1,13 +1,13 @@
 import request from '@/utils/request';
-import { TableListParams, TableListItem, QueryParamsType } from './data';
+import { TableListParams, TableListItem, QueryParamsType, AddFee, QueryType } from './data';
 
-export async function queryRule(params?: any) {
+export async function queryRule(params?: QueryParamsType) {
   return request('/api/v1/anchor/node/list', {
     params,
   });
 }
 
-export async function queryFee(params: any) {
+export async function queryFee(params?: QueryParamsType) {
   return request('/api/v1/service/charge/list', { params });
 }
 
@@ -36,7 +36,7 @@ export async function removeRule(params: TableListItem) {
   });
 }
 
-export async function addFee(params: any) {
+export async function addFee(params: AddFee) {
   return request('/api/v1/service/charge/add', {
     method: 'POST',
     data: {
@@ -45,7 +45,7 @@ export async function addFee(params: any) {
   });
 }
 
-export async function addPunish(params: any) {
+export async function addPunish(params: AddFee) {
   return request('/api/v1/punishment/add', {
     method: 'POST',
     data: {
@@ -90,4 +90,30 @@ export async function queryChain() {
 
 export async function queryNode() {
   return request('/api/v1/node/list', {});
+}
+
+export async function queryRewardTotal(params: QueryType) {
+  return request('/api/v1/reward/total', {
+    params,
+  });
+}
+
+export async function queryRewardChain(params: QueryType) {
+  return request('/api/v1/reward/chain', {
+    params,
+  });
+}
+
+export async function querySignatureCount(params: QueryType) {
+  return request('/api/v1/anchor/work/count', {
+    params,
+  });
+}
+
+export async function rewardAdd(params: AddFee) {
+  return request('/api/v1/reward/add', {
+    data: {
+      ...params,
+    },
+  });
 }

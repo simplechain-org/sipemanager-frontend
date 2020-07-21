@@ -24,7 +24,7 @@ export async function addRule(params: TableListItem) {
 
 export async function updateRule(params: TableListParams) {
   return request('/api/v1/contract/update', {
-    method: 'PUT',
+    method: '',
     data: {
       ...params,
     },

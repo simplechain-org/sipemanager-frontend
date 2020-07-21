@@ -1,13 +1,26 @@
 export interface TableListItem {
-  createdAt: string;
+  ctx_id: string;
+  event: number;
+  network_id: number;
+  status: number;
   tx_hash: string;
-  status: string;
 }
 
 export interface TableListPagination {
   total: number;
   pageSize: number;
   current: number;
+}
+
+export interface ChainListItem {
+  CreatedAt: Date;
+  DeletedAt: Date;
+  ID: number;
+  UpdatedAt: Date;
+  coin_name: string;
+  name: string;
+  network_id: number;
+  symbol: string;
 }
 
 export interface TableListData {

@@ -25,46 +25,54 @@ const DisplayForm = (prop: FormProps[], values: any) => {
 const totalList: FormProps[] = [
   {
     label: '日志编号',
-    name: 'created_at',
+    name: 'ID',
   },
   {
     label: '发起链',
-    name: 'anchor_node_name',
+    name: 'source_chain_name',
   },
   {
     label: '目标链',
-    name: 'pledge',
+    name: 'target_chain_name',
   },
   {
     label: '最少签名数',
-    name: 'status',
+    name: 'confirm',
   },
   {
     label: '锚定节点1',
-    name: 'chain_a',
+    name: 'anchor_node_a',
   },
   {
     label: '锚定节点2',
-    name: 'chain_b',
+    name: 'anchor_node_b',
   },
   {
     label: '状态',
-    name: 'chain_a',
+    name: 'status',
   },
   {
     label: 'TX哈希',
-    name: 'chain_b',
+    name: 'tx_hash',
   },
 ];
 
 const DetailsPage: React.FC<DetailsPageProps> = () => {
   const params: { id: string } = useParams();
-  const [values, setValues] = useState(null);
+  const [values, setValues] = useState({});
   useEffect(() => {
     async function fetchData() {
       if (params.id !== 'undefined') {
         const res = await queryDetails({ id: params.id });
-        setValues(res.data);
+        let resValue = {};
+        if (res.data) {
+          resValue = {
+            ...res.data,
+            anchor_node_a: res.data.anchor_nodes[0].name,
+            anchor_node_b: res.data.anchor_nodes[1].name,
+          };
+        }
+        setValues(resValue);
       }
     }
     fetchData();

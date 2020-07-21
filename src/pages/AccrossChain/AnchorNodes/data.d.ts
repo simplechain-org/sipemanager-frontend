@@ -69,7 +69,6 @@ export interface FormPropsType {
   handle?: (value: number) => Promise<void> | null | undefined | void;
   needChange?: boolean;
   children?: React.ReactNode | undefined;
-  // children?: any
 }
 
 export interface NodeListItem {
@@ -114,7 +113,7 @@ export interface QueryParamsType {
 }
 
 export interface TableListPagination {
-  total: number;
+  total?: number;
   pageSize: number;
   current: number;
   [propsName: string]: string;
@@ -123,6 +122,22 @@ export interface TableListPagination {
 export interface BtnEleType {
   title: string;
   handle: () => {};
+}
+
+export interface AddFee {
+  anchor_node_id: number;
+  node_id: number;
+  wallet_id: number;
+  password: string;
+  fee: string;
+  coin: string;
+  value?: string;
+  manage_type?: string;
+}
+
+export interface QueryType {
+  anchor_node_id: string | number;
+  node_id: string | number;
 }
 
 export interface TableListData {

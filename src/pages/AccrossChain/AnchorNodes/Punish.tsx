@@ -1,10 +1,10 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Form, message, Select, Input } from 'antd';
+import { Button, Form, message, Input } from 'antd';
 import React, { useState, useRef, Fragment } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { queryPunish, addPunish } from './service';
 import FormItem from '../components/FormItem';
-import { PunishListItem, FormPropsType } from './data';
+import { PunishListItem, FormPropsType, NodeListItem, AddFee } from './data';
 import CreateForm from './components/CreateForm';
 
 interface PropsType {
@@ -16,7 +16,7 @@ const Punish = (props: PropsType) => {
   const [form] = Form.useForm();
   const { validateFields, resetFields } = form;
   const [pageCount, setPageCount] = useState(0);
-  // const [tokenList, setTokenList] = useState([]);
+  const [currentNode, setCurrentNode] = useState<NodeListItem | undefined>(undefined);
   const [isDisplay, setDisplay] = useState(false);
 
   const onReset = () => {
@@ -24,20 +24,23 @@ const Punish = (props: PropsType) => {
     setDisplay(false);
   };
 
-  const addHandle = async (params: PunishListItem) => {
+  const addHandle = async (params: AddFee) => {
     const res = await addPunish(params);
     if (res.code === 0) {
       message.success('添加成功');
     } else {
       message.error(res.msg || '添加失败');
     }
+    setCurrentNode(undefined);
+    handlePunishModalVisible(false);
+    actionRef.current?.reload();
   };
 
   const submitHandle = () => {
     validateFields()
       .then((values) => {
-        console.log({ ...values, coin: props.publicList.nodeList[values.node_id].coin_name || '' });
-        addHandle(values as PunishListItem);
+        console.log({ ...values, coin: currentNode?.coin_name || '' });
+        addHandle({ ...values, coin: currentNode?.coin_name || '' } as AddFee);
       })
       .catch((errorInfo) => {
         console.log('校验出错~', errorInfo);
@@ -84,20 +87,7 @@ const Punish = (props: PropsType) => {
 
   const children = (
     <Fragment>
-      <Form.Item
-        label="Token类型"
-        name="coin"
-        rules={[{ required: true, message: '请选择Token类型' }]}
-      >
-        <Select>
-          <Select.Option value={1111}>1111</Select.Option>
-          <Select.Option value={2222}>2222</Select.Option>
-          <Select.Option value={3333}>3333</Select.Option>
-          {/* {
-            tokenList.map(item => <Select.Option value={item.ID}>{item.name}</Select.Option>)
-          } */}
-        </Select>
-      </Form.Item>
+      <p style={{ marginTop: '2rem', marginBottom: '2rem' }}>token类型：{currentNode?.coin_name}</p>
       <Form.Item
         label="扣减数量"
         name="value"
@@ -108,12 +98,16 @@ const Punish = (props: PropsType) => {
     </Fragment>
   );
 
-  const changeDisplay = (value: number) => {
-    if (value === 1) {
+  const changeDisplay = (value: any) => {
+    if (value === 'token') {
       setDisplay(true);
     } else {
       setDisplay(false);
     }
+  };
+
+  const changeNode = (value: number) => {
+    setCurrentNode(props.publicList.nodeList.filter((item: NodeListItem) => item.ID === value)[0]);
   };
 
   const fiftyFormPropsList: FormPropsType[] = [
@@ -122,6 +116,8 @@ const Punish = (props: PropsType) => {
       formItemLabel: '选择节点',
       fieldName: 'node_id',
       isSelect: true,
+      handle: changeNode,
+      needChange: true,
       dataSource: props.publicList.nodeList,
     },
     {
@@ -136,21 +132,20 @@ const Punish = (props: PropsType) => {
       formItemLabel: '管理类型',
       fieldName: 'manage_type',
       isSelect: true,
-      // dataSource: [],
       needChange: true,
       handle: changeDisplay,
       dataSource: [
         {
-          ID: 1,
-          name: 'Token类型',
+          ID: 'token',
+          name: '扣减质押Token',
         },
         {
-          ID: 2,
-          name: '抵押类型',
+          ID: 'suspend',
+          name: '暂停签名资格',
         },
         {
-          ID: 3,
-          name: '质押金额',
+          ID: 'recovery',
+          name: '恢复签名资格',
         },
       ],
       children: isDisplay && children,

@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { TableListParams, TableListItem } from './data';
+import { TableListParams, AddRegisteType } from './data';
 
 export async function queryRule(params?: any) {
   return request('/api/v1/chain/register/list', {
@@ -17,12 +17,11 @@ export async function removeRule(params: { key: number[] }) {
   });
 }
 
-export async function addRule(params: TableListItem) {
-  return request('/api/v1/contract/register', {
+export async function addRule(params: AddRegisteType) {
+  return request('/api/v1/contract/register/once', {
     method: 'POST',
     data: {
       ...params,
-      method: 'post',
     },
   });
 }
@@ -47,4 +46,11 @@ export async function queryDetails(params: any) {
   return request('/api/v1/chain/register/info', {
     params,
   });
+}
+
+export async function getNodeByChain(params: { chain_id: string }) {
+  return request('/api/v1/chain/node', { params });
+}
+export async function queryWallet() {
+  return request('/api/v1/wallet/list', {});
 }

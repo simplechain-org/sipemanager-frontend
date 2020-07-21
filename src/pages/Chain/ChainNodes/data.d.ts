@@ -1,5 +1,5 @@
 export interface TableListItem {
-  CreatedAt: Date;
+  created_at: Date;
   DeletedAt: Date;
   ID: number;
   UpdatedAt: Date;

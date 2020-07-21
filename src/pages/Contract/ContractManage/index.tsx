@@ -154,6 +154,7 @@ const ContractManage: React.FC<{}> = () => {
         headerTitle="合约列表"
         actionRef={actionRef}
         rowKey="description"
+        search={false}
         toolBarRender={() => [
           <Button
             type="primary"

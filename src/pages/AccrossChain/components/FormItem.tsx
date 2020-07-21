@@ -36,7 +36,6 @@ const FormItem: React.FC<FormItemProps> = (props) => {
         return <Input.TextArea />;
       case 'select':
         return (
-          // <Select onChange={item.needChange ? ((value) => item.handle(value as number)) : () => {}}>
           <Select
             onChange={
               item.needChange
@@ -62,9 +61,10 @@ const FormItem: React.FC<FormItemProps> = (props) => {
         <>
           {item.isTips && <span>{item.extra}</span>}
           <Form.Item
-            key={item.formItemLabel}
+            key={`${item.formItemLabel}${item.fieldName}${item.formItemYype}`}
             name={item.isTips ? undefined : item.fieldName}
             label={item.formItemLabel}
+            extra={item.isTips && item.extra}
             // initialValue={item.fieldName.includes('address' || 'ip' || 'IP') ? getRandomIP() : ''}
             rules={
               item.formItemYype === ''

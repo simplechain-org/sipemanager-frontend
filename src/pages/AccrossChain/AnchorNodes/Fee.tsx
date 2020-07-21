@@ -33,7 +33,7 @@ const Fee = (props: PropsType) => {
     const res = await addFee({
       anchor_node_id: params.anchor_node_id,
       coin: coinName,
-      fee: feeCollection?.reimbursed_fee,
+      fee: `${feeCollection?.reimbursed_fee}`,
       node_id: params.node_id,
       password: params.password,
       wallet_id: params.wallet_id,
