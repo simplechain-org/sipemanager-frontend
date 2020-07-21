@@ -1,6 +1,5 @@
 import React from 'react';
 import { Form, Input, Select } from 'antd';
-// import { getRandomIP } from '@/utils/utils';
 
 interface FormItemProps {
   formPropsList: Item[];
@@ -64,8 +63,7 @@ const FormItem: React.FC<FormItemProps> = (props) => {
             key={`${item.formItemLabel}${item.fieldName}${item.formItemYype}`}
             name={item.isTips ? undefined : item.fieldName}
             label={item.formItemLabel}
-            extra={item.isTips && item.extra}
-            // initialValue={item.fieldName.includes('address' || 'ip' || 'IP') ? getRandomIP() : ''}
+            extra={item.extra}
             rules={
               item.formItemYype === ''
                 ? []
