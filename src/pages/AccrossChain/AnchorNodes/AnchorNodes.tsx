@@ -144,6 +144,14 @@ const AnchorNodes = (props: PropsType) => {
       dataSource: sourceNodeList,
     },
     {
+      formItemYype: 'text',
+      formItemLabel: 'A链rpcURL',
+      fieldName: 'source_chain_rpc',
+      isSelect: false,
+      dataSource: [],
+      children: <Divider />,
+    },
+    {
       formItemYype: 'select',
       formItemLabel: '链B',
       fieldName: 'target_chain_id',
@@ -159,6 +167,14 @@ const AnchorNodes = (props: PropsType) => {
       fieldName: 'target_node_id',
       isSelect: true,
       dataSource: targetNodeList,
+    },
+    {
+      formItemYype: 'text',
+      formItemLabel: 'B链rpcURL',
+      fieldName: 'target_chain_rpc',
+      isSelect: false,
+      dataSource: [],
+      children: <Divider />,
     },
     {
       formItemYype: 'text',
@@ -299,6 +315,8 @@ const AnchorNodes = (props: PropsType) => {
           >
             查看
           </a>
+          <Divider type="vertical" />
+          <a onClick={() => {}}>编辑</a>
           <Divider type="vertical" />
           <a onClick={() => deleteModal(record)}>删除</a>
         </>

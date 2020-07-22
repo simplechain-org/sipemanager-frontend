@@ -126,6 +126,21 @@ export default defineConfig({
                   component: './AccrossChain/AnchorNodes',
                 },
                 {
+                  path: '/accrossChain/submit-fee',
+                  name: 'submitFee',
+                  component: './AccrossChain/AnchorNodes/Fee',
+                },
+                {
+                  path: '/accrossChain/config-signature',
+                  name: 'configSignature',
+                  component: './AccrossChain/AnchorNodes/ConfigSignature',
+                },
+                {
+                  path: '/accrossChain/add-reward',
+                  name: 'issueSignature',
+                  component: './AccrossChain/AnchorNodes/AddReward',
+                },
+                {
                   path: '/accrossChain/anchor-nodes/details/:ID',
                   hideInMenu: true,
                   component: './AccrossChain/AnchorNodes/components/DetailsPage',
@@ -139,6 +154,11 @@ export default defineConfig({
                   path: '/accrossChain/retroactive',
                   name: 'retroactive',
                   component: './AccrossChain/Retroactive',
+                },
+                {
+                  path: '/accrossChain/punish',
+                  name: 'punish',
+                  component: './AccrossChain/AnchorNodes/Punish',
                 },
               ],
             },

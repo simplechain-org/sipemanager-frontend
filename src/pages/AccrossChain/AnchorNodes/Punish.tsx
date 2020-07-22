@@ -1,6 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form, message, Input } from 'antd';
 import React, { useState, useRef, Fragment } from 'react';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { queryPunish, addPunish } from './service';
 import FormItem from '../components/FormItem';
@@ -66,7 +67,8 @@ const Punish = (props: PropsType) => {
       dataIndex: 'anchor_node_id',
       key: 'anchor_node_id',
       hideInTable: true,
-      valueEnum: props.publicList.anchorNodeList,
+      // valueEnum: props.publicList.anchorNodeList,
+      valueEnum: {},
     },
     {
       title: '管理类型',
@@ -118,14 +120,16 @@ const Punish = (props: PropsType) => {
       isSelect: true,
       handle: changeNode,
       needChange: true,
-      dataSource: props.publicList.nodeList,
+      // dataSource: props.publicList.nodeList,
+      dataSource: [],
     },
     {
       formItemYype: 'select',
       formItemLabel: '选择锚定节点',
       fieldName: 'anchor_node_id',
       isSelect: true,
-      dataSource: props.publicList.anchorNodeList,
+      // dataSource: props.publicList.anchorNodeList,
+      dataSource: [],
     },
     {
       formItemYype: 'select',
@@ -155,7 +159,8 @@ const Punish = (props: PropsType) => {
       formItemLabel: '选择账户',
       fieldName: 'wallet_id',
       isSelect: true,
-      dataSource: props.publicList.wallestList,
+      // dataSource: props.publicList.wallestList,
+      dataSource: [],
     },
     {
       formItemYype: 'password',
@@ -167,7 +172,7 @@ const Punish = (props: PropsType) => {
   ];
 
   return (
-    <>
+    <PageHeaderWrapper>
       <ProTable<PunishListItem>
         headerTitle="惩罚管理列表"
         actionRef={actionRef}
@@ -210,7 +215,7 @@ const Punish = (props: PropsType) => {
       >
         <FormItem form={form} formPropsList={fiftyFormPropsList} />
       </CreateForm>
-    </>
+    </PageHeaderWrapper>
   );
 };
 
