@@ -116,6 +116,11 @@ export default defineConfig({
                   component: './AccrossChain/RegistRecord',
                 },
                 {
+                  path: '/accrossChain/config',
+                  name: 'config',
+                  component: './AccrossChain/AccrossConfig',
+                },
+                {
                   path: '/accrossChain/regist-record/details/:id',
                   hideInMenu: true,
                   component: './AccrossChain/RegistRecord/components/DetailsPage',

@@ -59,6 +59,7 @@ export default {
   'menu.contract.contractChain': '合约上链',
   'menu.accrossChain': '跨链管理',
   'menu.accrossChain.registRecord': '跨链注册记录',
+  'menu.accrossChain.config': '跨链配置',
   'menu.accrossChain.anchorNodes': '锚定节点管理',
   'menu.accrossChain.submitFee': '手续费报销',
   'menu.accrossChain.configSignature': '签名奖励配置',
