@@ -60,6 +60,7 @@ export interface AnchorNodeItem {
 
 export interface FormPropsType {
   formItemYype: string;
+  suffix?: string;
   formItemLabel: string;
   fieldName: string;
   isSelect: boolean;

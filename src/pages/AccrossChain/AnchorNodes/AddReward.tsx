@@ -2,6 +2,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form, message, Divider } from 'antd';
 import React, { useState, useRef, Fragment, useEffect } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
   queryReward,
   rewardAdd,
@@ -20,7 +21,6 @@ interface PropsType {
 const AddReward = (props: PropsType) => {
   const actionRef = useRef<ActionType>();
   const [provideModalVisible, handleProvideModalVisible] = useState<boolean>(false);
-  const [signatureModalVisible, handleSignatureModalVisible] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState(0);
   const [currentNode, setCurrentNode] = useState<NodeListItem | undefined>(undefined);
   const [currentAnchorNode, setCurrentAnchorNode] = useState<AnchorNodeItem | undefined>(undefined);
@@ -110,7 +110,8 @@ const AddReward = (props: PropsType) => {
       dataIndex: 'anchor_node_id',
       key: 'anchor_node_id',
       hideInTable: true,
-      valueEnum: props.publicList.anchorNodeList,
+      // valueEnum: props.publicList.anchorNodeList,
+      valueEnum: {},
     },
     {
       title: '奖励池总额',
@@ -139,22 +140,6 @@ const AddReward = (props: PropsType) => {
     },
   ];
 
-  const children = (
-    <Fragment>
-      <Divider />
-      <p>锚定节点数：</p>
-      <p>本周期交易数：</p>
-      <p>原签名奖励：</p>
-      <Divider />
-      <p>
-        建议奖励签名计算公式：单笔签名奖励 =（锚定节点数 * 节点质押金额 * 质押年化率 *
-        调控周期天数）/ （365 *
-        本周期交易数），其中质押年化率建议10%，调控天数建议90天，规则管理员可根据实际情况自行调整。
-      </p>
-      <Divider />
-    </Fragment>
-  );
-
   const addChildren = (
     <Fragment>
       <Divider />
@@ -172,7 +157,8 @@ const AddReward = (props: PropsType) => {
       formItemLabel: '选择节点',
       fieldName: 'node_id',
       isSelect: true,
-      dataSource: props.publicList.nodeList,
+      // dataSource: props.publicList.nodeList,
+      dataSource: [],
       needChange: true,
       handle: changeNode,
     },
@@ -181,7 +167,8 @@ const AddReward = (props: PropsType) => {
       formItemLabel: '选择锚定节点',
       fieldName: 'anchor_node_id',
       isSelect: true,
-      dataSource: props.publicList.anchorNodeList,
+      // dataSource: props.publicList.anchorNodeList,
+      dataSource: [],
       children: addChildren,
       needChange: true,
       handle: changeAnchorNode,
@@ -206,48 +193,8 @@ const AddReward = (props: PropsType) => {
       formItemLabel: '选择账户',
       fieldName: 'wallet_id',
       isSelect: false,
-      dataSource: props.publicList.wallestList,
-    },
-    {
-      formItemYype: 'password',
-      formItemLabel: '钱包密码',
-      fieldName: 'password',
-      isSelect: false,
+      // dataSource: props.publicList.wallestList,
       dataSource: [],
-    },
-  ];
-
-  const fourthFormPropsList: FormPropsType[] = [
-    {
-      formItemYype: 'select',
-      formItemLabel: '选择节点',
-      fieldName: 'chain_a',
-      isSelect: true,
-      dataSource: props.publicList.nodeList,
-      needChange: true,
-      handle: changeNode,
-      children,
-    },
-    {
-      formItemYype: 'select',
-      formItemLabel: '更改奖励Token类型为',
-      fieldName: 'chain_b',
-      isSelect: true,
-      dataSource: [],
-    },
-    {
-      formItemYype: 'text',
-      formItemLabel: '更改签名奖励为',
-      fieldName: 'chain_b_node',
-      isSelect: false,
-      dataSource: [],
-    },
-    {
-      formItemYype: 'select',
-      formItemLabel: '选择账户',
-      fieldName: 'wallet',
-      isSelect: false,
-      dataSource: props.publicList.wallestList,
     },
     {
       formItemYype: 'password',
@@ -259,22 +206,13 @@ const AddReward = (props: PropsType) => {
   ];
 
   return (
-    <>
+    <PageHeaderWrapper>
       <ProTable<TableListItem>
-        headerTitle="签名奖励列表"
+        headerTitle="签名奖励发放"
         actionRef={actionRef}
         rowKey="key"
         options={false}
         toolBarRender={() => [
-          <Button
-            type="primary"
-            onClick={() => {
-              onReset();
-              handleSignatureModalVisible(true);
-            }}
-          >
-            <PlusOutlined /> 配置签名奖励
-          </Button>,
           <Button
             type="primary"
             onClick={() => {
@@ -311,18 +249,7 @@ const AddReward = (props: PropsType) => {
       >
         <FormItem form={form} formPropsList={thirdFormPropsList} />
       </CreateForm>
-      <CreateForm
-        onCancel={() => handleSignatureModalVisible(false)}
-        onReset={onReset}
-        onClick={submitHandle}
-        modalVisible={signatureModalVisible}
-        modalTitle="配置签名奖励"
-      >
-        <FormItem form={form} formPropsList={fourthFormPropsList}>
-          {children}
-        </FormItem>
-      </CreateForm>
-    </>
+    </PageHeaderWrapper>
   );
 };
 

@@ -8,6 +8,7 @@ interface FormItemProps {
 
 interface Item {
   formItemYype: string;
+  suffix?: string;
   formItemLabel: string;
   fieldName: string;
   isSelect: boolean;
@@ -28,7 +29,7 @@ const FormItem: React.FC<FormItemProps> = (props) => {
   const formType = (item: Item) => {
     switch (item.formItemYype) {
       case 'text':
-        return <Input />;
+        return <Input suffix={item?.suffix} />;
       case 'password':
         return <Input type="password" autoComplete="new-password" />;
       case 'textarea':

@@ -337,7 +337,7 @@ const RegistRecord: React.FC<{}> = () => {
                 name="money"
                 rules={[{ required: true, message: '请输入锚定节点质押金额' }]}
               >
-                <Input suffix="SIPC" autoFocus />
+                <Input suffix="SIPC" />
               </Form.Item>
             </Col>
             <Col span={12}>
