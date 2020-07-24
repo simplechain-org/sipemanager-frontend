@@ -40,6 +40,18 @@ export interface PunishListItem {
   value: string;
 }
 
+export interface RewardListItem {
+  ID: number;
+  created_at: Date;
+  in_progress: number;
+  regulation_cycle: number;
+  sign_reward: string;
+  source_chain_id: number;
+  source_chain_name: string;
+  target_chain_id: number;
+  target_chain_name: string;
+  transaction_count: number;
+}
 export interface FeeCollectionType {
   accumulated_fee: string;
   current_fee: string;
@@ -59,17 +71,18 @@ export interface AnchorNodeItem {
 }
 
 export interface FormPropsType {
-  formItemYype: string;
+  formItemYype?: string;
   suffix?: string;
-  formItemLabel: string;
-  fieldName: string;
-  isSelect: boolean;
-  dataSource: any[];
+  formItemLabel?: string;
+  fieldName?: string;
+  isSelect?: boolean;
+  dataSource?: any[];
   extra?: string;
   // isTips?: boolean;
   handle?: (value: number) => Promise<void> | null | undefined | void;
   needChange?: boolean;
   children?: React.ReactNode | undefined;
+  renderInBefore?: boolean;
   rules?: any;
 }
 

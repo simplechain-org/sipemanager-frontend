@@ -5,6 +5,7 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
   queryReward,
+  queryRule,
   rewardAdd,
   queryRewardTotal,
   queryRewardChain,
@@ -22,6 +23,7 @@ const AddReward = (props: PropsType) => {
   const actionRef = useRef<ActionType>();
   const [provideModalVisible, handleProvideModalVisible] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState(0);
+  const [anchorEnum, setAnchorEnum] = useState({});
   const [currentNode, setCurrentNode] = useState<NodeListItem | undefined>(undefined);
   const [currentAnchorNode, setCurrentAnchorNode] = useState<AnchorNodeItem | undefined>(undefined);
   // 剩余奖池总额
@@ -62,6 +64,19 @@ const AddReward = (props: PropsType) => {
       props.publicList.anchorNodeList.filter((item: AnchorNodeItem) => item.ID === value)[0],
     );
   };
+
+  useEffect(() => {
+    async function getAnchorNode() {
+      const res = await queryRule();
+      const enumMap = {};
+      res.data.page_data.map((item: AnchorNodeItem) => {
+        enumMap[item.ID] = item.anchor_node_name;
+        return false;
+      });
+      setAnchorEnum(enumMap);
+    }
+    getAnchorNode();
+  }, []);
 
   useEffect(() => {
     async function getRemain() {
@@ -110,8 +125,7 @@ const AddReward = (props: PropsType) => {
       dataIndex: 'anchor_node_id',
       key: 'anchor_node_id',
       hideInTable: true,
-      // valueEnum: props.publicList.anchorNodeList,
-      valueEnum: {},
+      valueEnum: anchorEnum,
     },
     {
       title: '奖励池总额',
@@ -193,7 +207,6 @@ const AddReward = (props: PropsType) => {
       formItemLabel: '选择账户',
       fieldName: 'wallet_id',
       isSelect: false,
-      // dataSource: props.publicList.wallestList,
       dataSource: [],
     },
     {

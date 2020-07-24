@@ -1,24 +1,22 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form, message, Divider, Space } from 'antd';
-import React, { useState, useRef, Fragment } from 'react';
+import React, { useState, useRef, Fragment, useEffect } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { queryReward, rewardAdd } from './service';
+import { addRewardConfig, queryRewardConfigList, queryChain, deleteReward } from './service';
 import FormItem from '../components/FormItem';
-import { TableListItem, FormPropsType } from './data';
+import { RewardListItem, FormPropsType } from './data';
 import CreateForm from './components/CreateForm';
 import EstimateModal from './components/EstimateModal';
 
-interface PropsType {
-  publicList: any;
-}
-
-const ConfigSignature = (props: PropsType) => {
+const ConfigSignature = () => {
   const actionRef = useRef<ActionType>();
   const [signatureModalVisible, handleSignatureModalVisible] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState(0);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [estimateVisible, handleEstimateVisible] = useState<boolean>(false);
+  const [chainList, setChainList] = useState([]);
+  const [currentReward, setCurrentReward] = useState<RewardListItem | null>(null);
   const [form] = Form.useForm();
   const { validateFields, resetFields } = form;
 
@@ -26,13 +24,23 @@ const ConfigSignature = (props: PropsType) => {
     resetFields();
   };
 
+  useEffect(() => {
+    async function getChainList() {
+      const res = await queryChain();
+      setChainList(res.data.page_data);
+    }
+    getChainList();
+  }, []);
+
   const addHandle = async (params: any) => {
-    const res = await rewardAdd(params);
+    const res = await addRewardConfig(params);
     if (res.code === 0) {
       message.success('添加成功');
     } else {
       message.error(res.msg || '添加失败');
     }
+    handleSignatureModalVisible(false);
+    actionRef.current?.reload();
   };
   const changeNode = (value: number) => {
     console.log('node change', value);
@@ -41,7 +49,11 @@ const ConfigSignature = (props: PropsType) => {
   const submitHandle = () => {
     validateFields()
       .then((values) => {
-        addHandle(values);
+        addHandle({
+          ...values,
+          regulation_cycle: parseInt(values.regulation_cycle, 10),
+          id: isEdit && currentReward?.ID,
+        });
       })
       .catch((errorInfo) => {
         console.log('校验出错~', errorInfo);
@@ -52,47 +64,54 @@ const ConfigSignature = (props: PropsType) => {
     handleEstimateVisible(false);
   };
 
-  const thirdColumns: ProColumns<TableListItem>[] = [
+  const deleteHandle = async (record: RewardListItem) => {
+    const res = await deleteReward(record.ID);
+    if (res.code === 0) {
+      message.success('删除成功');
+      actionRef.current?.reload();
+    }
+  };
+
+  const thirdColumns: ProColumns<RewardListItem>[] = [
     {
       title: '更新时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'created_at',
+      key: 'created_at',
       valueType: 'date',
       hideInSearch: true,
     },
     {
       title: '发起链',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-
+      dataIndex: 'source_chain_name',
+      key: 'source_chain_name',
       hideInSearch: true,
+      // valueEnum: { ...chainList },
+      // valueEnum: enumMap,
     },
     {
       title: '目标链',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-
+      dataIndex: 'target_chain_name',
+      key: 'target_chain_name',
+      // valueEnum: { ...chainList },
+      // valueEnum: enumMap,
       hideInSearch: true,
     },
     {
       title: '单次签名奖励',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-
+      dataIndex: 'sign_reward',
+      key: 'sign_reward',
       hideInSearch: true,
     },
     {
       title: '调整周期',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-
+      dataIndex: 'regulation_cycle',
+      key: 'regulation_cycle',
       hideInSearch: true,
     },
     {
       title: '已进行天数',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-
+      dataIndex: 'in_progress',
+      key: 'in_progress',
       hideInSearch: true,
     },
     {
@@ -100,7 +119,7 @@ const ConfigSignature = (props: PropsType) => {
       dataIndex: 'action',
       key: 'action',
       hideInSearch: true,
-      render: () => {
+      render: (_, record) => {
         return (
           <Space>
             <a
@@ -108,12 +127,13 @@ const ConfigSignature = (props: PropsType) => {
                 onReset();
                 setIsEdit(true);
                 handleSignatureModalVisible(true);
+                setCurrentReward(record);
               }}
             >
               编辑
             </a>
             <Divider />
-            <a>删除</a>
+            <a onClick={() => deleteHandle(record)}>删除</a>
           </Space>
         );
       },
@@ -122,11 +142,10 @@ const ConfigSignature = (props: PropsType) => {
 
   const addChildren = (
     <Fragment>
-      <Divider />
-      <p>调控周期：{90}天</p>
-      <p>已经行：{77}天</p>
-      <p>本周期交易笔数：{10000}次</p>
-      <p>原单笔签名奖励：{0.12345678}SIPC/次</p>
+      <p>原调控周期：{currentReward?.regulation_cycle || 0} 天</p>
+      <p>已进行：{currentReward?.in_progress || 0} 天</p>
+      <p>本周期交易笔数：{currentReward?.transaction_count || 0} 次</p>
+      <p>原单笔签名奖励：{currentReward?.sign_reward || 0} SIPC/次</p>
       <Divider />
     </Fragment>
   );
@@ -146,29 +165,37 @@ const ConfigSignature = (props: PropsType) => {
     </Fragment>
   );
 
-  const fourthFormPropsList: FormPropsType[] = [
+  const addColumns: FormPropsType[] = [
     {
       formItemYype: 'select',
       formItemLabel: '发起链',
-      fieldName: 'source_chain',
+      fieldName: 'source_chain_id',
       isSelect: true,
-      // dataSource: props.publicList.nodeList,
-      dataSource: [],
+      dataSource: chainList,
       needChange: true,
       handle: changeNode,
     },
     {
       formItemYype: 'select',
       formItemLabel: '目标链',
-      fieldName: 'target_chain',
+      fieldName: 'target_chain_id',
       isSelect: true,
-      dataSource: [],
-      children: isEdit ? addChildren : null,
+      dataSource: chainList,
     },
+  ];
+
+  const updateColumns: FormPropsType[] = [
+    {
+      children: addChildren,
+      renderInBefore: true,
+    },
+  ];
+
+  const fourthFormPropsList: FormPropsType[] = [
     {
       formItemYype: 'text',
       formItemLabel: isEdit ? '原单笔签名奖励更改为' : '单笔签名奖励',
-      fieldName: 'single',
+      fieldName: 'sign_reward',
       suffix: 'SIPC/次',
       isSelect: false,
       dataSource: [],
@@ -176,9 +203,8 @@ const ConfigSignature = (props: PropsType) => {
     {
       formItemYype: 'text',
       formItemLabel: '调控周期',
-      fieldName: 'cycle',
+      fieldName: 'regulation_cycle',
       isSelect: false,
-      // dataSource: props.publicList.wallestList,
       suffix: '天',
       dataSource: [],
       children:
@@ -188,10 +214,10 @@ const ConfigSignature = (props: PropsType) => {
 
   return (
     <PageHeaderWrapper>
-      <ProTable<TableListItem>
+      <ProTable<RewardListItem>
         headerTitle="签名奖励配置"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="ID"
         options={false}
         toolBarRender={() => [
           <Button
@@ -206,14 +232,12 @@ const ConfigSignature = (props: PropsType) => {
           </Button>,
         ]}
         request={(params: any) =>
-          queryReward({
+          queryRewardConfigList({
             page_size: params.pageSize || 10,
             current_page: params.current || 1,
-            anchor_node_id: props.publicList.anchorNodeList[params.anchor_node_id].ID || '',
           })
         }
         search={false}
-        // dataSource={[{ ID: 2 }]}
         postData={(data: any) => {
           setPageCount(data.total_count);
           return data.page_data;
@@ -230,7 +254,14 @@ const ConfigSignature = (props: PropsType) => {
         modalTitle={isEdit ? '编辑奖励配置' : '新增奖励配置'}
         footer={footer}
       >
-        <FormItem form={form} formPropsList={fourthFormPropsList}>
+        <FormItem
+          form={form}
+          formPropsList={
+            isEdit
+              ? [...updateColumns, ...fourthFormPropsList]
+              : [...addColumns, ...fourthFormPropsList]
+          }
+        >
           {/* {children} */}
         </FormItem>
       </CreateForm>
