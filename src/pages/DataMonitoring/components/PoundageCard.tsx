@@ -79,6 +79,7 @@ export default function PoundageCard() {
       mask: filterType === 'hour' ? 'HH:mm' : 'MM-DD',
     },
     fee: {
+      nice: true,
       formatter: (value: number) => {
         // console.log(value);
         return Web3Utils.fromWei(value.toString());
@@ -105,7 +106,6 @@ export default function PoundageCard() {
               width: 150,
             }}
             placeholder="选择Token"
-            allowClear
             value={curChain}
             onChange={(value) => setCurChain(value)}
           >
