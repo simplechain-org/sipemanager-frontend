@@ -307,7 +307,7 @@ const AnchorNodes = (props: PropsType) => {
       dataIndex: 'anchor_node_id',
       key: 'anchor_node_id',
       hideInTable: true,
-      valueEnum: props.publicList.anchorNodeList,
+      valueEnum: props.publicList.anchorEnum,
     },
     {
       title: '归属链A',
@@ -391,23 +391,13 @@ const AnchorNodes = (props: PropsType) => {
             <PlusOutlined /> 新增
           </Button>,
         ]}
-        request={(params: any) => {
-          console.log(params);
-          let obj: any = null;
-          if (params.anchor_node_id) {
-            obj = {
-              page_size: params.pageSize || 10,
-              current_page: params.current || 1,
-              anchor_node_id: props.publicList.anchorNodeList[params.anchor_node_id].ID || '',
-            };
-          } else {
-            obj = {
-              page_size: params.pageSize || 10,
-              current_page: params.current || 1,
-            };
-          }
-          return queryRule(obj);
-        }}
+        request={(params: any) =>
+          queryRule({
+            page_size: params.pageSize || 10,
+            current_page: params.current || 1,
+            anchor_node_id: params.anchor_node_id,
+          })
+        }
         // dataSource={props.publicList.anchorNodeList}
         postData={(data: any) => {
           setPageCount(data.total_count);

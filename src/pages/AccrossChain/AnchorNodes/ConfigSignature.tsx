@@ -3,7 +3,13 @@ import { Button, Form, message, Divider, Space } from 'antd';
 import React, { useState, useRef, Fragment, useEffect } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { addRewardConfig, queryRewardConfigList, queryChain, deleteReward } from './service';
+import {
+  addRewardConfig,
+  queryRewardConfigList,
+  queryChain,
+  deleteReward,
+  updateRewardConfig,
+} from './service';
 import FormItem from '../components/FormItem';
 import { RewardListItem, FormPropsType } from './data';
 import CreateForm from './components/CreateForm';
@@ -40,6 +46,19 @@ const ConfigSignature = () => {
       message.error(res.msg || '添加失败');
     }
     handleSignatureModalVisible(false);
+    setIsEdit(false);
+    actionRef.current?.reload();
+  };
+
+  const updateHandle = async (params: any) => {
+    const res = await updateRewardConfig(params);
+    if (res.code === 0) {
+      message.success('编辑成功');
+    } else {
+      message.error(res.msg || '编辑失败');
+    }
+    handleSignatureModalVisible(false);
+    setIsEdit(false);
     actionRef.current?.reload();
   };
   const changeNode = (value: number) => {
@@ -49,11 +68,20 @@ const ConfigSignature = () => {
   const submitHandle = () => {
     validateFields()
       .then((values) => {
-        addHandle({
+        const params = {
           ...values,
           regulation_cycle: parseInt(values.regulation_cycle, 10),
-          id: isEdit && currentReward?.ID,
-        });
+        };
+        const editParams = {
+          ...values,
+          id: currentReward?.ID,
+          regulation_cycle: parseInt(values.regulation_cycle, 10),
+        };
+        if (isEdit) {
+          updateHandle(editParams);
+        } else {
+          addHandle(params);
+        }
       })
       .catch((errorInfo) => {
         console.log('校验出错~', errorInfo);
@@ -85,15 +113,11 @@ const ConfigSignature = () => {
       dataIndex: 'source_chain_name',
       key: 'source_chain_name',
       hideInSearch: true,
-      // valueEnum: { ...chainList },
-      // valueEnum: enumMap,
     },
     {
       title: '目标链',
       dataIndex: 'target_chain_name',
       key: 'target_chain_name',
-      // valueEnum: { ...chainList },
-      // valueEnum: enumMap,
       hideInSearch: true,
     },
     {
@@ -249,7 +273,10 @@ const ConfigSignature = () => {
         columns={thirdColumns}
       />
       <CreateForm
-        onCancel={() => handleSignatureModalVisible(false)}
+        onCancel={() => {
+          setIsEdit(false);
+          handleSignatureModalVisible(false);
+        }}
         modalVisible={signatureModalVisible}
         modalTitle={isEdit ? '编辑奖励配置' : '新增奖励配置'}
         footer={footer}

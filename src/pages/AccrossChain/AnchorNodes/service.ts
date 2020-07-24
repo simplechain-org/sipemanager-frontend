@@ -108,6 +108,7 @@ export async function querySignatureCount(params: QueryType) {
 
 export async function rewardAdd(params: AddFee) {
   return request('/api/v1/reward/add', {
+    method: 'POST',
     data: {
       ...params,
     },
@@ -122,6 +123,16 @@ export async function queryRewardConfigList(params: any) {
 // 新增奖励配置
 export async function addRewardConfig(params: any) {
   return request('/api/v1/reward/config/add', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+// 更新签名奖励配置
+export async function updateRewardConfig(params: any) {
+  return request('/api/v1/reward/config/update', {
     method: 'POST',
     data: {
       ...params,

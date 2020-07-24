@@ -24,6 +24,7 @@ const Fee = () => {
     anchorNodeList: [],
     wallestList: [],
   });
+  const [anchorEnum, setAnchorEnum] = useState({});
   const { validateFields, resetFields } = form;
   const [coinName, setCurrentCoin] = useState<string>('');
   const [node, setNode] = useState<{ node_id: undefined | number; coin: undefined | string }>({
@@ -50,6 +51,12 @@ const Fee = () => {
         ...item,
       })),
     });
+    const enumMap = {};
+    anchorRes.data.page_data.map((item: AnchorNodeItem) => {
+      enumMap[item.ID] = item.anchor_node_name;
+      return false;
+    });
+    setAnchorEnum(enumMap);
   };
   useEffect(() => {
     getOptionList();
@@ -130,7 +137,7 @@ const Fee = () => {
       dataIndex: 'anchor_node_id',
       key: 'anchor_node_id',
       hideInTable: true,
-      valueEnum: publicList.anchorNodeList,
+      valueEnum: anchorEnum,
     },
     {
       title: '交易哈希',
@@ -215,23 +222,13 @@ const Fee = () => {
             <PlusOutlined /> 报销手续费
           </Button>,
         ]}
-        request={(params: any) => {
-          let obj: any = null;
-          if (!params.anchor_node_id) {
-            obj = {
-              page_size: params.pageSize || 10,
-              current_page: params.current || 1,
-              // anchor_node_id: publicList.anchorNodeList[params.anchor_node_id].ID,
-            };
-          } else {
-            obj = {
-              page_size: params.pageSize || 10,
-              current_page: params.current || 1,
-              anchor_node_id: publicList.anchorNodeList[params.anchor_node_id].ID,
-            };
-          }
-          return queryFee(obj);
-        }}
+        request={(params: any) =>
+          queryFee({
+            page_size: params.pageSize || 10,
+            current_page: params.current || 1,
+            anchor_node_id: params.anchor_node_id,
+          })
+        }
         postData={(data: any) => {
           setPageCount(data.total_count);
           return data.page_data;

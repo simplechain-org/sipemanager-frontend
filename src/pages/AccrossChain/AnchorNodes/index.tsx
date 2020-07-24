@@ -12,6 +12,11 @@ const AnchorNode: React.FC<{}> = () => {
     const nodeRes = await queryNode();
     const walletRes = await queryWallet();
     const anchorRes = await queryRule();
+    const enumMap = {};
+    anchorRes.data.page_data.map((item: TableListItem) => {
+      enumMap[item.ID] = item.anchor_node_name;
+      return false;
+    });
     setPublicList({
       nodeList: nodeRes.data || [],
       wallestList: walletRes.data || [],
@@ -21,6 +26,7 @@ const AnchorNode: React.FC<{}> = () => {
         ...item,
       })),
       chainList: chainRes.data.page_data || [],
+      anchorEnum: enumMap,
     });
   };
   useEffect(() => {
