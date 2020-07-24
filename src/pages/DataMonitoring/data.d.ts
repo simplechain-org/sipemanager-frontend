@@ -28,6 +28,26 @@ export interface FeeChartParams extends ChartParams {
   chainId: number;
 }
 
+export interface FinishParams {
+  startTime: string;
+  endTime: string;
+  anchorId: string;
+  page: string;
+  limit: string;
+}
+
+export interface AnchorNodeItem {
+  ID: number;
+  anchor_node_name: string;
+  chain_a: string;
+  chain_a_id: number;
+  chain_b: string;
+  chain_b_id: number;
+  created_at: Date;
+  pledge: string;
+  status: string;
+}
+
 export interface SignatureChartParams extends ChartParams {
   tokenKey: string;
 }

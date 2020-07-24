@@ -116,6 +116,11 @@ export default defineConfig({
                   component: './AccrossChain/RegistRecord',
                 },
                 {
+                  path: '/accrossChain/config',
+                  name: 'config',
+                  component: './AccrossChain/AccrossConfig',
+                },
+                {
                   path: '/accrossChain/regist-record/details/:id',
                   hideInMenu: true,
                   component: './AccrossChain/RegistRecord/components/DetailsPage',
@@ -124,6 +129,21 @@ export default defineConfig({
                   path: '/accrossChain/anchor-nodes',
                   name: 'anchorNodes',
                   component: './AccrossChain/AnchorNodes',
+                },
+                {
+                  path: '/accrossChain/submit-fee',
+                  name: 'submitFee',
+                  component: './AccrossChain/AnchorNodes/Fee',
+                },
+                {
+                  path: '/accrossChain/config-signature',
+                  name: 'configSignature',
+                  component: './AccrossChain/AnchorNodes/ConfigSignature',
+                },
+                {
+                  path: '/accrossChain/add-reward',
+                  name: 'issueSignature',
+                  component: './AccrossChain/AnchorNodes/AddReward',
                 },
                 {
                   path: '/accrossChain/anchor-nodes/details/:ID',
@@ -139,6 +159,11 @@ export default defineConfig({
                   path: '/accrossChain/retroactive',
                   name: 'retroactive',
                   component: './AccrossChain/Retroactive',
+                },
+                {
+                  path: '/accrossChain/punish',
+                  name: 'punish',
+                  component: './AccrossChain/AnchorNodes/Punish',
                 },
               ],
             },
@@ -188,12 +213,12 @@ export default defineConfig({
             //     },
             //   ],
             // },
-            {
-              name: 'list.table-list',
-              icon: 'table',
-              path: '/list',
-              component: './ListTableList',
-            },
+            // {
+            //   name: 'list.table-list',
+            //   icon: 'table',
+            //   path: '/list',
+            //   component: './ListTableList',
+            // },
             {
               component: './404',
             },

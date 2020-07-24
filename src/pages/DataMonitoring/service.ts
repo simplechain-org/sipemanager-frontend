@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { TableListParams, FeeChartParams, SignatureChartParams } from './data.d';
+import { TableListParams, FeeChartParams, SignatureChartParams, FinishParams } from './data.d';
 
 export async function queryRule(params?: TableListParams) {
   return request('/api/v1/chain/list', {
@@ -31,4 +31,24 @@ export async function queryTokenList() {
 // 跨链交易数列表
 export async function queryCrossTxList() {
   return request('/api/v1/chart/crossTxCount/list');
+}
+
+// 锚定节点监控列表
+export async function queryNodeList(params: { tokenKey: string }) {
+  return request('/api/v1/chart/crossMonitor/list', {
+    params,
+  });
+}
+
+// makefinish记录
+export async function queryFinishList(params: FinishParams) {
+  return request('/api/v1/chart/finishList/list', {
+    params,
+  });
+}
+
+// 锚定节点列表
+export async function queryAnchorList() {
+  // return request('/api/v1/service/charge/list');
+  return request('/api/v1/anchor/node/list');
 }

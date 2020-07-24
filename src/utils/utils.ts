@@ -64,6 +64,15 @@ export const getRouteAuthority = (path: string, routeData: Route[]) => {
   return authorities;
 };
 
+// 转换时间戳
+export const transTime = (date: string) => {
+  let str = '';
+  str = date.substring(0, 19);
+  str = str.replace(/-/g, '/');
+  const timestamp = new Date(str).getTime();
+  return timestamp;
+};
+
 // export const getRandomIP = () => {
 //   let ip = [];
 //   for (let i = 0; i < 4; i++) {

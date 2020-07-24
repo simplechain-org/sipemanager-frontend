@@ -1,19 +1,23 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Input, Form, Row, Col, Select } from 'antd';
+import { Button, Input, Form, Row, Col, Select, message } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { history } from 'umi';
 import CreateForm from './components/CreateForm';
 import DetailsForm from './components/DetailsForm';
-import { TableListItem, ChainListType } from './data';
-import { queryRule, queryChain } from './service';
+import { TableListItem, ChainListType, NodeItem, AddRegisteType } from './data';
+import { queryRule, queryChain, getNodeByChain, queryWallet, addRule } from './service';
+import { WalletListItem } from '../AnchorNodes/data';
 
 const RegistRecord: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [drawerVisible, handleDrawerVisible] = useState<boolean>(false);
   const [currentRecord, setCurrentHandle] = useState<TableListItem | undefined>(undefined);
   const [chainList, setChainList] = useState([]);
+  const [sourceNodeList, setSourceNodeList] = useState([]);
+  const [targetNodeList, setTargetNodeList] = useState([]);
+  const [walletList, setWalletList] = useState([]);
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm();
   const [pageCount, setPageCount] = useState(0);
@@ -72,7 +76,6 @@ const RegistRecord: React.FC<{}> = () => {
 
           <a
             onClick={() => {
-              console.log(record);
               history.push(`/accrossChain/regist-record/details/${record.ID}`);
             }}
           >
@@ -91,8 +94,8 @@ const RegistRecord: React.FC<{}> = () => {
     if (index === 0) {
       // 将新增表单项置空
       form.resetFields([
-        [`${list.length}`, 'anchor_node_address'],
-        [`${list.length}`, 'address'],
+        [`${list.length}`, 'anchor_addresses'],
+        [`${list.length}`, 'anchor_names'],
       ]);
       setList(Array.from({ length: list.length + 1 }));
     } else {
@@ -115,9 +118,9 @@ const RegistRecord: React.FC<{}> = () => {
       <Row gutter={16} key={index}>
         <Col span={10}>
           <Form.Item
-            key={`anchor_node_${index + 1}`}
+            key={`anchor_addresses_${index + 1}`}
             label={`锚定节点地址${index + 1}`}
-            name={[`${index}`, 'anchor_node_address']}
+            name={[`${index}`, 'anchor_addresses']}
             rules={[{ required: true, message: `请输入锚定节点地址${index + 1}` }]}
           >
             <Input />
@@ -125,9 +128,9 @@ const RegistRecord: React.FC<{}> = () => {
         </Col>
         <Col span={10}>
           <Form.Item
-            key={`address_node_${index + 1}`}
+            key={`anchor_names_${index + 1}`}
             label={`地址${index + 1}名称`}
-            name={[`${index}`, 'address']}
+            name={[`${index}`, 'anchor_names']}
             rules={[{ required: true, message: `请输入地址${index + 1}名称` }]}
           >
             <Input />
@@ -142,24 +145,74 @@ const RegistRecord: React.FC<{}> = () => {
 
   const getChainList = async () => {
     const res = await queryChain();
+    const walletRes = await queryWallet();
     setChainList(res.data.page_data);
+    setWalletList(walletRes.data);
   };
 
   useEffect(() => {
     getChainList();
   }, []);
 
+  const getNodeByChainId = async (chain_id: string, type: string) => {
+    const res = await getNodeByChain({ chain_id });
+    if (type === 'source') {
+      setSourceNodeList(res.data);
+    } else {
+      setTargetNodeList(res.data);
+    }
+  };
+
+  const changeSourceChain = (value: string) => {
+    getNodeByChainId(value, 'source');
+  };
+
+  const changeTargetChain = (value: string) => {
+    getNodeByChainId(value, 'target');
+  };
+
+  const addRegisteRecord = async (params: AddRegisteType) => {
+    const res = await addRule(params);
+    if (res.code === 0) {
+      message.success('添加成功');
+    } else {
+      message.error(res.msg || '添加失败');
+    }
+    actionRef.current?.reload();
+    handleDrawerVisible(false);
+  };
+
   const onSubmit = () => {
     const { validateFields } = form;
     validateFields()
       .then((values) => {
-        console.log('表单校验通过啦~', values, currentRecord);
+        const keyList = Object.keys(values);
+        const anchorAddresses: string[] = [];
+        const anchorNames: string[] = [];
+        keyList.map((key) => {
+          if (parseInt(key, 10) >= 0) {
+            anchorAddresses.push(values[key].anchor_addresses);
+            anchorNames.push(values[key].anchor_names);
+          }
+          return null;
+        });
+        const addParams = {
+          source_chain_id: values.source_chain_id,
+          target_chain_id: values.target_chain_id,
+          source_node_id: values.source_node_id,
+          target_node_id: values.target_node_id,
+          sign_confirm_count: parseInt(values.sign_confirm_count, 10),
+          wallet_id: values.wallet_id,
+          password: values.password,
+          anchor_addresses: anchorAddresses,
+          anchor_names: anchorNames,
+        };
+        addRegisteRecord(addParams);
         handleModalVisible(false);
         setCurrentHandle(undefined);
       })
       .catch((errorInfo) => {
         console.log('校验出错~', errorInfo);
-        console.log('构建参数', Object.keys(errorInfo.values));
       });
   };
 
@@ -219,7 +272,7 @@ const RegistRecord: React.FC<{}> = () => {
                 label="链A"
                 rules={[{ required: true, message: '请选择链A' }]}
               >
-                <Select>
+                <Select onChange={changeSourceChain}>
                   {chainList.map((item: ChainListType) => (
                     <Select.Option value={item.ID} key={item.ID}>
                       {item.name}
@@ -235,7 +288,11 @@ const RegistRecord: React.FC<{}> = () => {
                 rules={[{ required: true, message: '请选择链A的节点' }]}
               >
                 <Select>
-                  <Select.Option value="1111">1111</Select.Option>
+                  {sourceNodeList.map((item: NodeItem) => (
+                    <Select.Option value={item.ID} key={item.ID}>
+                      {item.name}
+                    </Select.Option>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>
@@ -247,7 +304,7 @@ const RegistRecord: React.FC<{}> = () => {
                 label="链B"
                 rules={[{ required: true, message: '请选择链B' }]}
               >
-                <Select>
+                <Select onChange={changeTargetChain}>
                   {chainList.map((item: ChainListType) => (
                     <Select.Option value={item.ID} key={item.ID}>
                       {item.name}
@@ -263,7 +320,11 @@ const RegistRecord: React.FC<{}> = () => {
                 rules={[{ required: true, message: '请选择链B的节点' }]}
               >
                 <Select>
-                  <Select.Option value="1111">1111</Select.Option>
+                  {targetNodeList.map((item: NodeItem) => (
+                    <Select.Option value={item.ID} key={item.ID}>
+                      {item.name}
+                    </Select.Option>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>
@@ -276,7 +337,7 @@ const RegistRecord: React.FC<{}> = () => {
                 name="money"
                 rules={[{ required: true, message: '请输入锚定节点质押金额' }]}
               >
-                <Input suffix="SIPC" autoFocus />
+                <Input suffix="SIPC" />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -309,9 +370,11 @@ const RegistRecord: React.FC<{}> = () => {
                     rules={[{ required: true, message: '请选择钱包账户' }]}
                   >
                     <Select>
-                      <Select.Option value="1111">1111</Select.Option>
-                      <Select.Option value="222">222</Select.Option>
-                      <Select.Option value="333">333</Select.Option>
+                      {walletList.map((item: WalletListItem) => (
+                        <Select.Option value={item.ID} key={item.ID}>
+                          {item.name}
+                        </Select.Option>
+                      ))}
                     </Select>
                   </Form.Item>
                 </Col>

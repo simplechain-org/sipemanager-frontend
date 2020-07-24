@@ -153,7 +153,8 @@ const ContractManage: React.FC<{}> = () => {
       <ProTable<TableListItem>
         headerTitle="合约列表"
         actionRef={actionRef}
-        rowKey="description"
+        rowKey="ID"
+        search={false}
         toolBarRender={() => [
           <Button
             type="primary"

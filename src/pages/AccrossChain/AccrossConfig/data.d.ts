@@ -1,17 +1,15 @@
 export interface TableListItem {
-  created_at: Date;
-  DeletedAt: Date;
-  ID: number;
-  UpdatedAt: Date;
-  address: string;
-  chain_id: number;
-  chain_name: string;
-  description: string;
-  is_https: boolean;
-  name: string;
+  ctx_id: string;
+  event: number;
   network_id: number;
-  port: number;
-  user_id: number;
+  status: number;
+  tx_hash: string;
+}
+
+export interface TableListPagination {
+  total: number;
+  pageSize: number;
+  current: number;
 }
 
 export interface ChainListItem {
@@ -25,17 +23,15 @@ export interface ChainListItem {
   symbol: string;
 }
 
-export interface AddParams {
+export interface WalletListItem {
+  CreatedAt: Date;
+  DeletedAt: Date;
+  ID: number;
+  UpdatedAt: Date;
+  UserId: 1;
   address: string;
-  chain_id: number;
+  content: string;
   name: string;
-  port: number;
-}
-
-export interface TableListPagination {
-  total: number;
-  pageSize: number;
-  current: number;
 }
 
 export interface TableListData {
@@ -44,11 +40,12 @@ export interface TableListData {
 }
 
 export interface TableListParams {
-  sorter?: string;
   status?: string;
   name?: string;
   desc?: string;
   key?: number;
   pageSize?: number;
   currentPage?: number;
+  filter?: { [key: string]: any[] };
+  sorter?: { [key: string]: any };
 }

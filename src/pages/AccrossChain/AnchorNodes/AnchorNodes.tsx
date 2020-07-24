@@ -3,7 +3,7 @@ import { Button, Drawer, Divider, Form, message } from 'antd';
 import React, { useState, useRef } from 'react';
 import { history } from 'umi';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import { queryRule, addRule, getNodeByChain, removeRule } from './service';
+import { addRule, getNodeByChain, removeRule } from './service';
 import FormItem from '../components/FormItem';
 import { TableListItem, FormPropsType, NodeListItem } from './data';
 import CreateForm from './components/CreateForm';
@@ -93,7 +93,7 @@ const AnchorNodes = (props: PropsType) => {
       fieldName: '',
       isSelect: false,
       dataSource: [],
-      isTips: true,
+      // isTips: true,
       extra: '删除后，将从区块链上移除该锚定节点的签名资格，请再次确定是否要删除锚定节点。',
     },
     {
@@ -144,6 +144,14 @@ const AnchorNodes = (props: PropsType) => {
       dataSource: sourceNodeList,
     },
     {
+      formItemYype: 'text',
+      formItemLabel: 'A链rpcURL',
+      fieldName: 'source_chain_rpc',
+      isSelect: false,
+      dataSource: [],
+      children: <Divider />,
+    },
+    {
       formItemYype: 'select',
       formItemLabel: '链B',
       fieldName: 'target_chain_id',
@@ -159,6 +167,14 @@ const AnchorNodes = (props: PropsType) => {
       fieldName: 'target_node_id',
       isSelect: true,
       dataSource: targetNodeList,
+    },
+    {
+      formItemYype: 'text',
+      formItemLabel: 'B链rpcURL',
+      fieldName: 'target_chain_rpc',
+      isSelect: false,
+      dataSource: [],
+      children: <Divider />,
     },
     {
       formItemYype: 'text',
@@ -266,11 +282,25 @@ const AnchorNodes = (props: PropsType) => {
       hideInSearch: true,
     },
     {
+      title: '链A rpcURL',
+      dataIndex: 'rpc_a',
+      key: 'rpc_a',
+      hideInSearch: true,
+      hideInForm: true,
+    },
+    {
       title: '归属链B',
       dataIndex: 'chain_b',
       key: 'chain_b',
       hideInForm: true,
       hideInSearch: true,
+    },
+    {
+      title: '链B rpcURL',
+      dataIndex: 'rpc_b',
+      key: 'rpc_b',
+      hideInSearch: true,
+      hideInForm: true,
     },
     {
       title: '质押金额',
@@ -300,6 +330,15 @@ const AnchorNodes = (props: PropsType) => {
             查看
           </a>
           <Divider type="vertical" />
+          <a
+            onClick={() => {
+              console.log('编辑锚定节点', record);
+              handleModalVisible(true);
+            }}
+          >
+            编辑
+          </a>
+          <Divider type="vertical" />
           <a onClick={() => deleteModal(record)}>删除</a>
         </>
       ),
@@ -324,16 +363,17 @@ const AnchorNodes = (props: PropsType) => {
             <PlusOutlined /> 新增
           </Button>,
         ]}
-        request={(params: any) => {
-          return queryRule({
-            page_size: params.pageSize || 10,
-            current_page: params.current || 1,
-            anchor_node_id: props.publicList.anchorNodeList[params.anchor_node_id].ID || '',
-          });
-        }}
+        // request={(params: any) => {
+        //   return queryRule({
+        //     page_size: params.pageSize || 10,
+        //     current_page: params.current || 1,
+        //     anchor_node_id: props.publicList.anchorNodeList[params.anchor_node_id].ID || '',
+        //   });
+        // }}
+        dataSource={props.publicList.anchorNodeList}
         postData={(data: any) => {
           setPageCount(data.total_count);
-          return data.page_data;
+          return data;
         }}
         columns={firstColumns}
         pagination={{

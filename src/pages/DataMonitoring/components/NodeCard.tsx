@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Select, Table } from 'antd';
 import { NodeProps } from '../data.d';
+import { queryNodeList } from '../service';
+
+const Web3Utils = require('web3-utils');
 
 export default function NodeCard(props: NodeProps) {
   const [loading, setLoading] = useState(true);
   const { data } = props;
   const [curCrossChain, setCurCrossChain] = useState<undefined | string>(undefined);
-  const [tableData] = useState([]);
+  const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
     if (data && Object.keys(data).length) {
@@ -15,9 +18,11 @@ export default function NodeCard(props: NodeProps) {
   }, [data]);
 
   const getNodeList = async () => {
-    // const res = await queryNodeList();
-    // setTableData(res.data || []);
-    setLoading(false);
+    if (curCrossChain) {
+      const res = await queryNodeList({ tokenKey: curCrossChain });
+      setTableData(res.data || []);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -27,29 +32,31 @@ export default function NodeCard(props: NodeProps) {
   const columns = [
     {
       title: '锚定节点名称',
-      dataIndex: 'index',
-      key: 'index',
+      dataIndex: 'AnchorName',
+      key: 'AnchorName',
     },
     {
       title: 'A链账户余额',
-      dataIndex: 'keyword',
-      key: 'keyword',
-      render: (text: React.ReactNode) => `${text}sipc`,
+      dataIndex: 'SourceBalance',
+      key: 'SourceBalance',
+      render: (text: React.ReactNode) => `${Web3Utils.fromWei((text || '').toString())}sipc`,
     },
     {
       title: 'B链账户余额',
-      dataIndex: 'count',
-      key: 'count',
+      dataIndex: 'TargetBalance',
+      key: 'TargetBalance',
+      render: (text: React.ReactNode) => `${Web3Utils.fromWei((text || '').toString())}sipc`,
     },
     {
       title: '是否在线',
-      dataIndex: 'range',
-      key: 'range',
+      dataIndex: 'OnLine',
+      key: 'OnLine',
+      render: (text: boolean) => (text ? '是' : '否'),
     },
     {
       title: '连续未签名交易数',
-      dataIndex: 'heihei',
-      key: 'heihei',
+      dataIndex: 'UnSignTxCount',
+      key: 'UnSignTxCount',
     },
   ];
 
@@ -82,7 +89,7 @@ export default function NodeCard(props: NodeProps) {
       }
     >
       <Table<any>
-        rowKey={(record) => record.index}
+        rowKey="AnchorId"
         size="small"
         columns={columns}
         dataSource={tableData}

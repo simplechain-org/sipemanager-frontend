@@ -64,9 +64,9 @@ const FormItem: React.FC<FormItemProps> = (props) => {
 
   return (
     <Form form={form}>
-      {formPropsList.map((item) => (
+      {formPropsList.map((item, index) => (
         <Form.Item
-          key={item.formItemLabel}
+          key={`${item.formItemLabel}${item.fieldName}${index}`}
           name={item.fieldName}
           label={item.formItemLabel}
           extra={item.extra || ''}

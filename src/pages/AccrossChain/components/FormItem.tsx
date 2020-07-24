@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Form, Input, Select } from 'antd';
-// import { getRandomIP } from '@/utils/utils';
 
 interface FormItemProps {
   formPropsList: Item[];
@@ -9,12 +8,13 @@ interface FormItemProps {
 
 interface Item {
   formItemYype: string;
+  suffix?: string;
   formItemLabel: string;
   fieldName: string;
   isSelect: boolean;
   dataSource: any[];
   extra?: string;
-  isTips?: boolean;
+  // isTips?: boolean;
   handle?: (value: number) => Promise<void> | null | undefined | void;
   // handle?: any;
   needChange?: boolean;
@@ -29,14 +29,13 @@ const FormItem: React.FC<FormItemProps> = (props) => {
   const formType = (item: Item) => {
     switch (item.formItemYype) {
       case 'text':
-        return <Input />;
+        return <Input suffix={item?.suffix} />;
       case 'password':
         return <Input type="password" autoComplete="new-password" />;
       case 'textarea':
         return <Input.TextArea />;
       case 'select':
         return (
-          // <Select onChange={item.needChange ? ((value) => item.handle(value as number)) : () => {}}>
           <Select
             onChange={
               item.needChange
@@ -59,13 +58,12 @@ const FormItem: React.FC<FormItemProps> = (props) => {
   return (
     <Form form={form}>
       {formPropsList.map((item) => (
-        <>
-          {item.isTips && <span>{item.extra}</span>}
+        <Fragment key={`${item.formItemLabel}${item.fieldName}${item.formItemYype}`}>
+          {/* {item.isTips && <span>{item.extra}</span>} */}
           <Form.Item
-            key={item.formItemLabel}
-            name={item.isTips ? undefined : item.fieldName}
+            name={item.fieldName}
             label={item.formItemLabel}
-            // initialValue={item.fieldName.includes('address' || 'ip' || 'IP') ? getRandomIP() : ''}
+            extra={item.extra}
             rules={
               item.formItemYype === ''
                 ? []
@@ -75,7 +73,7 @@ const FormItem: React.FC<FormItemProps> = (props) => {
             {formType(item)}
           </Form.Item>
           {item.children}
-        </>
+        </Fragment>
       ))}
     </Form>
   );

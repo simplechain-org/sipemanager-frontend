@@ -2,19 +2,28 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form, message, Divider } from 'antd';
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import { queryFee, addFee, queryChargeFee } from './service';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { queryFee, addFee, queryChargeFee, queryNode, queryRule, queryWallet } from './service';
 import FormItem from '../components/FormItem';
-import { FeeTableListItem, FormPropsType, FeeCollectionType, NodeListItem } from './data';
+import {
+  FeeTableListItem,
+  FormPropsType,
+  FeeCollectionType,
+  NodeListItem,
+  AnchorNodeItem,
+} from './data';
 import CreateForm from './components/CreateForm';
 
-interface PropsType {
-  publicList: any;
-}
-const Fee = (props: PropsType) => {
+const Fee = () => {
   const actionRef = useRef<ActionType>();
   const [feeModalVisible, handleFeeModalVisible] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [pageCount, setPageCount] = useState(0);
+  const [publicList, setPublicList] = useState<any>({
+    nodeList: [],
+    anchorNodeList: [],
+    wallestList: [],
+  });
   const { validateFields, resetFields } = form;
   const [coinName, setCurrentCoin] = useState<string>('');
   const [node, setNode] = useState<{ node_id: undefined | number; coin: undefined | string }>({
@@ -28,12 +37,30 @@ const Fee = (props: PropsType) => {
     resetFields();
   };
 
+  const getOptionList = async () => {
+    const nodeRes = await queryNode();
+    const walletRes = await queryWallet();
+    const anchorRes = await queryRule();
+    setPublicList({
+      nodeList: nodeRes.data || [],
+      wallestList: walletRes.data || [],
+      anchorNodeList: anchorRes.data.page_data.map((item: AnchorNodeItem) => ({
+        text: item.anchor_node_name,
+        name: item.anchor_node_name,
+        ...item,
+      })),
+    });
+  };
+  useEffect(() => {
+    getOptionList();
+  }, []);
+
   const addHandle = async (params: any) => {
     // const res = await addFee({...params,coin: coinName,fee: feeCollection?.reimbursed_fee});
     const res = await addFee({
       anchor_node_id: params.anchor_node_id,
       coin: coinName,
-      fee: feeCollection?.reimbursed_fee,
+      fee: `${feeCollection?.reimbursed_fee || 0}`,
       node_id: params.node_id,
       password: params.password,
       wallet_id: params.wallet_id,
@@ -59,12 +86,10 @@ const Fee = (props: PropsType) => {
   const setCurrentNode = (value: number) => {
     setNode({
       node_id: value,
-      coin: props.publicList.nodeList.filter((item: NodeListItem) => item.ID === value)[0]
-        .coin_name,
+      coin: publicList.nodeList.filter((item: NodeListItem) => item.ID === value)[0].coin_name,
     });
     setCurrentCoin(
-      props.publicList.nodeList.filter((item: NodeListItem) => item.ID === value)[0].coin_name ||
-        '',
+      publicList.nodeList.filter((item: NodeListItem) => item.ID === value)[0].coin_name || '',
     );
   };
 
@@ -105,7 +130,7 @@ const Fee = (props: PropsType) => {
       dataIndex: 'anchor_node_id',
       key: 'anchor_node_id',
       hideInTable: true,
-      valueEnum: props.publicList.anchorNodeList,
+      valueEnum: publicList.anchorNodeList,
     },
     {
       title: '交易哈希',
@@ -140,7 +165,7 @@ const Fee = (props: PropsType) => {
       formItemLabel: '选择节点',
       fieldName: 'node_id',
       isSelect: true,
-      dataSource: props.publicList.nodeList,
+      dataSource: publicList.nodeList,
       handle: setCurrentNode,
       needChange: true,
     },
@@ -149,7 +174,7 @@ const Fee = (props: PropsType) => {
       formItemLabel: '选择锚定节点',
       fieldName: 'anchor_node_id',
       isSelect: true,
-      dataSource: props.publicList.anchorNodeList,
+      dataSource: publicList.anchorNodeList,
       handle: setCurrentAnchor,
       children,
       needChange: true,
@@ -159,7 +184,7 @@ const Fee = (props: PropsType) => {
       formItemLabel: '选择账户',
       fieldName: 'wallet_id',
       isSelect: true,
-      dataSource: props.publicList.wallestList,
+      dataSource: publicList.wallestList,
     },
     {
       formItemYype: 'password',
@@ -171,7 +196,7 @@ const Fee = (props: PropsType) => {
   ];
 
   return (
-    <>
+    <PageHeaderWrapper>
       <ProTable<FeeTableListItem>
         headerTitle="手续费列表"
         actionRef={actionRef}
@@ -182,6 +207,8 @@ const Fee = (props: PropsType) => {
             type="primary"
             onClick={() => {
               onReset();
+              setCurrentCoin('');
+              setFeeCollection(null);
               handleFeeModalVisible(true);
             }}
           >
@@ -192,7 +219,7 @@ const Fee = (props: PropsType) => {
           return queryFee({
             page_size: params.pageSize || 10,
             current_page: params.current || 1,
-            anchor_node_id: props.publicList.anchorNodeList[params.anchor_node_id].ID,
+            anchor_node_id: publicList.anchorNodeList[params.anchor_node_id].ID,
           });
         }}
         postData={(data: any) => {
@@ -216,7 +243,7 @@ const Fee = (props: PropsType) => {
           {children}
         </FormItem>
       </CreateForm>
-    </>
+    </PageHeaderWrapper>
   );
 };
 

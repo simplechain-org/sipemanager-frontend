@@ -108,9 +108,9 @@ const DetailsPage: React.FC<DetailsPageProps> = () => {
   useEffect(() => {
     async function fetchData() {
       const res = await queryDetails({ anchor_node_id: Number(params.ID) });
-      setSourceValues(res.data.chain_a_info);
-      setTargetValues(res.data.chain_b_info);
-      setValues(res.data);
+      setSourceValues(res.data?.chain_a_info || {});
+      setTargetValues(res.data?.chain_b_info || {});
+      setValues(res.data || {});
     }
     fetchData();
   }, [params.ID]);
