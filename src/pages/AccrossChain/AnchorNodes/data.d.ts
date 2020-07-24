@@ -70,6 +70,7 @@ export interface FormPropsType {
   handle?: (value: number) => Promise<void> | null | undefined | void;
   needChange?: boolean;
   children?: React.ReactNode | undefined;
+  rules?: any;
 }
 
 export interface NodeListItem {

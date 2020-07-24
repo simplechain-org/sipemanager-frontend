@@ -1,11 +1,11 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form, message, Input } from 'antd';
-import React, { useState, useRef, Fragment } from 'react';
+import React, { useState, useRef, Fragment, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import { queryPunish, addPunish } from './service';
+import { queryPunish, addPunish, queryNode, queryWallet, queryRule } from './service';
 import FormItem from '../components/FormItem';
-import { PunishListItem, FormPropsType, NodeListItem, AddFee } from './data';
+import { PunishListItem, FormPropsType, NodeListItem, AddFee, AnchorNodeItem } from './data';
 import CreateForm from './components/CreateForm';
 
 interface PropsType {
@@ -19,6 +19,11 @@ const Punish = (props: PropsType) => {
   const [pageCount, setPageCount] = useState(0);
   const [currentNode, setCurrentNode] = useState<NodeListItem | undefined>(undefined);
   const [isDisplay, setDisplay] = useState(false);
+  const [publicList, setPublicList] = useState<any>({
+    nodeList: [],
+    anchorNodeList: [],
+    wallestList: [],
+  });
 
   const onReset = () => {
     resetFields();
@@ -48,6 +53,24 @@ const Punish = (props: PropsType) => {
       });
   };
 
+  const getOptionList = async () => {
+    const nodeRes = await queryNode();
+    const walletRes = await queryWallet();
+    const anchorRes = await queryRule();
+    setPublicList({
+      nodeList: nodeRes.data || [],
+      wallestList: walletRes.data || [],
+      anchorNodeList: anchorRes.data.page_data.map((item: AnchorNodeItem) => ({
+        text: item.anchor_node_name,
+        name: item.anchor_node_name,
+        ...item,
+      })),
+    });
+  };
+  useEffect(() => {
+    getOptionList();
+  }, []);
+
   const fourthColumns: ProColumns<PunishListItem>[] = [
     {
       title: '时间',
@@ -68,7 +91,7 @@ const Punish = (props: PropsType) => {
       key: 'anchor_node_id',
       hideInTable: true,
       // valueEnum: props.publicList.anchorNodeList,
-      valueEnum: {},
+      valueEnum: publicList.anchorNodeList,
     },
     {
       title: '管理类型',
@@ -121,7 +144,7 @@ const Punish = (props: PropsType) => {
       handle: changeNode,
       needChange: true,
       // dataSource: props.publicList.nodeList,
-      dataSource: [],
+      dataSource: publicList.nodeList,
     },
     {
       formItemYype: 'select',
@@ -129,7 +152,7 @@ const Punish = (props: PropsType) => {
       fieldName: 'anchor_node_id',
       isSelect: true,
       // dataSource: props.publicList.anchorNodeList,
-      dataSource: [],
+      dataSource: publicList.anchorNodeList,
     },
     {
       formItemYype: 'select',
@@ -160,7 +183,7 @@ const Punish = (props: PropsType) => {
       fieldName: 'wallet_id',
       isSelect: true,
       // dataSource: props.publicList.wallestList,
-      dataSource: [],
+      dataSource: publicList.wallestList,
     },
     {
       formItemYype: 'password',
@@ -189,13 +212,23 @@ const Punish = (props: PropsType) => {
             <PlusOutlined /> 管理锚定节点
           </Button>,
         ]}
-        request={(params: any) =>
-          queryPunish({
-            page_size: params.pageSize || 10,
-            current_page: params.current || 1,
-            anchor_node_id: props.publicList.anchorNodeList[params.anchor_node_id].ID || '',
-          })
-        }
+        request={(params: any) => {
+          let obj: any = null;
+          if (!params.anchor_node_id) {
+            obj = {
+              page_size: params.pageSize || 10,
+              current_page: params.current || 1,
+              // anchor_node_id: publicList.anchorNodeList[params.anchor_node_id].ID,
+            };
+          } else {
+            obj = {
+              page_size: params.pageSize || 10,
+              current_page: params.current || 1,
+              anchor_node_id: publicList.anchorNodeList[params.anchor_node_id].ID,
+            };
+          }
+          return queryPunish(obj);
+        }}
         postData={(data: any) => {
           setPageCount(data.total_count);
           return data.page_data;

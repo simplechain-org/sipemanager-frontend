@@ -19,6 +19,7 @@ interface Item {
   // handle?: any;
   needChange?: boolean;
   children?: React.ReactNode | undefined;
+  rules?: any;
 }
 
 const { Option } = Select;

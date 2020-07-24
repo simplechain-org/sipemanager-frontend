@@ -216,11 +216,21 @@ const Fee = () => {
           </Button>,
         ]}
         request={(params: any) => {
-          return queryFee({
-            page_size: params.pageSize || 10,
-            current_page: params.current || 1,
-            anchor_node_id: publicList.anchorNodeList[params.anchor_node_id].ID,
-          });
+          let obj: any = null;
+          if (!params.anchor_node_id) {
+            obj = {
+              page_size: params.pageSize || 10,
+              current_page: params.current || 1,
+              // anchor_node_id: publicList.anchorNodeList[params.anchor_node_id].ID,
+            };
+          } else {
+            obj = {
+              page_size: params.pageSize || 10,
+              current_page: params.current || 1,
+              anchor_node_id: publicList.anchorNodeList[params.anchor_node_id].ID,
+            };
+          }
+          return queryFee(obj);
         }}
         postData={(data: any) => {
           setPageCount(data.total_count);
