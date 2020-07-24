@@ -3,7 +3,8 @@
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
 import { extend } from 'umi-request';
-import { notification } from 'antd';
+import { Modal, notification, message } from 'antd';
+import { setAuthority } from './authority';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -27,7 +28,7 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = (error: { response: Response }): Response => {
-  console.log(error);
+  console.log('111');
   const { response } = error;
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
@@ -52,6 +53,37 @@ const errorHandler = (error: { response: Response }): Response => {
 const request = extend({
   errorHandler, // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
+});
+
+request.interceptors.request.use((url, options) => {
+  return {
+    url,
+    options: {
+      ...options,
+      headers: {
+        Authorization: localStorage.getItem('accessToken') || '',
+      },
+    },
+  };
+});
+
+request.interceptors.response.use(async (response) => {
+  const data = await response.clone().json();
+  // console.log('333', data);
+  if (data.msg === 'Unauthorized access to this resource') {
+    setAuthority(undefined);
+    Modal.error({
+      title: '通知',
+      content: '您的登录凭证已过期，请重新登录',
+      onOk: () => {
+        window.location.reload();
+      },
+    });
+  }
+  if (data.code === -1) {
+    message.error(data.msg || '请求失败，请稍候再试');
+  }
+  return response;
 });
 
 export default request;

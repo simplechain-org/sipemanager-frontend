@@ -1,6 +1,6 @@
 import { Effect, Reducer } from 'umi';
 
-import { queryCurrent, query as queryUsers } from '@/services/user';
+import { query as queryUsers } from '@/services/user';
 
 export interface CurrentUser {
   avatar?: string;
@@ -48,11 +48,15 @@ const UserModel: UserModelType = {
         payload: response,
       });
     },
-    *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
+    *fetchCurrent(_, { put }) {
+      // const response = yield call(queryCurrent);
+      // console.log(response);
       yield put({
         type: 'saveCurrentUser',
-        payload: response,
+        payload: {
+          name: localStorage.getItem('CHAIN_USER_NAME'),
+          avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+        },
       });
     },
   },

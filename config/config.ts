@@ -44,7 +44,6 @@ export default defineConfig({
         {
           path: '/',
           component: '../layouts/BasicLayout',
-          authority: ['admin'],
           routes: [
             {
               path: '/',
@@ -53,44 +52,173 @@ export default defineConfig({
             {
               path: '/data-monitoring',
               name: 'monitoring',
-              icon: 'smile',
-              component: './DataMonitoring',
+              icon: 'dashboard',
+              routes: [
+                {
+                  path: '/data-monitoring',
+                  name: 'monitor',
+                  component: './DataMonitoring',
+                },
+                {
+                  path: '/data-monitoring/poundage',
+                  name: 'poundage',
+                  component: './DataMonitoring/Poundage',
+                  hideInMenu: true,
+                },
+              ],
             },
             {
               path: '/chain',
               name: 'chain',
-              icon: 'smile',
-              component: './Chain',
+              icon: 'nodeIndex',
+              // component: './Chain',
+              authority: ['admin'],
               routes: [
                 {
                   path: '/chain/list',
                   name: 'chainList',
                   component: './Chain/ChainList',
-                },
-              ]
-            },
-            {
-              path: '/admin',
-              name: 'admin',
-              icon: 'crown',
-              component: './Admin',
-              authority: ['admin'],
-              routes: [
-                {
-                  path: '/admin/sub-page',
-                  name: 'sub-page',
-                  icon: 'smile',
-                  component: './Welcome',
                   authority: ['admin'],
+                },
+                {
+                  path: '/chain/chain-nodes',
+                  name: 'chainNodes',
+                  component: './Chain/ChainNodes',
                 },
               ],
             },
             {
-              name: 'list.table-list',
-              icon: 'table',
-              path: '/list',
-              component: './ListTableList',
+              path: '/contract',
+              name: 'contract',
+              icon: 'audit',
+              routes: [
+                {
+                  path: '/contract/manage',
+                  name: 'contractManage',
+                  component: './Contract/ContractManage',
+                },
+                {
+                  path: '/contract/chain',
+                  name: 'contractChain',
+                  component: './Contract/ContractChain',
+                },
+              ],
             },
+            {
+              path: '/accrossChain',
+              name: 'accrossChain',
+              icon: 'swap',
+              // component: './AccrossChain',
+              routes: [
+                {
+                  path: '/accrossChain/regist-record',
+                  name: 'registRecord',
+                  component: './AccrossChain/RegistRecord',
+                },
+                {
+                  path: '/accrossChain/config',
+                  name: 'config',
+                  component: './AccrossChain/AccrossConfig',
+                },
+                {
+                  path: '/accrossChain/regist-record/details/:id',
+                  hideInMenu: true,
+                  component: './AccrossChain/RegistRecord/components/DetailsPage',
+                },
+                {
+                  path: '/accrossChain/anchor-nodes',
+                  name: 'anchorNodes',
+                  component: './AccrossChain/AnchorNodes',
+                },
+                {
+                  path: '/accrossChain/submit-fee',
+                  name: 'submitFee',
+                  component: './AccrossChain/AnchorNodes/Fee',
+                },
+                {
+                  path: '/accrossChain/config-signature',
+                  name: 'configSignature',
+                  component: './AccrossChain/AnchorNodes/ConfigSignature',
+                },
+                {
+                  path: '/accrossChain/add-reward',
+                  name: 'issueSignature',
+                  component: './AccrossChain/AnchorNodes/AddReward',
+                },
+                {
+                  path: '/accrossChain/anchor-nodes/details/:ID',
+                  hideInMenu: true,
+                  component: './AccrossChain/AnchorNodes/components/DetailsPage',
+                },
+                // {
+                //   path: '/accrossChain/task',
+                //   name: 'task',
+                //   component: './AccrossChain/Task',
+                // },
+                {
+                  path: '/accrossChain/retroactive',
+                  name: 'retroactive',
+                  component: './AccrossChain/Retroactive',
+                },
+                {
+                  path: '/accrossChain/punish',
+                  name: 'punish',
+                  component: './AccrossChain/AnchorNodes/Punish',
+                },
+              ],
+            },
+            // {
+            //   path: '/blockBrowser',
+            //   name: 'blockBrowser',
+            //   icon: 'smile',
+            //   component: './BlockBrowser',
+            //   routes: [
+            //     {
+            //       path: '/blockBrowser/block-list',
+            //       name: 'blockList',
+            //       component: './BlockBrowser/BlockList',
+            //     },
+            //     {
+            //       path: '/blockBrowser/trade-query',
+            //       name: 'tradeQuery',
+            //       component: './BlockBrowser/TradeQuery',
+            //     },
+            //   ],
+            // },
+            {
+              path: '/wallet',
+              name: 'wallet',
+              icon: 'wallet',
+              routes: [
+                {
+                  path: '/wallet',
+                  name: 'walletManage',
+                  component: './Wallet/WalletManage',
+                },
+              ],
+            },
+            // {
+            //   path: '/admin',
+            //   name: 'admin',
+            //   icon: 'crown',
+            //   component: './Admin',
+            //   authority: ['admin'],
+            //   routes: [
+            //     {
+            //       path: '/admin/sub-page',
+            //       name: 'sub-page',
+            //       icon: 'smile',
+            //       component: './Welcome',
+            //       authority: ['admin'],
+            //     },
+            //   ],
+            // },
+            // {
+            //   name: 'list.table-list',
+            //   icon: 'table',
+            //   path: '/list',
+            //   component: './ListTableList',
+            // },
             {
               component: './404',
             },

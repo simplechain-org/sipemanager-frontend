@@ -24,9 +24,22 @@ export function getAuthority(str?: string): string | string[] {
   return authority;
 }
 
-export function setAuthority(authority: string | string[]): void {
-  const proAuthority = typeof authority === 'string' ? [authority] : authority;
-  localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority));
+interface Authority {
+  role: string;
+  username: string;
+  token: string;
+}
+
+export function setAuthority(authority: Authority | undefined): void {
+  if (authority) {
+    localStorage.setItem('antd-pro-authority', JSON.stringify([authority.role]));
+    localStorage.setItem('accessToken', authority.token);
+    localStorage.setItem('CHAIN_USER_NAME', authority.username);
+  } else {
+    localStorage.removeItem('antd-pro-authority');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('CHAIN_USER_NAME');
+  }
   // auto reload
   reloadAuthorized();
 }
