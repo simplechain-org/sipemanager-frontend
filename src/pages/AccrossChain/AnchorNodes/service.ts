@@ -7,6 +7,16 @@ export async function queryRule(params?: QueryParamsType) {
   });
 }
 
+// 编辑锚定节点
+export async function updateAnchor(params: TableListItem) {
+  return request('/api/v1/anchor/node/update', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
 export async function queryFee(params?: QueryParamsType) {
   return request('/api/v1/service/charge/list', { params });
 }
