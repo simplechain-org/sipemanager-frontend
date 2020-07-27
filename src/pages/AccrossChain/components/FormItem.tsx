@@ -7,18 +7,19 @@ interface FormItemProps {
 }
 
 interface Item {
-  formItemYype: string;
+  formItemYype?: string;
   suffix?: string;
-  formItemLabel: string;
-  fieldName: string;
-  isSelect: boolean;
-  dataSource: any[];
+  formItemLabel?: string;
+  fieldName?: string;
+  isSelect?: boolean;
+  dataSource?: any[];
   extra?: string;
   // isTips?: boolean;
   handle?: (value: number) => Promise<void> | null | undefined | void;
-  // handle?: any;
   needChange?: boolean;
   children?: React.ReactNode | undefined;
+  renderInBefore?: boolean;
+  rules?: any;
 }
 
 const { Option } = Select;
@@ -43,11 +44,12 @@ const FormItem: React.FC<FormItemProps> = (props) => {
                 : () => {}
             }
           >
-            {item.dataSource.map((option) => (
-              <Option value={option.ID} key={`${option.ID}${option.name}`}>
-                {option.name}
-              </Option>
-            ))}
+            {item.dataSource &&
+              item.dataSource.map((option) => (
+                <Option value={option.ID} key={`${option.ID}${option.name}`}>
+                  {option.name}
+                </Option>
+              ))}
           </Select>
         );
       default:
@@ -59,20 +61,23 @@ const FormItem: React.FC<FormItemProps> = (props) => {
     <Form form={form}>
       {formPropsList.map((item) => (
         <Fragment key={`${item.formItemLabel}${item.fieldName}${item.formItemYype}`}>
-          {/* {item.isTips && <span>{item.extra}</span>} */}
-          <Form.Item
-            name={item.fieldName}
-            label={item.formItemLabel}
-            extra={item.extra}
-            rules={
-              item.formItemYype === ''
-                ? []
-                : [{ required: true, message: `请输入${item.formItemLabel}！` }]
-            }
-          >
-            {formType(item)}
-          </Form.Item>
-          {item.children}
+          {item.renderInBefore ? (
+            item.children
+          ) : (
+            <Form.Item
+              name={item.fieldName}
+              label={item.formItemLabel}
+              extra={item.extra}
+              rules={
+                item.formItemYype === ''
+                  ? []
+                  : [{ required: true, message: `请输入${item.formItemLabel}！` }]
+              }
+            >
+              {formType(item)}
+            </Form.Item>
+          )}
+          {!item.renderInBefore && item.children}
         </Fragment>
       ))}
     </Form>

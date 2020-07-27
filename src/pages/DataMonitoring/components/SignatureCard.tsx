@@ -23,6 +23,7 @@ export default function SignatureCard(props: SignatureProps) {
       mask: filterType === 'hour' ? 'HH:mm' : 'MM-DD',
     },
     Count: {
+      nice: true,
       // formatter: (value: number) => {
       //   // console.log(value);
       //   return Web3Utils.fromWei(value.toString());
@@ -32,9 +33,21 @@ export default function SignatureCard(props: SignatureProps) {
 
   const getChartData = async (params: SignatureChartParams) => {
     const res = await querySignature(params);
-    console.log('55', res.data['1']);
+    console.log('55', res.data);
     setLoading(false);
-    setChartData(res.data['1'] || []);
+    let chartArr: any = [];
+    Object.keys(res.data || {}).forEach((key: any) => {
+      chartArr = [
+        ...chartArr,
+        ...res.data[key].map((item: any) => {
+          return {
+            ...item,
+            AnchorId: `锚定节点${key}`,
+          };
+        }),
+      ];
+    });
+    setChartData(chartArr);
   };
 
   useEffect(() => {
@@ -80,13 +93,12 @@ export default function SignatureCard(props: SignatureProps) {
           marginBottom: 15,
         }}
       >
-        <Form.Item label="选择Token">
+        <Form.Item label="选择跨链对">
           <Select
             style={{
               width: 150,
             }}
-            placeholder="选择Token"
-            allowClear
+            placeholder="选择跨链对"
             value={curCrossChain}
             onChange={(value) => setCurCrossChain(value)}
           >

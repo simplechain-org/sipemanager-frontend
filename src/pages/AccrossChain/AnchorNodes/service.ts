@@ -11,10 +11,6 @@ export async function queryFee(params?: QueryParamsType) {
   return request('/api/v1/service/charge/list', { params });
 }
 
-export async function queryReward(params: QueryParamsType) {
-  return request('/api/v1/reward/list', { params });
-}
-
 export async function queryPunish(params: QueryParamsType) {
   return request('/api/v1/punishment/list', { params });
 }
@@ -112,8 +108,48 @@ export async function querySignatureCount(params: QueryType) {
 
 export async function rewardAdd(params: AddFee) {
   return request('/api/v1/reward/add', {
+    method: 'POST',
     data: {
       ...params,
     },
+  });
+}
+
+// 签名奖励配置列表
+export async function queryRewardConfigList(params: any) {
+  return request('/api/v1/reward/config/list', { params });
+}
+
+// 新增奖励配置
+export async function addRewardConfig(params: any) {
+  return request('/api/v1/reward/config/add', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+// 更新签名奖励配置
+export async function updateRewardConfig(params: any) {
+  return request('/api/v1/reward/config/update', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+// 删除签名奖励
+export async function deleteReward(id: number) {
+  return request(`/api/v1/reward/config/remove/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+// 签名奖励发放列表
+export async function queryReward(params: any) {
+  return request('/api/v1/reward/list', {
+    params,
   });
 }

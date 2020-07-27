@@ -3,7 +3,7 @@ import { Button, Drawer, Divider, Form, message } from 'antd';
 import React, { useState, useRef } from 'react';
 import { history } from 'umi';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import { addRule, getNodeByChain, removeRule } from './service';
+import { addRule, getNodeByChain, removeRule, queryRule, queryDetails } from './service';
 import FormItem from '../components/FormItem';
 import { TableListItem, FormPropsType, NodeListItem } from './data';
 import CreateForm from './components/CreateForm';
@@ -19,7 +19,7 @@ const AnchorNodes = (props: PropsType) => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [drawerVisible, handleDrawerVisible] = useState(false);
   const [form] = Form.useForm();
-  const { validateFields, resetFields } = form;
+  const { validateFields, resetFields, setFieldsValue } = form;
   const [sourceNodeList, setSourceNodeList] = useState<NodeListItem[]>([]);
   const [targetNodeList, setTargetNodeList] = useState<NodeListItem[]>([]);
   const [nodeList, setNodeList] = useState({ sourceNode: [], targetNode: [] });
@@ -86,6 +86,25 @@ const AnchorNodes = (props: PropsType) => {
     changeNodeList(value, 'target');
   };
 
+  const editHandle = async (record: any) => {
+    await queryDetails({ anchor_node_id: Number(record.ID) });
+    // const res = await queryDetails({ anchor_node_id: Number(record.ID) });
+    // setCurrentAnchor(res.data)
+    setFieldsValue({
+      source_chain_id: record.chain_a_id,
+      source_node_id: record.node_a_id, //
+      source_rpc_url: record.source_rpc_url,
+      target_chain_id: record.chain_b_id,
+      target_node_id: record.node_b_id, //
+      target_rpc_url: record.target_rpc_url,
+      anchor_name: record.anchor_node_name,
+      anchor_address: record.anchor_node_address, //
+      wallet_id: record.anchor_node_wallet, //
+      password: record.anchor_node_password, //
+    });
+    handleModalVisible(true);
+  };
+
   const deleteFormPropsList: FormPropsType[] = [
     {
       formItemYype: '',
@@ -146,10 +165,22 @@ const AnchorNodes = (props: PropsType) => {
     {
       formItemYype: 'text',
       formItemLabel: 'A链rpcURL',
-      fieldName: 'source_chain_rpc',
+      fieldName: 'source_rpc_url',
       isSelect: false,
       dataSource: [],
       children: <Divider />,
+      // rules: {
+      //   pattern: new RegExp('/(http://|https://)://([w.]+/?)S*/'),
+      //   message: '只允许输入以http://或https://开头的字符',
+      // },
+      // rules: ({ getFieldValue }) => ({
+      //   validator(_, value) {
+      //     if (!value || getFieldValue('new_password') === value) {
+      //       return Promise.resolve();
+      //     }
+      //     return Promise.reject(new Error('两次密码输入不一致!'));
+      //   },
+      // }),
     },
     {
       formItemYype: 'select',
@@ -171,10 +202,14 @@ const AnchorNodes = (props: PropsType) => {
     {
       formItemYype: 'text',
       formItemLabel: 'B链rpcURL',
-      fieldName: 'target_chain_rpc',
+      fieldName: 'target_rpc_url',
       isSelect: false,
       dataSource: [],
       children: <Divider />,
+      // rules: {
+      //   pattern: new RegExp('/(http://|https://)://([w.]+/?)S*/'),
+      //   message: '只允许输入以http://或https://开头的字符',
+      // },
     },
     {
       formItemYype: 'text',
@@ -272,7 +307,7 @@ const AnchorNodes = (props: PropsType) => {
       dataIndex: 'anchor_node_id',
       key: 'anchor_node_id',
       hideInTable: true,
-      valueEnum: props.publicList.anchorNodeList,
+      valueEnum: props.publicList.anchorEnum,
     },
     {
       title: '归属链A',
@@ -283,8 +318,8 @@ const AnchorNodes = (props: PropsType) => {
     },
     {
       title: '链A rpcURL',
-      dataIndex: 'rpc_a',
-      key: 'rpc_a',
+      dataIndex: 'source_rpc_url',
+      key: 'source_rpc_url',
       hideInSearch: true,
       hideInForm: true,
     },
@@ -297,8 +332,8 @@ const AnchorNodes = (props: PropsType) => {
     },
     {
       title: '链B rpcURL',
-      dataIndex: 'rpc_b',
-      key: 'rpc_b',
+      dataIndex: 'target_rpc_url',
+      key: 'target_rpc_url',
       hideInSearch: true,
       hideInForm: true,
     },
@@ -330,14 +365,7 @@ const AnchorNodes = (props: PropsType) => {
             查看
           </a>
           <Divider type="vertical" />
-          <a
-            onClick={() => {
-              console.log('编辑锚定节点', record);
-              handleModalVisible(true);
-            }}
-          >
-            编辑
-          </a>
+          <a onClick={() => editHandle(record)}>编辑</a>
           <Divider type="vertical" />
           <a onClick={() => deleteModal(record)}>删除</a>
         </>
@@ -363,17 +391,17 @@ const AnchorNodes = (props: PropsType) => {
             <PlusOutlined /> 新增
           </Button>,
         ]}
-        // request={(params: any) => {
-        //   return queryRule({
-        //     page_size: params.pageSize || 10,
-        //     current_page: params.current || 1,
-        //     anchor_node_id: props.publicList.anchorNodeList[params.anchor_node_id].ID || '',
-        //   });
-        // }}
-        dataSource={props.publicList.anchorNodeList}
+        request={(params: any) =>
+          queryRule({
+            page_size: params.pageSize || 10,
+            current_page: params.current || 1,
+            anchor_node_id: params.anchor_node_id,
+          })
+        }
+        // dataSource={props.publicList.anchorNodeList}
         postData={(data: any) => {
           setPageCount(data.total_count);
-          return data;
+          return data.page_data;
         }}
         columns={firstColumns}
         pagination={{

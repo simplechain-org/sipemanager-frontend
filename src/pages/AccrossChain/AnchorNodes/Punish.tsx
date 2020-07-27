@@ -1,24 +1,27 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form, message, Input } from 'antd';
-import React, { useState, useRef, Fragment } from 'react';
+import React, { useState, useRef, Fragment, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import { queryPunish, addPunish } from './service';
+import { queryPunish, addPunish, queryNode, queryWallet, queryRule } from './service';
 import FormItem from '../components/FormItem';
-import { PunishListItem, FormPropsType, NodeListItem, AddFee } from './data';
+import { PunishListItem, FormPropsType, NodeListItem, AddFee, AnchorNodeItem } from './data';
 import CreateForm from './components/CreateForm';
 
-interface PropsType {
-  publicList: any;
-}
-const Punish = (props: PropsType) => {
+const Punish = () => {
   const actionRef = useRef<ActionType>();
   const [punishModalVisible, handlePunishModalVisible] = useState<boolean>(false);
   const [form] = Form.useForm();
   const { validateFields, resetFields } = form;
   const [pageCount, setPageCount] = useState(0);
   const [currentNode, setCurrentNode] = useState<NodeListItem | undefined>(undefined);
+  const [anchorEnum, setAnchorEnum] = useState({});
   const [isDisplay, setDisplay] = useState(false);
+  const [publicList, setPublicList] = useState<any>({
+    nodeList: [],
+    anchorNodeList: [],
+    wallestList: [],
+  });
 
   const onReset = () => {
     resetFields();
@@ -48,6 +51,29 @@ const Punish = (props: PropsType) => {
       });
   };
 
+  const getOptionList = async () => {
+    const nodeRes = await queryNode();
+    const walletRes = await queryWallet();
+    const anchorRes = await queryRule();
+    setPublicList({
+      nodeList: nodeRes.data || [],
+      wallestList: walletRes.data || [],
+      anchorNodeList: anchorRes.data.page_data.map((item: AnchorNodeItem) => ({
+        ...item,
+        name: item.anchor_node_name,
+      })),
+    });
+    const enumMap = {};
+    anchorRes.data.page_data.map((item: AnchorNodeItem) => {
+      enumMap[item.ID] = item.anchor_node_name;
+      return false;
+    });
+    setAnchorEnum(enumMap);
+  };
+  useEffect(() => {
+    getOptionList();
+  }, []);
+
   const fourthColumns: ProColumns<PunishListItem>[] = [
     {
       title: '时间',
@@ -67,8 +93,7 @@ const Punish = (props: PropsType) => {
       dataIndex: 'anchor_node_id',
       key: 'anchor_node_id',
       hideInTable: true,
-      // valueEnum: props.publicList.anchorNodeList,
-      valueEnum: {},
+      valueEnum: anchorEnum,
     },
     {
       title: '管理类型',
@@ -109,7 +134,7 @@ const Punish = (props: PropsType) => {
   };
 
   const changeNode = (value: number) => {
-    setCurrentNode(props.publicList.nodeList.filter((item: NodeListItem) => item.ID === value)[0]);
+    setCurrentNode(publicList.nodeList.filter((item: NodeListItem) => item.ID === value)[0]);
   };
 
   const fiftyFormPropsList: FormPropsType[] = [
@@ -120,16 +145,14 @@ const Punish = (props: PropsType) => {
       isSelect: true,
       handle: changeNode,
       needChange: true,
-      // dataSource: props.publicList.nodeList,
-      dataSource: [],
+      dataSource: publicList.nodeList,
     },
     {
       formItemYype: 'select',
       formItemLabel: '选择锚定节点',
       fieldName: 'anchor_node_id',
       isSelect: true,
-      // dataSource: props.publicList.anchorNodeList,
-      dataSource: [],
+      dataSource: publicList.anchorNodeList,
     },
     {
       formItemYype: 'select',
@@ -159,8 +182,7 @@ const Punish = (props: PropsType) => {
       formItemLabel: '选择账户',
       fieldName: 'wallet_id',
       isSelect: true,
-      // dataSource: props.publicList.wallestList,
-      dataSource: [],
+      dataSource: publicList.wallestList,
     },
     {
       formItemYype: 'password',
@@ -193,7 +215,7 @@ const Punish = (props: PropsType) => {
           queryPunish({
             page_size: params.pageSize || 10,
             current_page: params.current || 1,
-            anchor_node_id: props.publicList.anchorNodeList[params.anchor_node_id].ID || '',
+            anchor_node_id: params.anchor_node_id,
           })
         }
         postData={(data: any) => {

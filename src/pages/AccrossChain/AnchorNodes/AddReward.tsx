@@ -5,23 +5,26 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
   queryReward,
+  queryRule,
   rewardAdd,
   queryRewardTotal,
   queryRewardChain,
   querySignatureCount,
+  queryNode,
+  queryWallet,
 } from './service';
 import FormItem from '../components/FormItem';
 import { TableListItem, FormPropsType, NodeListItem, AnchorNodeItem } from './data';
 import CreateForm from './components/CreateForm';
 
-interface PropsType {
-  publicList: any;
-}
-
-const AddReward = (props: PropsType) => {
+const AddReward = () => {
   const actionRef = useRef<ActionType>();
   const [provideModalVisible, handleProvideModalVisible] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState(0);
+  const [nodeList, setNodeList] = useState([]);
+  const [walletList, setWalletList] = useState([]);
+  const [anchorList, setAnchorList] = useState([]);
+  const [anchorEnum, setAnchorEnum] = useState({});
   const [currentNode, setCurrentNode] = useState<NodeListItem | undefined>(undefined);
   const [currentAnchorNode, setCurrentAnchorNode] = useState<AnchorNodeItem | undefined>(undefined);
   // 剩余奖池总额
@@ -30,6 +33,8 @@ const AddReward = (props: PropsType) => {
   const [rewardChain, setRewardChain] = useState(0);
   // 总签名数、工作量占比
   const [signatureCount, setSignatureCount] = useState({ sign_count: '', rate: '' });
+  // 建议单笔签名奖励
+  const [singleReward, setSingleReward] = useState(0);
   const [form] = Form.useForm();
   const { validateFields, resetFields } = form;
 
@@ -37,31 +42,54 @@ const AddReward = (props: PropsType) => {
     resetFields();
   };
 
+  const cancleHandle = () => {
+    handleProvideModalVisible(false);
+    setCurrentNode(undefined);
+    setCurrentAnchorNode(undefined);
+  };
+
   const addHandle = async (params: any) => {
-    const res = await rewardAdd(params);
+    const res = await rewardAdd({ ...params, coin: currentNode?.coin_name });
     if (res.code === 0) {
       message.success('添加成功');
     } else {
       message.error(res.msg || '添加失败');
     }
-    handleProvideModalVisible(false);
-    setCurrentNode(undefined);
-    setCurrentAnchorNode(undefined);
+    cancleHandle();
     setRemainTotal(0);
     setRewardChain(0);
     setSignatureCount({ sign_count: '', rate: '' });
   };
   const changeNode = (value: number) => {
-    console.log('node change', value);
-    setCurrentNode(props.publicList.nodeList.filter((item: NodeListItem) => item.ID === value)[0]);
+    setCurrentNode(nodeList.filter((item: NodeListItem) => item.ID === value)[0]);
   };
 
   const changeAnchorNode = (value: number) => {
-    console.log('anchor node change', value);
-    setCurrentAnchorNode(
-      props.publicList.anchorNodeList.filter((item: AnchorNodeItem) => item.ID === value)[0],
-    );
+    setCurrentAnchorNode(anchorList.filter((item: AnchorNodeItem) => item.ID === value)[0]);
   };
+
+  useEffect(() => {
+    async function getOptions() {
+      const res = await queryRule();
+      const nodeRes = await queryNode();
+      const walletRes = await queryWallet();
+      setAnchorList(
+        res.data.page_data.map((item: AnchorNodeItem) => ({
+          ...item,
+          name: item.anchor_node_name,
+        })),
+      );
+      setNodeList(nodeRes.data);
+      setWalletList(walletRes.data);
+      const enumMap = {};
+      res.data.page_data.map((item: AnchorNodeItem) => {
+        enumMap[item.ID] = item.anchor_node_name;
+        return false;
+      });
+      setAnchorEnum(enumMap);
+    }
+    getOptions();
+  }, []);
 
   useEffect(() => {
     async function getRemain() {
@@ -76,10 +104,12 @@ const AddReward = (props: PropsType) => {
         setRewardChain(rewardRes.data || 0);
         const sigRes = await querySignatureCount(params);
         setSignatureCount(sigRes.data || {});
+        const singleRewardRes = await queryRewardChain(params);
+        setSingleReward(singleRewardRes.data || 0);
       }
     }
     getRemain();
-  }, [currentNode, currentAnchorNode]);
+  }, [currentNode?.ID, currentAnchorNode?.ID]);
 
   const submitHandle = () => {
     validateFields()
@@ -110,8 +140,7 @@ const AddReward = (props: PropsType) => {
       dataIndex: 'anchor_node_id',
       key: 'anchor_node_id',
       hideInTable: true,
-      // valueEnum: props.publicList.anchorNodeList,
-      valueEnum: {},
+      valueEnum: anchorEnum,
     },
     {
       title: '奖励池总额',
@@ -143,10 +172,11 @@ const AddReward = (props: PropsType) => {
   const addChildren = (
     <Fragment>
       <Divider />
-      <p>剩余奖池总额：{remianTotal}</p>
-      <p>单笔签名奖励：{rewardChain}</p>
-      <p>本期总签名数：{signatureCount.sign_count}</p>
-      <p>签名工作量占比：{signatureCount.rate}</p>
+      <p>剩余奖池总额：{`${remianTotal}SIPC`}</p>
+      <p>单笔签名奖励：{`${rewardChain}SIPC/次`}</p>
+      <p>本期总签名数：{`${signatureCount.sign_count || 0}次`}</p>
+      <p>签名工作量占比：{signatureCount.rate || 0}</p>
+      <p>奖励Token类型：{currentNode?.coin_name || 0}</p>
       <Divider />
     </Fragment>
   );
@@ -157,8 +187,7 @@ const AddReward = (props: PropsType) => {
       formItemLabel: '选择节点',
       fieldName: 'node_id',
       isSelect: true,
-      // dataSource: props.publicList.nodeList,
-      dataSource: [],
+      dataSource: nodeList,
       needChange: true,
       handle: changeNode,
     },
@@ -167,18 +196,10 @@ const AddReward = (props: PropsType) => {
       formItemLabel: '选择锚定节点',
       fieldName: 'anchor_node_id',
       isSelect: true,
-      // dataSource: props.publicList.anchorNodeList,
-      dataSource: [],
+      dataSource: anchorList,
       children: addChildren,
       needChange: true,
       handle: changeAnchorNode,
-    },
-    {
-      formItemYype: 'select',
-      formItemLabel: '奖励Token类型',
-      fieldName: 'coin',
-      isSelect: true,
-      dataSource: [],
     },
     {
       formItemYype: 'text',
@@ -186,15 +207,14 @@ const AddReward = (props: PropsType) => {
       fieldName: 'reward',
       isSelect: false,
       dataSource: [],
-      extra: `本期建议奖励${'1.1111SIPC'}`,
+      extra: `本期建议奖励${singleReward}SIPC`,
     },
     {
       formItemYype: 'select',
       formItemLabel: '选择账户',
       fieldName: 'wallet_id',
       isSelect: false,
-      // dataSource: props.publicList.wallestList,
-      dataSource: [],
+      dataSource: walletList,
     },
     {
       formItemYype: 'password',
@@ -227,7 +247,7 @@ const AddReward = (props: PropsType) => {
           queryReward({
             page_size: params.pageSize || 10,
             current_page: params.current || 1,
-            anchor_node_id: props.publicList.anchorNodeList[params.anchor_node_id].ID || '',
+            anchor_node_id: params.anchor_node_id || '',
           })
         }
         postData={(data: any) => {
@@ -241,7 +261,7 @@ const AddReward = (props: PropsType) => {
         columns={thirdColumns}
       />
       <CreateForm
-        onCancel={() => handleProvideModalVisible(false)}
+        onCancel={cancleHandle}
         onReset={onReset}
         onClick={submitHandle}
         modalVisible={provideModalVisible}

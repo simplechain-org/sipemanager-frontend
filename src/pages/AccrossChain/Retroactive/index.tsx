@@ -15,7 +15,7 @@ import { queryRule, addRule, queryChain } from './service';
 const handleAdd = async (fields: any) => {
   const hide = message.loading('正在添加');
   try {
-    const res = await addRule({ ...fields, network_id: parseInt(fields.network_id, 10) });
+    const res = await addRule({ ...fields, network_id: parseInt(fields.chain_id, 10) });
     hide();
     if (res.code === 0) {
       message.success('添加成功');
@@ -66,8 +66,10 @@ const Retroactive: React.FC<{}> = () => {
     },
     {
       title: '交易所在链',
-      dataIndex: 'network_id',
-      key: 'network_id',
+      // dataIndex: 'network_id',
+      // key: 'network_id',
+      dataIndex: 'chain_id',
+      key: 'chain_id',
       hideInSearch: true,
       hideInTable: true,
       rules: [
