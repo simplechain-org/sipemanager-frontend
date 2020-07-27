@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'antd';
 import FormItem from '../../components/FormItem';
 
@@ -6,9 +6,56 @@ interface PropsType {
   visible: boolean;
   onCancel: () => void;
 }
+
 function EstimateModal(props: PropsType) {
   const { visible, onCancel } = props;
   const [form] = Form.useForm();
+  const [values, setValues] = useState({});
+  const [result, setResult] = useState(0);
+
+  const debounce = (fun: any, delay: number) => {
+    let timer: any;
+    return function (this: any, args: any) {
+      const that = this;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        fun.call(that, args);
+      }, delay);
+    };
+  };
+
+  const calculate = () => {
+    const obj = form.getFieldsValue();
+    if (Object.values(obj).includes(undefined)) {
+      setResult(0);
+    } else {
+      const res =
+        (((obj.anchor_count * obj.money * obj.rate) / 100) * obj.cycle) / (365 * obj.count);
+      if (Number.isNaN(res) || res === undefined || res === Infinity) {
+        setResult(0);
+      } else {
+        setResult(res);
+      }
+    }
+    setValues(form.getFieldsValue());
+  };
+
+  const getResult = debounce(calculate, 2000);
+
+  useEffect(() => {
+    if (visible) {
+      getResult(calculate);
+    }
+  }, [values, visible]);
+
+  const rules = () => ({
+    validator(_: any, value: any) {
+      if (value >= 0) {
+        return Promise.resolve();
+      }
+      return Promise.reject(new Error('请输入数字'));
+    },
+  });
 
   const formPropsList = [
     {
@@ -17,6 +64,7 @@ function EstimateModal(props: PropsType) {
       fieldName: 'anchor_count',
       isSelect: false,
       dataSource: [],
+      rules,
     },
     {
       formItemYype: 'text',
@@ -25,6 +73,7 @@ function EstimateModal(props: PropsType) {
       suffix: 'SIPC',
       isSelect: false,
       dataSource: [],
+      rules,
     },
     {
       formItemYype: 'text',
@@ -34,22 +83,25 @@ function EstimateModal(props: PropsType) {
       extra: '建议年化率10%',
       isSelect: false,
       dataSource: [],
+      rules,
     },
     {
       formItemYype: 'text',
       formItemLabel: '调控周期天数',
-      fieldName: 'rate',
+      fieldName: 'cycle',
       suffix: '天',
       extra: '建议调控周期90天，到期后，若不修改，则自动续期',
       isSelect: false,
       dataSource: [],
+      rules,
     },
     {
       formItemYype: 'text',
       formItemLabel: '预测周期交易数',
-      fieldName: 'rate',
+      fieldName: 'count',
       isSelect: false,
       dataSource: [],
+      rules,
     },
   ];
 
@@ -59,9 +111,14 @@ function EstimateModal(props: PropsType) {
       visible={visible}
       onCancel={onCancel}
       footer={
-        <Button type="primary" onClick={onCancel}>
-          关闭
-        </Button>
+        <>
+          <Button type="primary" onClick={() => form.resetFields()}>
+            重置
+          </Button>
+          <Button type="primary" onClick={onCancel}>
+            关闭
+          </Button>
+        </>
       }
     >
       <Form.Item>
@@ -69,7 +126,7 @@ function EstimateModal(props: PropsType) {
         （365 * 本周期交易数）
       </Form.Item>
       <FormItem formPropsList={formPropsList} form={form} />
-      <Form.Item label="单笔签名奖励">{0.12345678}SIPC/次</Form.Item>
+      <Form.Item label="单笔签名奖励">{result}SIPC/次</Form.Item>
     </Modal>
   );
 }
