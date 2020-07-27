@@ -15,19 +15,23 @@ export default function Poundage() {
   useEffect(() => {
     async function getAnchor() {
       const res = await queryAnchorList();
-      setAnchorList(
-        {
-          ...res.data.page_data.map((item: AnchorNodeItem) => ({
-            text: item.anchor_node_name,
-            ...item,
-          })),
-        } || {},
-      );
+      const enumMap = {};
+      res.data.page_data.map((item: AnchorNodeItem) => {
+        enumMap[item.ID] = item.anchor_node_name;
+        return false;
+      });
+      setAnchorList(enumMap);
     }
     getAnchor();
   }, []);
 
   const columns: ProColumns<TableListItem>[] = [
+    {
+      title: '锚定节点',
+      dataIndex: 'anchorId',
+      valueEnum: anchorList,
+      hideInTable: true,
+    },
     {
       title: '时间',
       dataIndex: 'Timestamp',
@@ -41,7 +45,7 @@ export default function Poundage() {
     {
       title: '锚定节点名称',
       dataIndex: 'AnchorName',
-      valueEnum: anchorList,
+      hideInSearch: true,
     },
     {
       title: '交易哈希',
@@ -61,48 +65,22 @@ export default function Poundage() {
       <ProTable<TableListItem>
         actionRef={actionRef}
         rowKey="AnchorId"
-        request={
-          // 为解决不会触发request请求的问题。。。。。。
-          (params: any) => {
-            let obj: any = {};
-            if (!params.Timestamp && !params.AnchorName) {
-              obj = {
-                page: `${params.current}`,
-                limit: `${params.pageSize}`,
-              };
-            } else if (params.Timestamp && !params.AnchorName) {
-              obj = {
-                page: `${params.current}`,
-                limit: `${params.pageSize}`,
-                startTime: transTime(params.Timestamp[0]),
-                endTime: `${transTime(params.Timestamp[1])}`,
-              };
-            } else if (!params.Timestamp && params.AnchorName) {
-              obj = {
-                page: `${params.current}`,
-                limit: `${params.pageSize}`,
-                anchorId: anchorList[params.AnchorName].ID,
-              };
-            } else {
-              obj = {
-                page: `${params.current}`,
-                limit: `${params.pageSize}`,
-                startTime: transTime(params.Timestamp[0]),
-                endTime: `${transTime(params.Timestamp[1])}`,
-                anchorId: anchorList[params.AnchorName].ID,
-              };
-            }
-            return queryFinishList(obj);
-          }
-          // (params: any) =>
-          //   queryFinishList({
-          //     page: params.current || 1,
-          //     limit: params.pageSize || 10,
-          //     startTime: `${transTime(params?.Timestamp[0])}`,
-          //     endTime: `${transTime(params?.Timestamp[1])}`,
-          //     anchorId: `${anchorList[params?.AnchorName].ID}`,
-          //   })
-        }
+        beforeSearchSubmit={(params: any) => {
+          return {
+            startTime: `${transTime(params.Timestamp ? params.Timestamp[0] : '')}` || '',
+            endTime: `${transTime(params.Timestamp ? params.Timestamp[1] : '')}` || '',
+            anchorId: params.anchorId ? params.anchorId : '',
+          } as Partial<TableListItem>;
+        }}
+        request={(params: any) => {
+          return queryFinishList({
+            page: `${params.current}`,
+            limit: `${params.pageSize}`,
+            anchorId: params.anchorId,
+            startTime: params.startTime,
+            endTime: params.endTime,
+          });
+        }}
         postData={(data: any) => {
           setPageCount(data.Count);
           return data.FinishEventList;
