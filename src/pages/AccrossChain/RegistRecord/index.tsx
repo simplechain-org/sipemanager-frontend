@@ -332,7 +332,7 @@ const RegistRecord: React.FC<{}> = () => {
           </Row>
           {renderMoreForm()}
           <Row gutter={16}>
-            <Col span={12}>
+            {/* <Col span={12}>
               <Form.Item
                 label="锚定节点质押金额"
                 name="money"
@@ -340,8 +340,8 @@ const RegistRecord: React.FC<{}> = () => {
               >
                 <Input suffix="SIPC" />
               </Form.Item>
-            </Col>
-            <Col span={12}>
+            </Col> */}
+            <Col span={24}>
               <Form.Item
                 label="最低签名数"
                 name="sign_confirm_count"
