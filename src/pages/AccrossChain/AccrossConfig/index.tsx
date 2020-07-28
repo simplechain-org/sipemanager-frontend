@@ -6,68 +6,46 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import CreateForm from './components/CreateForm';
 import { TableListItem, ChainListItem, WalletListItem } from './data';
-import { addRule, queryChain, queryWallet } from './service';
-
-/**
- * 添加节点
- * @param fields
- */
-const handleAdd = async (fields: any) => {
-  const hide = message.loading('正在添加');
-  try {
-    const res = await addRule({ ...fields, network_id: parseInt(fields.network_id, 10) });
-    hide();
-    if (res.code === 0) {
-      message.success('添加成功');
-    } else {
-      message.error(res.msg || '添加失败');
-    }
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
+import { addRule, queryChain, queryWallet, queryRule, updateRule } from './service';
 
 const AccrossConfig: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [pageCount] = useState(0);
-  //   const [pageCount, setPageCount] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
   const [chainList, setChainList] = useState([]);
   const [walletList, setWalletList] = useState([]);
   const [currentSource, setCurrentSource] = useState<ChainListItem | undefined>(undefined);
   const [currentTarget, setCurrentTarget] = useState<ChainListItem | undefined>(undefined);
+  const [currentConfigItem, setCurrentConfigItem] = useState<any>(null);
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '发起链',
-      dataIndex: 'source_chain',
-      key: 'source_chain',
+      dataIndex: 'source_chain_name',
+      key: 'source_chain_name',
       hideInForm: true,
     },
     {
       title: '目标链',
-      dataIndex: 'target_chain',
-      key: 'target_chain',
+      dataIndex: 'target_chain_name',
+      key: 'target_chain_name',
       hideInForm: true,
     },
     {
       title: '链A跨链手续费',
-      dataIndex: 'chain_a_fee',
-      key: 'chain_a_fee',
+      dataIndex: 'source_chain_coin',
+      key: 'source_chain_coin',
       hideInForm: true,
     },
     {
       title: '链B跨链手续费',
-      dataIndex: 'chain_b_fee',
-      key: 'chain_b_fee',
+      dataIndex: 'target_chain_coin',
+      key: 'target_chain_coin',
       hideInForm: true,
     },
     {
       title: '链A',
-      dataIndex: 'chain_a',
-      key: 'chain_a',
+      dataIndex: 'source_chain_id',
+      key: 'source_chain_id',
       hideInTable: true,
       rules: [
         {
@@ -78,7 +56,7 @@ const AccrossConfig: React.FC<{}> = () => {
       renderFormItem: (_, config) => {
         setCurrentSource(chainList.find((item: ChainListItem) => item.ID === config.value));
         return (
-          <Select onChange={config.onChange}>
+          <Select onChange={config.onChange} value={config.value}>
             {chainList.map((item: ChainListItem) => (
               <Select.Option value={item.ID} key={item.ID}>
                 {item.name}
@@ -87,16 +65,17 @@ const AccrossConfig: React.FC<{}> = () => {
           </Select>
         );
       },
+      // initialValue: currentConfigItem?.source_chain_id,
     },
     {
       title: '链B',
-      dataIndex: 'chain_b',
-      key: 'chain_b',
+      dataIndex: 'target_chain_id',
+      key: 'target_chain_id',
       hideInTable: true,
       renderFormItem: (_, config) => {
         setCurrentTarget(chainList.find((item: ChainListItem) => item.ID === config.value));
         return (
-          <Select onChange={config.onChange}>
+          <Select onChange={config.onChange} value={config.value}>
             {chainList.map((item: ChainListItem) => (
               <Select.Option value={item.ID} key={item.ID}>
                 {item.name}
@@ -111,12 +90,19 @@ const AccrossConfig: React.FC<{}> = () => {
           message: '请选择链B',
         },
       ],
+      // initialValue: currentConfigItem?.target_chain_id,
     },
     {
       title: '链A跨链手续费',
-      dataIndex: 'chain_a_fee',
-      key: 'chain_a_fee',
-      renderFormItem: () => <Input suffix={currentSource?.coin_name || ''} />,
+      dataIndex: 'source_reward',
+      key: 'source_reward',
+      renderFormItem: (_, config) => (
+        <Input
+          suffix={currentSource?.coin_name || ''}
+          value={config.value}
+          onChange={config.onChange}
+        />
+      ),
       hideInTable: true,
       rules: [
         {
@@ -124,12 +110,20 @@ const AccrossConfig: React.FC<{}> = () => {
           message: '请输入链A跨链手续费',
         },
       ],
+      // initialValue: currentConfigItem?.source_reward,
     },
     {
       title: '链B跨链手续费',
-      dataIndex: 'chain_b_fee',
-      key: 'chain_b_fee',
-      renderFormItem: () => <Input suffix={currentTarget?.coin_name || ''} />,
+      dataIndex: 'target_reward',
+      key: 'target_reward',
+      renderFormItem: (_, config) => (
+        <Input
+          suffix={currentTarget?.coin_name || ''}
+          //   value和onChange不写则表单校验时读取不到该表单项的值，校验无法通过
+          value={config.value}
+          onChange={config.onChange}
+        />
+      ),
       hideInTable: true,
       rules: [
         {
@@ -137,6 +131,7 @@ const AccrossConfig: React.FC<{}> = () => {
           message: '请输入链B跨链手续费',
         },
       ],
+      // initialValue: currentConfigItem?.target_reward,
     },
     {
       title: '选择钱包账户',
@@ -150,12 +145,15 @@ const AccrossConfig: React.FC<{}> = () => {
           message: '请选择钱包账户',
         },
       ],
+      // initialValue: currentConfigItem?.wallet_id,
     },
     {
       title: '钱包密码',
       dataIndex: 'password',
       key: 'password',
-      renderFormItem: () => <Input.Password />,
+      renderFormItem: (_, config) => (
+        <Input.Password value={config.value} onChange={config.onChange} />
+      ),
       hideInTable: true,
       rules: [
         {
@@ -163,11 +161,23 @@ const AccrossConfig: React.FC<{}> = () => {
           message: '请输入钱包密码',
         },
       ],
+      // initialValue: currentConfigItem?.password,
     },
     {
       title: '操作',
       key: 'action',
-      render: () => <a onClick={() => handleModalVisible(true)}>编辑</a>,
+      render: (_, record) => (
+        <a
+          onClick={() => {
+            handleModalVisible(true);
+            setCurrentConfigItem(record);
+            // form.setFieldsValue(record);
+            // form.setFieldsValue({ password: 'qqqqqqqqqq' });
+          }}
+        >
+          编辑
+        </a>
+      ),
       hideInForm: true,
     },
   ];
@@ -189,6 +199,24 @@ const AccrossConfig: React.FC<{}> = () => {
     getChainList();
   }, []);
 
+  const handleAdd = async (fields: any) => {
+    try {
+      let res;
+      if (currentConfigItem) {
+        res = await updateRule(fields);
+      } else {
+        res = await addRule({ ...fields, wallet_id: parseInt(fields.wallet_id, 10) });
+      }
+      if (res.code === 0) {
+        message.success('操作成功');
+        actionRef.current?.reload();
+      }
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
   return (
     <PageHeaderWrapper>
       <ProTable<TableListItem>
@@ -201,17 +229,25 @@ const AccrossConfig: React.FC<{}> = () => {
           </Button>,
         ]}
         options={false}
-        // request={(params: any) =>
-        //   queryRule({
-        //     current_page: params.current,
-        //     page_size: params.pageSize,
-        //     status: params.status,
-        //   })
-        // }
-        // postData={(data) => {
-        //   setPageCount(data.total_count);
-        //   return data
-        // }}
+        request={(params: any) =>
+          queryRule({
+            current_page: params.current,
+            page_size: params.pageSize,
+          })
+        }
+        // dataSource={[
+        //   {
+        //     source_chain_name: 'hhhhh',
+        //     source_chain_id: 1,
+        //     target_chain_id: 3,
+        //     wallet_id: 18,
+        //     password: 'qiqiqi',
+        //   },
+        // ]}
+        postData={(data: any) => {
+          setPageCount(data.total_count);
+          return data.page_data;
+        }}
         search={false}
         pagination={{
           total: pageCount,
@@ -219,7 +255,13 @@ const AccrossConfig: React.FC<{}> = () => {
         }}
         columns={columns}
       />
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
+      <CreateForm
+        onCancel={() => {
+          handleModalVisible(false);
+          setCurrentConfigItem(null);
+        }}
+        modalVisible={createModalVisible}
+      >
         <ProTable<TableListItem, TableListItem>
           onSubmit={async (value) => {
             const success = await handleAdd(value);
@@ -230,6 +272,21 @@ const AccrossConfig: React.FC<{}> = () => {
               }
             }
           }}
+          //   form={form}
+          // form={{
+          //   initialValues: {
+          //     source_chain_id: 2,
+          //     target_chain_id: 1,
+          //     wallet_id: 18,
+          //     source_reward: 0.2,
+          //     target_reward: 0.5,
+          //     password: 'ppppppppp',
+          //   },
+          // }}
+          form={{
+            initialValues: currentConfigItem,
+          }}
+          //   formRef={form}
           rowKey="key"
           type="form"
           columns={columns}
