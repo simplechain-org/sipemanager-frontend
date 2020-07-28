@@ -42,9 +42,10 @@ const ConfigSignature = () => {
     const res = await addRewardConfig(params);
     if (res.code === 0) {
       message.success('添加成功');
-    } else {
-      message.error(res.msg || '添加失败');
     }
+    // else {
+    //   message.error(res.msg || '添加失败');
+    // }
     handleSignatureModalVisible(false);
     setIsEdit(false);
     actionRef.current?.reload();
@@ -54,9 +55,10 @@ const ConfigSignature = () => {
     const res = await updateRewardConfig(params);
     if (res.code === 0) {
       message.success('编辑成功');
-    } else {
-      message.error(res.msg || '编辑失败');
     }
+    // else {
+    //   message.error(res.msg || '编辑失败');
+    // }
     handleSignatureModalVisible(false);
     setIsEdit(false);
     actionRef.current?.reload();

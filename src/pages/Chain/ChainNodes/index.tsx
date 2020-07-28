@@ -39,9 +39,10 @@ const WalletManage: React.FC<{}> = () => {
     if (res?.code === 0) {
       actionRef.current?.reload();
       alertMsg('success', '删除成功');
-    } else {
-      alertMsg('error', '删除失败');
     }
+    // else {
+    //   alertMsg('error', '删除失败');
+    // }
   };
 
   const addHandle = async (params: any) => {
@@ -49,9 +50,10 @@ const WalletManage: React.FC<{}> = () => {
     const res = id ? await updateRule({ ...params, id }) : await addRule(params);
     if (res.code === 0) {
       alertMsg('success', id ? '编辑成功' : '添加成功');
-    } else {
-      alertMsg('error', res.msg || (id ? '编辑失败' : '添加失败'));
     }
+    // else {
+    //   alertMsg('error', res.msg || (id ? '编辑失败' : '添加失败'));
+    // }
   };
 
   useEffect(() => {

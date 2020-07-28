@@ -38,9 +38,10 @@ const ContractManage: React.FC<{}> = () => {
 
     if (res.code === 0) {
       alertMsg('success', ID ? '编辑成功' : '上传成功');
-    } else {
-      alertMsg('error', res.msg || '操作失败');
     }
+    // else {
+    //   alertMsg('error', res.msg || '操作失败');
+    // }
     handleUploadModalVisible(false);
     setCurrentItem(undefined);
     actionRef.current?.reload();
@@ -61,9 +62,10 @@ const ContractManage: React.FC<{}> = () => {
     const res = (await removeRule(ID)) || {};
     if (res.code === 0) {
       alertMsg('success', '删除成功');
-    } else {
-      alertMsg('error', res.msg || '删除失败');
     }
+    // else {
+    //   alertMsg('error', res.msg || '删除失败');
+    // }
   };
 
   const columns: ProColumns<TableListItem>[] = [
@@ -127,23 +129,23 @@ const ContractManage: React.FC<{}> = () => {
     },
     {
       formItemYype: 'textarea',
-      formItemLabel: '合约abi(选填)',
+      formItemLabel: '合约abi',
       fieldName: 'abi',
-      isRequire: false,
+      isRequire: true,
       dataSource: [],
     },
     {
       formItemYype: 'textarea',
-      formItemLabel: '合约bin(选填)',
+      formItemLabel: '合约bin',
       fieldName: 'bin',
-      isRequire: false,
+      isRequire: true,
       dataSource: [],
     },
     {
       formItemYype: 'textarea',
-      formItemLabel: '合约源码(选填)',
+      formItemLabel: '合约源码',
       fieldName: 'sol',
-      isRequire: false,
+      isRequire: true,
       dataSource: [],
     },
   ];

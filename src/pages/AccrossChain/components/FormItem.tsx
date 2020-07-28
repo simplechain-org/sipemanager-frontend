@@ -71,7 +71,7 @@ const FormItem: React.FC<FormItemProps> = (props) => {
               rules={
                 item.formItemYype === ''
                   ? []
-                  : [{ required: true, message: `请输入${item.formItemLabel}！` }]
+                  : [item?.rules || { required: true, message: `请输入${item.formItemLabel}！` }]
               }
             >
               {formType(item)}

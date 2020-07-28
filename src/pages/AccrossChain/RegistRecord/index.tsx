@@ -175,9 +175,10 @@ const RegistRecord: React.FC<{}> = () => {
     const res = await addRule(params);
     if (res.code === 0) {
       message.success('添加成功');
-    } else {
-      message.error(res.msg || '添加失败');
     }
+    // else {
+    //   message.error(res.msg || '添加失败');
+    // }
     actionRef.current?.reload();
     handleDrawerVisible(false);
   };
@@ -331,7 +332,7 @@ const RegistRecord: React.FC<{}> = () => {
           </Row>
           {renderMoreForm()}
           <Row gutter={16}>
-            <Col span={12}>
+            {/* <Col span={12}>
               <Form.Item
                 label="锚定节点质押金额"
                 name="money"
@@ -339,8 +340,8 @@ const RegistRecord: React.FC<{}> = () => {
               >
                 <Input suffix="SIPC" />
               </Form.Item>
-            </Col>
-            <Col span={12}>
+            </Col> */}
+            <Col span={24}>
               <Form.Item
                 label="最低签名数"
                 name="sign_confirm_count"

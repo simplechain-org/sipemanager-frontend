@@ -3,7 +3,7 @@ import { Button, Drawer, Divider, Form, message } from 'antd';
 import React, { useState, useRef } from 'react';
 import { history } from 'umi';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import { addRule, getNodeByChain, removeRule, queryRule, queryDetails } from './service';
+import { addRule, getNodeByChain, removeRule, queryRule, updateAnchor } from './service';
 import FormItem from '../components/FormItem';
 import { TableListItem, FormPropsType, NodeListItem } from './data';
 import CreateForm from './components/CreateForm';
@@ -17,12 +17,14 @@ const AnchorNodes = (props: PropsType) => {
   const [pageCount, setPageCount] = useState(0);
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [updateModalVisible, handleUpdateVisible] = useState<boolean>(false);
   const [drawerVisible, handleDrawerVisible] = useState(false);
   const [form] = Form.useForm();
-  const { validateFields, resetFields, setFieldsValue } = form;
+  const { validateFields, resetFields } = form;
   const [sourceNodeList, setSourceNodeList] = useState<NodeListItem[]>([]);
   const [targetNodeList, setTargetNodeList] = useState<NodeListItem[]>([]);
   const [nodeList, setNodeList] = useState({ sourceNode: [], targetNode: [] });
+  const [currentAnchor, setCurrentAnchor] = useState<TableListItem | null>(null);
 
   const onReset = () => {
     resetFields();
@@ -32,15 +34,35 @@ const AnchorNodes = (props: PropsType) => {
     const res = await addRule(params);
     if (res.code === 0) {
       message.success('添加成功');
-    } else {
-      message.error(res.msg || '添加失败');
+      handleModalVisible(false);
+      actionRef.current?.reload();
     }
+    // else {
+    //   message.error(res.msg || '添加失败');
+    // }
+  };
+
+  const updateHandle = async (params: TableListItem) => {
+    const res = await updateAnchor(params);
+    if (res.code === 0) {
+      message.success('编辑成功');
+      setCurrentAnchor(null);
+      handleUpdateVisible(false);
+      actionRef.current?.reload();
+    }
+    //  else {
+    //   message.error(res.msg || '编辑失败');
+    // }
   };
 
   const submitHandle = () => {
     validateFields()
-      .then((values) => {
-        addHandle(values as TableListItem);
+      .then((values: any) => {
+        if (currentAnchor?.ID) {
+          updateHandle({ ...values, id: currentAnchor?.ID });
+        } else {
+          addHandle(values as TableListItem);
+        }
       })
       .catch((errorInfo) => {
         console.log('校验出错~', errorInfo);
@@ -60,9 +82,10 @@ const AnchorNodes = (props: PropsType) => {
         const res = await removeRule(values as TableListItem);
         if (res.code === 0) {
           message.success('删除成功');
-        } else {
-          message.error(res.msg || '删除失败');
         }
+        // else {
+        //   message.error(res.msg || '删除失败');
+        // }
       })
       .catch((errorInfo) => {
         console.log('校验出错~', errorInfo);
@@ -86,25 +109,6 @@ const AnchorNodes = (props: PropsType) => {
     changeNodeList(value, 'target');
   };
 
-  const editHandle = async (record: any) => {
-    await queryDetails({ anchor_node_id: Number(record.ID) });
-    // const res = await queryDetails({ anchor_node_id: Number(record.ID) });
-    // setCurrentAnchor(res.data)
-    setFieldsValue({
-      source_chain_id: record.chain_a_id,
-      source_node_id: record.node_a_id, //
-      source_rpc_url: record.source_rpc_url,
-      target_chain_id: record.chain_b_id,
-      target_node_id: record.node_b_id, //
-      target_rpc_url: record.target_rpc_url,
-      anchor_name: record.anchor_node_name,
-      anchor_address: record.anchor_node_address, //
-      wallet_id: record.anchor_node_wallet, //
-      password: record.anchor_node_password, //
-    });
-    handleModalVisible(true);
-  };
-
   const deleteFormPropsList: FormPropsType[] = [
     {
       formItemYype: '',
@@ -112,7 +116,6 @@ const AnchorNodes = (props: PropsType) => {
       fieldName: '',
       isSelect: false,
       dataSource: [],
-      // isTips: true,
       extra: '删除后，将从区块链上移除该锚定节点的签名资格，请再次确定是否要删除锚定节点。',
     },
     {
@@ -241,6 +244,44 @@ const AnchorNodes = (props: PropsType) => {
     },
   ];
 
+  const updateFormPropsList: FormPropsType[] = [
+    {
+      children: <p>锚定节点名称：{currentAnchor?.anchor_node_name}</p>,
+      renderInBefore: true,
+    },
+    {
+      formItemYype: 'text',
+      formItemLabel: 'A链rpcURL',
+      fieldName: 'source_rpc_url',
+      isSelect: false,
+      dataSource: [],
+      // rules: {
+      //   pattern: new RegExp('/(http://|https://)://([w.]+/?)S*/'),
+      //   message: '只允许输入以http://或https://开头的字符',
+      // },
+      // rules: ({ getFieldValue }) => ({
+      //   validator(_, value) {
+      //     if (!value || getFieldValue('new_password') === value) {
+      //       return Promise.resolve();
+      //     }
+      //     return Promise.reject(new Error('两次密码输入不一致!'));
+      //   },
+      // }),
+    },
+    {
+      formItemYype: 'text',
+      formItemLabel: 'B链rpcURL',
+      fieldName: 'target_rpc_url',
+      isSelect: false,
+      dataSource: [],
+      children: <Divider />,
+      // rules: {
+      //   pattern: new RegExp('/(http://|https://)://([w.]+/?)S*/'),
+      //   message: '只允许输入以http://或https://开头的字符',
+      // },
+    },
+  ];
+
   const detailFormPropsList: FormPropsType[] = [
     {
       formItemYype: '',
@@ -365,7 +406,15 @@ const AnchorNodes = (props: PropsType) => {
             查看
           </a>
           <Divider type="vertical" />
-          <a onClick={() => editHandle(record)}>编辑</a>
+          <a
+            onClick={() => {
+              handleUpdateVisible(true);
+              setCurrentAnchor(record);
+              form.setFieldsValue(record);
+            }}
+          >
+            编辑
+          </a>
           <Divider type="vertical" />
           <a onClick={() => deleteModal(record)}>删除</a>
         </>
@@ -398,7 +447,6 @@ const AnchorNodes = (props: PropsType) => {
             anchor_node_id: params.anchor_node_id,
           })
         }
-        // dataSource={props.publicList.anchorNodeList}
         postData={(data: any) => {
           setPageCount(data.total_count);
           return data.page_data;
@@ -426,6 +474,15 @@ const AnchorNodes = (props: PropsType) => {
         modalTitle="新增锚定节点"
       >
         <FormItem form={form} formPropsList={formPropsList} />
+      </CreateForm>
+      <CreateForm
+        onCancel={() => handleUpdateVisible(false)}
+        onReset={onReset}
+        onClick={submitHandle}
+        modalVisible={updateModalVisible}
+        modalTitle="编辑锚定节点"
+      >
+        <FormItem form={form} formPropsList={updateFormPropsList} />
       </CreateForm>
       <Drawer
         title="查看锚定节点"
