@@ -176,9 +176,6 @@ const RegistRecord: React.FC<{}> = () => {
     if (res.code === 0) {
       message.success('添加成功');
     }
-    // else {
-    //   message.error(res.msg || '添加失败');
-    // }
     actionRef.current?.reload();
     handleDrawerVisible(false);
   };
@@ -396,12 +393,7 @@ const RegistRecord: React.FC<{}> = () => {
           ) : null}
         </Form>
       </CreateForm>
-      <DetailsForm
-        drawerVisible={drawerVisible}
-        onClose={() => handleDrawerVisible(false)}
-        // detailData={currentRecord || {}}
-        // form={form}
-      />
+      <DetailsForm drawerVisible={drawerVisible} onClose={() => handleDrawerVisible(false)} />
     </PageHeaderWrapper>
   );
 };
