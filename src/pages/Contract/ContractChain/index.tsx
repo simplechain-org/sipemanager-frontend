@@ -145,16 +145,9 @@ const ContractChain: React.FC<{}> = () => {
       ],
     },
     {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      hideInForm: true,
-      valueEnum: {},
-    },
-    {
       title: '链的名称',
-      dataIndex: 'chain_id',
-      key: 'chain_id',
+      dataIndex: 'chain_name',
+      key: 'chain_name',
       hideInSearch: true,
       hideInForm: true,
     },
