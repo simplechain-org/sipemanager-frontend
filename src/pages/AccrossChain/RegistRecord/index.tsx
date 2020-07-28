@@ -187,6 +187,7 @@ const RegistRecord: React.FC<{}> = () => {
     const { validateFields } = form;
     validateFields()
       .then((values) => {
+        console.log('pledge ', values);
         const keyList = Object.keys(values);
         const anchorAddresses: string[] = [];
         const anchorNames: string[] = [];
@@ -207,7 +208,9 @@ const RegistRecord: React.FC<{}> = () => {
           password: values.password,
           anchor_addresses: anchorAddresses,
           anchor_names: anchorNames,
+          pledge: parseInt(values.pledge, 10),
         };
+        console.log(addParams);
         addRegisteRecord(addParams);
         handleModalVisible(false);
         setCurrentHandle(undefined);
@@ -332,16 +335,16 @@ const RegistRecord: React.FC<{}> = () => {
           </Row>
           {renderMoreForm()}
           <Row gutter={16}>
-            {/* <Col span={12}>
+            <Col span={12}>
               <Form.Item
                 label="锚定节点质押金额"
-                name="money"
+                name="pledge"
                 rules={[{ required: true, message: '请输入锚定节点质押金额' }]}
               >
                 <Input suffix="SIPC" />
               </Form.Item>
-            </Col> */}
-            <Col span={24}>
+            </Col>
+            <Col span={12}>
               <Form.Item
                 label="最低签名数"
                 name="sign_confirm_count"
