@@ -187,7 +187,6 @@ const RegistRecord: React.FC<{}> = () => {
     const { validateFields } = form;
     validateFields()
       .then((values) => {
-        console.log('pledge ', values);
         const keyList = Object.keys(values);
         const anchorAddresses: string[] = [];
         const anchorNames: string[] = [];
@@ -208,9 +207,8 @@ const RegistRecord: React.FC<{}> = () => {
           password: values.password,
           anchor_addresses: anchorAddresses,
           anchor_names: anchorNames,
-          pledge: parseInt(values.pledge, 10),
+          pledge: values.pledge,
         };
-        console.log(addParams);
         addRegisteRecord(addParams);
         handleModalVisible(false);
         setCurrentHandle(undefined);
