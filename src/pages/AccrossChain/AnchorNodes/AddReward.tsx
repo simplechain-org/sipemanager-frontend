@@ -52,9 +52,10 @@ const AddReward = () => {
     const res = await rewardAdd({ ...params, coin: currentNode?.coin_name });
     if (res.code === 0) {
       message.success('添加成功');
-    } else {
-      message.error(res.msg || '添加失败');
     }
+    // else {
+    //   message.error(res.msg || '添加失败');
+    // }
     cancleHandle();
     setRemainTotal(0);
     setRewardChain(0);
@@ -104,8 +105,8 @@ const AddReward = () => {
         setRewardChain(rewardRes.data || 0);
         const sigRes = await querySignatureCount(params);
         setSignatureCount(sigRes.data || {});
-        const singleRewardRes = await queryRewardChain(params);
-        setSingleReward(singleRewardRes.data || 0);
+        // const singleRewardRes = await queryRewardChain(params);
+        setSingleReward(sigRes.data?.sign_count * rewardRes?.data || 0);
       }
     }
     getRemain();

@@ -32,9 +32,10 @@ const Punish = () => {
     const res = await addPunish(params);
     if (res.code === 0) {
       message.success('添加成功');
-    } else {
-      message.error(res.msg || '添加失败');
     }
+    //  else {
+    //   message.error(res.msg || '添加失败');
+    // }
     setCurrentNode(undefined);
     handlePunishModalVisible(false);
     actionRef.current?.reload();

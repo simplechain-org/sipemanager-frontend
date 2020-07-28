@@ -70,7 +70,8 @@ const ChainModal: FC<ChainModalProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="network_id"
-          label="ChainId"
+          // label="ChainId"
+          label="网络ID"
           rules={[
             {
               required: true,

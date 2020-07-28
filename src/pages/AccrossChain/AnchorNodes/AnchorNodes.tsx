@@ -36,9 +36,10 @@ const AnchorNodes = (props: PropsType) => {
       message.success('添加成功');
       handleModalVisible(false);
       actionRef.current?.reload();
-    } else {
-      message.error(res.msg || '添加失败');
     }
+    // else {
+    //   message.error(res.msg || '添加失败');
+    // }
   };
 
   const updateHandle = async (params: TableListItem) => {
@@ -48,9 +49,10 @@ const AnchorNodes = (props: PropsType) => {
       setCurrentAnchor(null);
       handleUpdateVisible(false);
       actionRef.current?.reload();
-    } else {
-      message.error(res.msg || '编辑失败');
     }
+    //  else {
+    //   message.error(res.msg || '编辑失败');
+    // }
   };
 
   const submitHandle = () => {
@@ -80,9 +82,10 @@ const AnchorNodes = (props: PropsType) => {
         const res = await removeRule(values as TableListItem);
         if (res.code === 0) {
           message.success('删除成功');
-        } else {
-          message.error(res.msg || '删除失败');
         }
+        // else {
+        //   message.error(res.msg || '删除失败');
+        // }
       })
       .catch((errorInfo) => {
         console.log('校验出错~', errorInfo);

@@ -29,9 +29,10 @@ const WalletManage: React.FC<{}> = () => {
       actionRef.current?.reload();
       handleModalVisible(false);
       message.success('操作成功');
-    } else {
-      message.error(addRes.msg || '操作失败');
     }
+    //  else {
+    //   message.error(addRes.msg || '操作失败');
+    // }
   };
 
   const updHandle = async (values: UpdParams) => {
@@ -41,9 +42,10 @@ const WalletManage: React.FC<{}> = () => {
       handleUpdateModalVisible(false);
       message.success('操作成功');
       setCurrentItem(undefined);
-    } else {
-      message.error(addRes.msg || '操作失败');
     }
+    //  else {
+    //   message.error(addRes.msg || '操作失败');
+    // }
   };
 
   const updClick = (record: TableListItem) => {
@@ -84,9 +86,10 @@ const WalletManage: React.FC<{}> = () => {
               if (res.code === 0) {
                 message.success('删除成功');
                 actionRef.current?.reload();
-              } else {
-                message.error(res.msg || '删除失败');
               }
+              // else {
+              //   message.error(res.msg || '删除失败');
+              // }
             }}
           >
             删除
@@ -162,6 +165,7 @@ const WalletManage: React.FC<{}> = () => {
         <Form form={form}>
           <Form.Item
             label="私钥/助记词/keystore文件"
+            labelCol={{ span: 24 }}
             name="content"
             rules={[
               {

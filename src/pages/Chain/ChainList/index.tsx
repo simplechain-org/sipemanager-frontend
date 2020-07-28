@@ -107,17 +107,19 @@ export default function ChainList() {
       if (res.code === 0) {
         alertMsg('success', '编辑成功');
         handleCancel();
-      } else {
-        alertMsg('error', res.msg || '编辑失败');
       }
+      // else {
+      //   alertMsg('error', res.msg || '编辑失败');
+      // }
     } else {
       const res: any = await addRule(values);
       if (res.code === 0) {
         alertMsg('success', '新建成功');
         handleCancel();
-      } else {
-        alertMsg('error', res.msg || '新建失败');
       }
+      // else {
+      //   alertMsg('error', res.msg || '新建失败');
+      // }
     }
   };
 

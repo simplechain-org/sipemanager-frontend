@@ -19,9 +19,10 @@ const handleAdd = async (fields: any) => {
     hide();
     if (res.code === 0) {
       message.success('添加成功');
-    } else {
-      message.error(res.msg || '添加失败');
     }
+    // else {
+    //   message.error(res.msg || '添加失败');
+    // }
     return true;
   } catch (error) {
     hide();

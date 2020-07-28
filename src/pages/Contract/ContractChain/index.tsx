@@ -185,28 +185,46 @@ const ContractChain: React.FC<{}> = () => {
       ],
     },
     {
-      title: '合约abi(选填)',
+      title: '合约abi',
       dataIndex: 'abi',
       key: 'abi',
       hideInSearch: true,
       hideInTable: true,
       valueType: 'textarea',
+      rules: [
+        {
+          required: true,
+          message: '请输入合约abi',
+        },
+      ],
     },
     {
-      title: '合约bin(选填)',
+      title: '合约bin',
       dataIndex: 'bin',
       key: 'bin',
       hideInSearch: true,
       hideInTable: true,
       valueType: 'textarea',
+      rules: [
+        {
+          required: true,
+          message: '请输入合约bin',
+        },
+      ],
     },
     {
-      title: '合约源码(选填)',
+      title: '合约源码',
       dataIndex: 'sol',
       key: 'sol',
       hideInSearch: true,
       hideInTable: true,
       valueType: 'textarea',
+      rules: [
+        {
+          required: true,
+          message: '请输入合约源码',
+        },
+      ],
     },
   ];
 
@@ -264,7 +282,7 @@ const ContractChain: React.FC<{}> = () => {
                 handleUploadModalVisible(true);
               }}
             >
-              <PlusOutlined /> 上传本地合约
+              <PlusOutlined /> 本地合约上链
             </Button>
           </Space>,
         ]}
