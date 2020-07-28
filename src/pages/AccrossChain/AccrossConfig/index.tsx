@@ -119,7 +119,6 @@ const AccrossConfig: React.FC<{}> = () => {
       renderFormItem: (_, config) => (
         <Input
           suffix={currentTarget?.coin_name || ''}
-          //   value和onChange不写则表单校验时读取不到该表单项的值，校验无法通过
           value={config.value}
           onChange={config.onChange}
         />
@@ -171,8 +170,6 @@ const AccrossConfig: React.FC<{}> = () => {
           onClick={() => {
             handleModalVisible(true);
             setCurrentConfigItem(record);
-            // form.setFieldsValue(record);
-            // form.setFieldsValue({ password: 'qqqqqqqqqq' });
           }}
         >
           编辑
@@ -210,6 +207,7 @@ const AccrossConfig: React.FC<{}> = () => {
       if (res.code === 0) {
         message.success('操作成功');
         actionRef.current?.reload();
+        handleModalVisible(false);
       }
       return true;
     } catch (error) {
@@ -235,15 +233,6 @@ const AccrossConfig: React.FC<{}> = () => {
             page_size: params.pageSize,
           })
         }
-        // dataSource={[
-        //   {
-        //     source_chain_name: 'hhhhh',
-        //     source_chain_id: 1,
-        //     target_chain_id: 3,
-        //     wallet_id: 18,
-        //     password: 'qiqiqi',
-        //   },
-        // ]}
         postData={(data: any) => {
           setPageCount(data.total_count);
           return data.page_data;
@@ -264,29 +253,11 @@ const AccrossConfig: React.FC<{}> = () => {
       >
         <ProTable<TableListItem, TableListItem>
           onSubmit={async (value) => {
-            const success = await handleAdd(value);
-            if (success) {
-              handleModalVisible(false);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
+            await handleAdd(value);
           }}
-          //   form={form}
-          // form={{
-          //   initialValues: {
-          //     source_chain_id: 2,
-          //     target_chain_id: 1,
-          //     wallet_id: 18,
-          //     source_reward: 0.2,
-          //     target_reward: 0.5,
-          //     password: 'ppppppppp',
-          //   },
-          // }}
           form={{
             initialValues: currentConfigItem,
           }}
-          //   formRef={form}
           rowKey="key"
           type="form"
           columns={columns}

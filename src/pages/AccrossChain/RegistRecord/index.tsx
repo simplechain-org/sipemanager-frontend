@@ -175,9 +175,10 @@ const RegistRecord: React.FC<{}> = () => {
     const res = await addRule(params);
     if (res.code === 0) {
       message.success('添加成功');
+      handleModalVisible(false);
+      handleDrawerVisible(false);
+      actionRef.current?.reload();
     }
-    actionRef.current?.reload();
-    handleDrawerVisible(false);
   };
 
   const onSubmit = () => {
@@ -207,7 +208,6 @@ const RegistRecord: React.FC<{}> = () => {
           pledge: values.pledge,
         };
         addRegisteRecord(addParams);
-        handleModalVisible(false);
         setCurrentHandle(undefined);
       })
       .catch((errorInfo) => {
