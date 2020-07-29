@@ -13,7 +13,7 @@ const AccrossConfig: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
   const [pageCount, setPageCount] = useState(0);
   const [chainList, setChainList] = useState([]);
-  const [walletList, setWalletList] = useState([]);
+  const [walletList, setWalletList] = useState({});
   const [currentSource, setCurrentSource] = useState<ChainListItem | undefined>(undefined);
   const [currentTarget, setCurrentTarget] = useState<ChainListItem | undefined>(undefined);
   const [currentConfigItem, setCurrentConfigItem] = useState<any>(null);
@@ -136,7 +136,7 @@ const AccrossConfig: React.FC<{}> = () => {
       title: '选择钱包账户',
       dataIndex: 'wallet_id',
       key: 'wallet_id',
-      valueEnum: { ...walletList },
+      valueEnum: walletList,
       hideInTable: true,
       rules: [
         {
@@ -189,7 +189,11 @@ const AccrossConfig: React.FC<{}> = () => {
         ...item,
       })),
     );
-    setWalletList(walletRes.data.map((item: WalletListItem) => ({ ...item, text: item.name })));
+    const enumObj = {};
+    (walletRes.data || []).forEach((item: WalletListItem) => {
+      enumObj[item.ID] = item.name;
+    });
+    setWalletList(enumObj);
   };
 
   useEffect(() => {
