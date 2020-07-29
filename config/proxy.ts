@@ -10,7 +10,10 @@ export default {
     '/api/v1/': {
       // target: 'https://preview.pro.ant.design',
       // target: 'http://192.168.4.109:8092',
-      target: 'http://192.168.3.14:8092',
+
+      // target: 'http://192.168.3.14:8092',
+      // 大敏
+      target: 'http://192.168.8.104:8092',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
