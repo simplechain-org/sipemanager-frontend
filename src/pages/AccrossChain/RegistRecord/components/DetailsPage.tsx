@@ -12,65 +12,68 @@ const DisplayForm = (prop: FormProps[], values: any) => {
   return (
     <>
       <Row gutter={16}>
-        {prop.map((item) => (
-          <Col span={24} key={item.label}>
-            <Form.Item label={item.label}>{values[item.name] || ''}</Form.Item>
-          </Col>
-        ))}
+        {prop
+          ? prop.map((item) => (
+              <Col span={24} key={item.label}>
+                <Form.Item label={item.label}>{values[item.name] || ''}</Form.Item>
+              </Col>
+            ))
+          : null}
       </Row>
     </>
   );
 };
 
-const totalList: FormProps[] = [
-  {
-    label: '日志编号',
-    name: 'ID',
-  },
-  {
-    label: '发起链',
-    name: 'source_chain_name',
-  },
-  {
-    label: '目标链',
-    name: 'target_chain_name',
-  },
-  {
-    label: '最少签名数',
-    name: 'confirm',
-  },
-  {
-    label: '锚定节点1',
-    name: 'anchor_node_a',
-  },
-  {
-    label: '锚定节点2',
-    name: 'anchor_node_b',
-  },
-  {
-    label: '状态',
-    name: 'status',
-  },
-  {
-    label: 'TX哈希',
-    name: 'tx_hash',
-  },
-];
-
 const DetailsPage: React.FC<DetailsPageProps> = () => {
   const params: { id: string } = useParams();
   const [values, setValues] = useState({});
+  const [totalList, setTotalList] = useState<FormProps[]>([]);
   useEffect(() => {
     async function fetchData() {
       if (params.id !== 'undefined') {
         const res = await queryDetails({ id: params.id });
         let resValue = {};
         if (res.data) {
+          const anchorValueObj = {};
+          res.data.anchor_nodes.forEach((item: any, index: number) => {
+            anchorValueObj[`anchor_node_${index + 1}`] = item.Name;
+          });
           resValue = {
             ...res.data,
-            anchor_node_a: res.data.anchor_nodes[0].name,
-            anchor_node_b: res.data.anchor_nodes[1].name,
+            ...anchorValueObj,
           };
+          const formLabels = (res.data.anchor_nodes || []).map((_: any, index: number) => ({
+            label: `锚定节点${index + 1}`,
+            name: `anchor_node_${index + 1}`,
+          }));
+          const formList: FormProps[] = [
+            {
+              label: '日志编号',
+              name: 'ID',
+            },
+            {
+              label: '发起链',
+              name: 'source_chain_name',
+            },
+            {
+              label: '目标链',
+              name: 'target_chain_name',
+            },
+            {
+              label: '最少签名数',
+              name: 'confirm',
+            },
+            ...formLabels,
+            {
+              label: '状态',
+              name: 'status_text',
+            },
+            {
+              label: 'TX哈希',
+              name: 'tx_hash',
+            },
+          ];
+          setTotalList(formList);
         }
         setValues(resValue);
       }

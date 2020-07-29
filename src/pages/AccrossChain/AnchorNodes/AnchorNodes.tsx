@@ -172,6 +172,7 @@ const AnchorNodes = (props: PropsType) => {
       isSelect: false,
       dataSource: [],
       children: <Divider />,
+      rules: {},
       // rules: {
       //   pattern: new RegExp('/(http://|https://)://([w.]+/?)S*/'),
       //   message: '只允许输入以http://或https://开头的字符',
@@ -209,6 +210,7 @@ const AnchorNodes = (props: PropsType) => {
       isSelect: false,
       dataSource: [],
       children: <Divider />,
+      rules: {},
       // rules: {
       //   pattern: new RegExp('/(http://|https://)://([w.]+/?)S*/'),
       //   message: '只允许输入以http://或https://开头的字符',
