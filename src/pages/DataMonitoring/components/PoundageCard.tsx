@@ -32,7 +32,8 @@ export default function PoundageCard() {
     const res = await queryChainList();
     if (res.data && res.data.page_data) {
       setChainList(res.data.page_data);
-      setCurChain(res.data.page_data[0].ID);
+      console.log(res.data.page_data[0].ID);
+      setCurChain(res.data.page_data.length ? res.data.page_data[0].ID : undefined);
     }
   };
 
