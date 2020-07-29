@@ -78,8 +78,9 @@ export default function ChainList() {
             title="确定删除吗?"
             onConfirm={async () => {
               const res = await removeRule(record.ID);
-              console.log(res);
-              alertMsg('success', '删除成功');
+              if (res.code === 0) {
+                alertMsg('success', '删除成功');
+              }
             }}
             okText="确定"
             cancelText="取消"

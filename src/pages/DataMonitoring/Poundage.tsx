@@ -66,9 +66,10 @@ export default function Poundage() {
         actionRef={actionRef}
         rowKey="AnchorId"
         beforeSearchSubmit={(params: any) => {
+          console.log('startTime:', params.Timestamp);
           return {
-            startTime: `${transTime(params.Timestamp ? params.Timestamp[0] : '')}` || '',
-            endTime: `${transTime(params.Timestamp ? params.Timestamp[1] : '')}` || '',
+            startTime: `${transTime(params.Timestamp ? params.Timestamp[1] : '') || ''}` || '',
+            endTime: `${transTime(params.Timestamp ? params.Timestamp[1] : '') || ''}` || '',
             anchorId: params.anchorId ? params.anchorId : '',
           } as Partial<TableListItem>;
         }}
