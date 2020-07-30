@@ -40,20 +40,14 @@ const WalletManage: React.FC<{}> = () => {
       actionRef.current?.reload();
       alertMsg('success', '删除成功');
     }
-    // else {
-    //   alertMsg('error', '删除失败');
-    // }
   };
 
   const addHandle = async (params: any) => {
-    const id = currentItem?.ID;
+    const id = currentItem?.id;
     const res = id ? await updateRule({ ...params, id }) : await addRule(params);
     if (res.code === 0) {
       alertMsg('success', id ? '编辑成功' : '添加成功');
     }
-    // else {
-    //   alertMsg('error', res.msg || (id ? '编辑失败' : '添加失败'));
-    // }
   };
 
   useEffect(() => {
@@ -113,7 +107,7 @@ const WalletManage: React.FC<{}> = () => {
           <Popconfirm
             title="确定删除吗？"
             onConfirm={() => {
-              handleRemove(record.ID || 0);
+              handleRemove(record.id || 0);
               console.log('删除');
             }}
             onCancel={() => {}}
@@ -149,7 +143,7 @@ const WalletManage: React.FC<{}> = () => {
       <ProTable<TableListItem>
         headerTitle="链节点列表"
         actionRef={actionRef}
-        rowKey="ID"
+        rowKey="id"
         search={false}
         toolBarRender={() => [
           <Button
@@ -182,7 +176,7 @@ const WalletManage: React.FC<{}> = () => {
           >
             <Select>
               {chainList.map((item) => (
-                <Select.Option key={item.ID} value={item.ID}>
+                <Select.Option key={item.id} value={item.id}>
                   {item.name}
                 </Select.Option>
               ))}

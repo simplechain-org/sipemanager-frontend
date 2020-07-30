@@ -30,8 +30,8 @@ export default function PoundageCard() {
     const res = await queryChainList();
     if (res.data && res.data.page_data) {
       setChainList(res.data.page_data);
-      console.log(res.data.page_data[0].ID);
-      setCurChain(res.data.page_data.length ? res.data.page_data[0].ID : undefined);
+      console.log(res.data.page_data[0].id);
+      setCurChain(res.data.page_data.length ? res.data.page_data[0].id : undefined);
     }
   };
 
@@ -109,7 +109,7 @@ export default function PoundageCard() {
             onChange={(value) => setCurChain(value)}
           >
             {chainList.map((option) => (
-              <Select.Option key={option.ID} value={option.ID}>
+              <Select.Option key={option.id} value={option.id}>
                 {option.name}
               </Select.Option>
             ))}

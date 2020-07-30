@@ -24,7 +24,7 @@ export default function ChainList() {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '创建时间',
-      dataIndex: 'CreatedAt',
+      dataIndex: 'created_at',
       valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
@@ -66,7 +66,7 @@ export default function ChainList() {
           <a
             onClick={async () => {
               setCurrent(record);
-              const res = await queryContract(record.ID);
+              const res = await queryContract(record.id);
               setContractList(res.data || []);
               setVisible(true);
             }}
@@ -77,7 +77,7 @@ export default function ChainList() {
           <Popconfirm
             title="确定删除吗?"
             onConfirm={async () => {
-              const res = await removeRule(record.ID);
+              const res = await removeRule(record.id);
               if (res.code === 0) {
                 alertMsg('success', '删除成功');
               }
@@ -98,7 +98,7 @@ export default function ChainList() {
   };
 
   const handleSubmit = async (values: Partial<TableListItem>) => {
-    const id = current ? current.ID : '';
+    const id = current ? current.id : '';
     console.log(typeof values.network_id);
     if (id) {
       const res: any = await updateRule({
@@ -129,7 +129,7 @@ export default function ChainList() {
       <ProTable<TableListItem>
         headerTitle="区块链列表"
         actionRef={actionRef}
-        rowKey="ID"
+        rowKey="id"
         toolBarRender={() => {
           return [
             <Button type="primary" onClick={() => setVisible(true)}>

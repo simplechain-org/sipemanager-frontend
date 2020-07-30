@@ -18,7 +18,7 @@ export default function Poundage() {
       const res = await queryAnchorList();
       const enumMap = {};
       res.data.page_data.map((item: AnchorNodeItem) => {
-        enumMap[item.ID] = item.anchor_node_name;
+        enumMap[item.id] = item.anchor_node_name;
         return false;
       });
       setAnchorList(enumMap);
