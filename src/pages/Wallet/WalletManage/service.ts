@@ -1,8 +1,8 @@
 import request from '@/utils/request';
-import { TableListParams, TableListItem, DeleteParams, UpdParams } from './data.d';
+import { TableListParams, DeleteParams, UpdParams } from './data.d';
 
 export async function queryRule(params?: TableListParams) {
-  return request('/api/v1/wallet/list', {
+  return request('/api/v1/wallet/list/page', {
     params,
   });
 }
@@ -14,7 +14,7 @@ export async function removeRule(params: DeleteParams) {
   });
 }
 
-export async function addRule(params: TableListItem) {
+export async function addRule(params: any) {
   return request('/api/v1/wallet', {
     method: 'POST',
     data: {

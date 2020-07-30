@@ -3,7 +3,6 @@ import { EyeInvisibleOutlined, EyeTwoTone, PlusOutlined } from '@ant-design/icon
 import React, { useState, useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import { SorterResult } from 'antd/es/table/interface';
 
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
@@ -11,7 +10,8 @@ import { TableListItem, UpdParams } from './data.d';
 import { queryRule, addRule, updateRule, removeRule } from './service';
 
 const WalletManage: React.FC<{}> = () => {
-  const [sorter, setSorter] = useState<string>('');
+  // const [sorter, setSorter] = useState<string>('');
+  const [pageCount, setPageCount] = useState<number>(0);
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [currentItem, setCurrentItem] = useState<TableListItem | undefined>(undefined);
@@ -131,15 +131,6 @@ const WalletManage: React.FC<{}> = () => {
         headerTitle="账户列表"
         actionRef={actionRef}
         rowKey="ID"
-        onChange={(_, _filter, _sorter) => {
-          const sorterResult = _sorter as SorterResult<TableListItem>;
-          if (sorterResult.field) {
-            setSorter(`${sorterResult.field}_${sorterResult.order}`);
-          }
-        }}
-        params={{
-          sorter,
-        }}
         search={false}
         toolBarRender={() => [
           <Button
@@ -153,7 +144,20 @@ const WalletManage: React.FC<{}> = () => {
           </Button>,
         ]}
         options={false}
-        request={(params) => queryRule(params)}
+        request={(params: any) =>
+          queryRule({
+            current_page: params.current,
+            page_size: params.pageSize,
+          })
+        }
+        postData={(data: any) => {
+          setPageCount(data.total_count);
+          return data.page_data;
+        }}
+        pagination={{
+          total: pageCount,
+          defaultPageSize: 10,
+        }}
         columns={columns}
       />
       <CreateForm
