@@ -1,6 +1,6 @@
 export interface TableListItem {
   anchor_node_name: string;
-  ID: number;
+  id: number;
   anchor_address: string;
   anchor_name: string;
   password: string;
@@ -20,7 +20,7 @@ export interface TableListItem {
 
 export interface FeeTableListItem {
   CreatedAt: Date;
-  ID: number;
+  id: number;
   anchorNodeId: number;
   anchorNodeName: string;
   coin: string;
@@ -32,7 +32,7 @@ export interface FeeTableListItem {
 
 export interface PunishListItem {
   CreatedAt: string;
-  ID: number;
+  id: number;
   anchor_node_id: number;
   anchor_node_name: string;
   coin: string;
@@ -41,7 +41,7 @@ export interface PunishListItem {
 }
 
 export interface RewardListItem {
-  ID: number;
+  id: number;
   created_at: Date;
   in_progress: number;
   regulation_cycle: number;
@@ -59,7 +59,8 @@ export interface FeeCollectionType {
 }
 
 export interface AnchorNodeItem {
-  ID: number;
+  id: number;
+  // ID?: number;
   anchor_node_name: string;
   chain_a: string;
   chain_a_id: number;
@@ -89,7 +90,7 @@ export interface FormPropsType {
 export interface NodeListItem {
   CreatedAt: Date;
   DeletedAt: Date;
-  ID: number;
+  id: number;
   UpdatedAt: Date;
   address: string;
   chain_id: number;
@@ -105,7 +106,7 @@ export interface NodeListItem {
 
 export interface WalletListItem {
   CreatedAt: Date;
-  ID: number;
+  id: number;
   name: string;
   address: string;
 }
@@ -113,7 +114,7 @@ export interface WalletListItem {
 export interface ChainListItem {
   CreatedAt: Date;
   DeletedAt: Date;
-  ID: number;
+  id: number;
   UpdatedAt: Date;
   coin_name: string;
   name: string;

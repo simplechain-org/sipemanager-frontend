@@ -62,11 +62,11 @@ const AddReward = () => {
     setSignatureCount({ sign_count: '', rate: '' });
   };
   const changeNode = (value: number) => {
-    setCurrentNode(nodeList.filter((item: NodeListItem) => item.ID === value)[0]);
+    setCurrentNode(nodeList.filter((item: NodeListItem) => item.id === value)[0]);
   };
 
   const changeAnchorNode = (value: number) => {
-    setCurrentAnchorNode(anchorList.filter((item: AnchorNodeItem) => item.ID === value)[0]);
+    setCurrentAnchorNode(anchorList.filter((item: AnchorNodeItem) => item.id === value)[0]);
   };
 
   useEffect(() => {
@@ -83,7 +83,7 @@ const AddReward = () => {
       setNodeList(nodeRes.data);
       setWalletList(walletRes.data);
       const enumMap = {};
-      res.data.page_data.map((item: AnchorNodeItem) => {
+      res.data.page_data.map((item: any) => {
         enumMap[item.ID] = item.anchor_node_name;
         return false;
       });
@@ -94,10 +94,10 @@ const AddReward = () => {
 
   useEffect(() => {
     async function getRemain() {
-      if (currentNode?.ID && currentAnchorNode?.ID) {
+      if (currentNode?.id && currentAnchorNode?.id) {
         const params = {
-          anchor_node_id: currentAnchorNode.ID,
-          node_id: currentNode.ID,
+          anchor_node_id: currentAnchorNode.id,
+          node_id: currentNode.id,
         };
         const res = await queryRewardTotal(params);
         setRemainTotal(res.data || 0);
@@ -110,7 +110,7 @@ const AddReward = () => {
       }
     }
     getRemain();
-  }, [currentNode?.ID, currentAnchorNode?.ID]);
+  }, [currentNode?.id, currentAnchorNode?.id]);
 
   const submitHandle = () => {
     validateFields()
@@ -125,15 +125,15 @@ const AddReward = () => {
   const thirdColumns: ProColumns<TableListItem>[] = [
     {
       title: '发放时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'created_at',
+      key: 'created_at',
       valueType: 'date',
       hideInSearch: true,
     },
     {
       title: '锚定节点名称',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'anchor_node_name',
+      key: 'anchor_node_name',
       hideInSearch: true,
     },
     {
@@ -145,8 +145,8 @@ const AddReward = () => {
     },
     {
       title: '奖励池总额',
-      dataIndex: 'total',
-      key: 'total',
+      dataIndex: 'total_reward',
+      key: 'total_reward',
       hideInSearch: true,
     },
     {
@@ -157,14 +157,14 @@ const AddReward = () => {
     },
     {
       title: '奖励值',
-      dataIndex: 'bonus',
-      key: 'bonus',
+      dataIndex: 'reward',
+      key: 'reward',
       hideInSearch: true,
     },
     {
       title: '交易哈希',
-      dataIndex: 'tx_hash',
-      key: 'tx_hash',
+      dataIndex: 'transaction_hash',
+      key: 'transaction_hash',
       hideInForm: true,
       hideInSearch: true,
     },

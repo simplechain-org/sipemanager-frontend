@@ -52,7 +52,7 @@ const Fee = () => {
       })),
     });
     const enumMap = {};
-    anchorRes.data.page_data.map((item: AnchorNodeItem) => {
+    anchorRes.data.page_data.map((item: any) => {
       enumMap[item.ID] = item.anchor_node_name;
       return false;
     });
@@ -94,10 +94,10 @@ const Fee = () => {
   const setCurrentNode = (value: number) => {
     setNode({
       node_id: value,
-      coin: publicList.nodeList.filter((item: NodeListItem) => item.ID === value)[0].coin_name,
+      coin: publicList.nodeList.filter((item: NodeListItem) => item.id === value)[0].coin_name,
     });
     setCurrentCoin(
-      publicList.nodeList.filter((item: NodeListItem) => item.ID === value)[0].coin_name || '',
+      publicList.nodeList.filter((item: NodeListItem) => item.id === value)[0].coin_name || '',
     );
   };
 
@@ -122,15 +122,15 @@ const Fee = () => {
   const secondColumns: ProColumns<FeeTableListItem>[] = [
     {
       title: '报销时间',
-      dataIndex: 'CreatedAt',
-      key: 'CreatedAt',
+      dataIndex: 'created_at',
+      key: 'created_at',
       valueType: 'date',
       hideInSearch: true,
     },
     {
       title: '锚定节点名称',
-      dataIndex: 'anchorNodeName',
-      key: 'anchorNodeName',
+      dataIndex: 'anchor_node_name',
+      key: 'anchor_node_name',
       hideInSearch: true,
     },
     {
@@ -142,8 +142,8 @@ const Fee = () => {
     },
     {
       title: '交易哈希',
-      dataIndex: 'transactionHash',
-      key: 'transactionHash',
+      dataIndex: 'transaction_hash',
+      key: 'transaction_hash',
       hideInSearch: true,
       hideInForm: true,
     },
