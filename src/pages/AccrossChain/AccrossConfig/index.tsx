@@ -33,26 +33,20 @@ const AccrossConfig: React.FC<{}> = () => {
     {
       title: '链A跨链手续费',
       dataIndex: ['source_reward', 'source_chain_coin'],
-      key: 'source_chain_coin',
+      key: 'source_reward',
       hideInForm: true,
-      render: (_, record: TableListItem) => (
-        <span>
-          {record.source_reward}
-          {record.source_chain_coin}
-        </span>
-      ),
+      render: (_, record: TableListItem) => {
+        return <span>{`${record.source_reward}${record.source_chain_coin}`}</span>;
+      },
     },
     {
       title: '链B跨链手续费',
       dataIndex: ['target_reward', 'target_chain_coin'],
-      key: 'target_chain_coin',
+      key: 'target_reward',
       hideInForm: true,
-      render: (_, record) => (
-        <span>
-          {record.target_reward}
-          {record.target_chain_coin}
-        </span>
-      ),
+      render: (_, record) => {
+        return <span>{`${record.target_reward}${record.target_chain_coin}`}</span>;
+      },
     },
     {
       title: '链A',
@@ -216,7 +210,7 @@ const AccrossConfig: React.FC<{}> = () => {
     try {
       let res;
       if (currentConfigItem) {
-        res = await updateRule(fields);
+        res = await updateRule({ ...fields, wallet_id: parseInt(fields.wallet_id, 10) });
       } else {
         res = await addRule({ ...fields, wallet_id: parseInt(fields.wallet_id, 10) });
       }

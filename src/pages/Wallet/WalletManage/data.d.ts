@@ -38,4 +38,6 @@ export interface TableListParams {
   key?: number;
   pageSize?: number;
   currentPage?: number;
+  page_size?: number;
+  current_page?: number;
 }
