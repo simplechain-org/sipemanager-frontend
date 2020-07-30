@@ -57,8 +57,11 @@ export default function Poundage() {
       title: 'Makefinish手续费',
       dataIndex: 'GasPrice',
       hideInSearch: true,
-      render: (text: React.ReactNode) =>
-        `${Web3Utils.fromWei(new BigNumber(text || '').toFixed(), 'gwei')}SIPC`,
+      render: (text: React.ReactNode, row: TableListItem) => {
+        return `${Web3Utils.fromWei(
+          new BigNumber(Number(row.GasPrice) * Number(row.GasUsed) || 0).toFixed(),
+        )}SIPC`;
+      },
     },
   ];
 

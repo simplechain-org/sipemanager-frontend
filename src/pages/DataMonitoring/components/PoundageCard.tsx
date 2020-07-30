@@ -7,9 +7,6 @@ import moment from 'moment';
 import { queryFee } from '../service';
 import { FeeChartParams, ChainItem } from '../data.d';
 
-const Web3Utils = require('web3-utils');
-const BigNumber = require('bignumber.js');
-
 const options = [
   { label: 'hour', value: 'hour' },
   { label: 'day', value: 'day' },
@@ -82,10 +79,10 @@ export default function PoundageCard() {
     },
     fee: {
       nice: true,
-      formatter: (value: number) => {
-        // console.log(value);
-        return Web3Utils.fromWei(new BigNumber(value || '').toFixed());
-      },
+      // formatter: (value: number) => {
+      //   console.log(value);
+      //   return Web3Utils.fromWei(new BigNumber(value).toFixed());
+      // },
     },
   };
 
