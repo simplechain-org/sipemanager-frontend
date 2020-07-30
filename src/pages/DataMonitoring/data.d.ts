@@ -5,6 +5,8 @@ export interface TableListItem {
   ID: number;
   coin_name: string;
   symbol: string;
+  GasPrice: string;
+  GasUsed: string;
 }
 
 export interface TableListParams {

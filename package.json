@@ -54,6 +54,7 @@
     "@ant-design/pro-layout": "^5.0.16",
     "@ant-design/pro-table": "2.3.5",
     "antd": "4.3.4",
+    "bignumber.js": "^9.0.0",
     "bizcharts": "^4.0.7",
     "classnames": "^2.2.6",
     "lodash": "^4.17.11",

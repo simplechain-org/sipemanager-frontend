@@ -37,9 +37,6 @@ const AnchorNodes = (props: PropsType) => {
       handleModalVisible(false);
       actionRef.current?.reload();
     }
-    // else {
-    //   message.error(res.msg || '添加失败');
-    // }
   };
 
   const updateHandle = async (params: TableListItem) => {
@@ -50,9 +47,6 @@ const AnchorNodes = (props: PropsType) => {
       handleUpdateVisible(false);
       actionRef.current?.reload();
     }
-    //  else {
-    //   message.error(res.msg || '编辑失败');
-    // }
   };
 
   const submitHandle = () => {
@@ -83,9 +77,6 @@ const AnchorNodes = (props: PropsType) => {
         if (res.code === 0) {
           message.success('删除成功');
         }
-        // else {
-        //   message.error(res.msg || '删除失败');
-        // }
       })
       .catch((errorInfo) => {
         console.log('校验出错~', errorInfo);
@@ -172,16 +163,19 @@ const AnchorNodes = (props: PropsType) => {
       isSelect: false,
       dataSource: [],
       children: <Divider />,
-      // rules: {
-      //   pattern: new RegExp('/(http://|https://)://([w.]+/?)S*/'),
-      //   message: '只允许输入以http://或https://开头的字符',
-      // },
-      // rules: ({ getFieldValue }) => ({
+      rules: {
+        pattern: new RegExp(/https?:\/\//g),
+        message: '只允许输入以http://或https://开头的字符',
+      },
+      // rules: () => ({
       //   validator(_, value) {
-      //     if (!value || getFieldValue('new_password') === value) {
+      //     const pattern = new RegExp(/https?:\/\//g);
+      //     console.log(value);
+      //     console.log(pattern.test(value));
+      //     if (pattern.test(value)) {
       //       return Promise.resolve();
       //     }
-      //     return Promise.reject(new Error('两次密码输入不一致!'));
+      //     return Promise.reject(new Error('只允许输入以http://或https://开头的字符'));
       //   },
       // }),
     },
@@ -209,10 +203,10 @@ const AnchorNodes = (props: PropsType) => {
       isSelect: false,
       dataSource: [],
       children: <Divider />,
-      // rules: {
-      //   pattern: new RegExp('/(http://|https://)://([w.]+/?)S*/'),
-      //   message: '只允许输入以http://或https://开头的字符',
-      // },
+      rules: {
+        pattern: new RegExp(/https?:\/\//g),
+        message: '只允许输入以http://或https://开头的字符',
+      },
     },
     {
       formItemYype: 'text',
