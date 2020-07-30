@@ -4,6 +4,7 @@ import { NodeProps } from '../data.d';
 import { queryNodeList } from '../service';
 
 const Web3Utils = require('web3-utils');
+const BigNumber = require('bignumber.js');
 
 export default function NodeCard(props: NodeProps) {
   const [loading, setLoading] = useState(true);
@@ -39,13 +40,15 @@ export default function NodeCard(props: NodeProps) {
       title: 'A链账户余额',
       dataIndex: 'SourceBalance',
       key: 'SourceBalance',
-      render: (text: React.ReactNode) => `${Web3Utils.fromWei((text || '').toString())}sipc`,
+      render: (text: React.ReactNode) =>
+        `${Web3Utils.fromWei(new BigNumber(text || '').toFixed())}sipc`,
     },
     {
       title: 'B链账户余额',
       dataIndex: 'TargetBalance',
       key: 'TargetBalance',
-      render: (text: React.ReactNode) => `${Web3Utils.fromWei((text || '').toString())}sipc`,
+      render: (text: React.ReactNode) =>
+        `${Web3Utils.fromWei(new BigNumber(text || '').toFixed())}sipc`,
     },
     {
       title: '是否在线',

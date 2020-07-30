@@ -6,6 +6,7 @@ import { TableListItem, AnchorNodeItem } from './data.d';
 import { queryFinishList, queryAnchorList } from './service';
 
 const Web3Utils = require('web3-utils');
+const BigNumber = require('bignumber.js');
 
 export default function Poundage() {
   const actionRef = useRef<ActionType>();
@@ -56,7 +57,8 @@ export default function Poundage() {
       title: 'Makefinish手续费',
       dataIndex: 'GasPrice',
       hideInSearch: true,
-      render: (text: React.ReactNode) => `${Web3Utils.fromWei((text || '').toString())}SIPC`,
+      render: (text: React.ReactNode) =>
+        `${Web3Utils.fromWei(new BigNumber(text || '').toFixed(), 'gwei')}SIPC`,
     },
   ];
 
