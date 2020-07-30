@@ -28,16 +28,16 @@ const ContractManage: React.FC<{}> = () => {
   };
 
   const addHandle = async (params: any) => {
-    const ID = currentItem ? currentItem.ID : null;
+    const id = currentItem ? currentItem.id : null;
     let res;
-    if (ID) {
-      res = await updateRule({ ...params, id: ID });
+    if (id) {
+      res = await updateRule({ ...params, id });
     } else {
       res = await addRule(params);
     }
 
     if (res.code === 0) {
-      alertMsg('success', ID ? '编辑成功' : '上传成功');
+      alertMsg('success', id ? '编辑成功' : '上传成功');
     }
     // else {
     //   alertMsg('error', res.msg || '操作失败');
@@ -58,8 +58,8 @@ const ContractManage: React.FC<{}> = () => {
       });
   };
 
-  const removeHandle = async (ID: number) => {
-    const res = (await removeRule(ID)) || {};
+  const removeHandle = async (id: number) => {
+    const res = (await removeRule(id)) || {};
     if (res.code === 0) {
       alertMsg('success', '删除成功');
     }
@@ -71,8 +71,8 @@ const ContractManage: React.FC<{}> = () => {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '创建时间',
-      dataIndex: 'CreatedAt',
-      key: 'CreatedAt',
+      dataIndex: 'created_at',
+      key: 'created_at',
       valueType: 'date',
       hideInForm: true,
       hideInSearch: true,
@@ -113,7 +113,7 @@ const ContractManage: React.FC<{}> = () => {
             编辑
           </a>
           <Divider type="vertical" />
-          <a onClick={() => removeHandle(record.ID)}>删除</a>
+          <a onClick={() => removeHandle(record.id)}>删除</a>
         </>
       ),
     },
@@ -155,7 +155,7 @@ const ContractManage: React.FC<{}> = () => {
       <ProTable<TableListItem>
         headerTitle="合约列表"
         actionRef={actionRef}
-        rowKey="ID"
+        rowKey="id"
         search={false}
         toolBarRender={() => [
           <Button
