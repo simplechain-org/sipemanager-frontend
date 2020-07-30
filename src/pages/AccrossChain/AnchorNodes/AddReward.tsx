@@ -53,20 +53,19 @@ const AddReward = () => {
     if (res.code === 0) {
       message.success('添加成功');
     }
-    // else {
-    //   message.error(res.msg || '添加失败');
-    // }
     cancleHandle();
     setRemainTotal(0);
     setRewardChain(0);
     setSignatureCount({ sign_count: '', rate: '' });
   };
   const changeNode = (value: number) => {
-    setCurrentNode(nodeList.filter((item: NodeListItem) => item.ID === value)[0]);
+    setCurrentNode(nodeList.filter((item: NodeListItem) => item.id === value)[0]);
   };
 
-  const changeAnchorNode = (value: number) => {
-    setCurrentAnchorNode(anchorList.filter((item: AnchorNodeItem) => item.ID === value)[0]);
+  const changeAnchorNode = (value: any) => {
+    setCurrentAnchorNode(
+      anchorList.filter((item: AnchorNodeItem) => item.id === parseInt(value, 10))[0],
+    );
   };
 
   useEffect(() => {
@@ -84,7 +83,7 @@ const AddReward = () => {
       setWalletList(walletRes.data);
       const enumMap = {};
       res.data.page_data.map((item: AnchorNodeItem) => {
-        enumMap[item.ID] = item.anchor_node_name;
+        enumMap[item.id] = item.anchor_node_name;
         return false;
       });
       setAnchorEnum(enumMap);
@@ -94,10 +93,10 @@ const AddReward = () => {
 
   useEffect(() => {
     async function getRemain() {
-      if (currentNode?.ID && currentAnchorNode?.ID) {
+      if (currentNode?.id && currentAnchorNode?.id) {
         const params = {
-          anchor_node_id: currentAnchorNode.ID,
-          node_id: currentNode.ID,
+          anchor_node_id: currentAnchorNode.id,
+          node_id: currentNode.id,
         };
         const res = await queryRewardTotal(params);
         setRemainTotal(res.data || 0);
@@ -110,7 +109,7 @@ const AddReward = () => {
       }
     }
     getRemain();
-  }, [currentNode?.ID, currentAnchorNode?.ID]);
+  }, [currentNode?.id, currentAnchorNode?.id]);
 
   const submitHandle = () => {
     validateFields()
@@ -125,15 +124,15 @@ const AddReward = () => {
   const thirdColumns: ProColumns<TableListItem>[] = [
     {
       title: '发放时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'created_at',
+      key: 'created_at',
       valueType: 'date',
       hideInSearch: true,
     },
     {
       title: '锚定节点名称',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'anchor_node_name',
+      key: 'anchor_node_name',
       hideInSearch: true,
     },
     {
@@ -145,26 +144,26 @@ const AddReward = () => {
     },
     {
       title: '奖励池总额',
-      dataIndex: 'total',
-      key: 'total',
+      dataIndex: 'total_reward',
+      key: 'total_reward',
       hideInSearch: true,
     },
     {
       title: '签名量占比',
-      dataIndex: 'percent',
-      key: 'percent',
+      dataIndex: 'rate',
+      key: 'rate',
       hideInSearch: true,
     },
     {
       title: '奖励值',
-      dataIndex: 'bonus',
-      key: 'bonus',
+      dataIndex: 'reward',
+      key: 'reward',
       hideInSearch: true,
     },
     {
       title: '交易哈希',
-      dataIndex: 'tx_hash',
-      key: 'tx_hash',
+      dataIndex: 'transaction_hash',
+      key: 'transaction_hash',
       hideInForm: true,
       hideInSearch: true,
     },
@@ -231,7 +230,7 @@ const AddReward = () => {
       <ProTable<TableListItem>
         headerTitle="签名奖励发放"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         options={false}
         toolBarRender={() => [
           <Button
