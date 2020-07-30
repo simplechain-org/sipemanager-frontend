@@ -3,7 +3,7 @@ export interface TableListItem {
   event: number;
   network_id: number;
   status: number;
-  tx_hash: string;
+  transaction_hash: string;
 }
 
 export interface TableListPagination {
@@ -13,9 +13,9 @@ export interface TableListPagination {
 }
 
 export interface ChainListItem {
-  CreatedAt: Date;
+  created_at: Date;
   DeletedAt: Date;
-  ID: number;
+  id: number;
   UpdatedAt: Date;
   coin_name: string;
   name: string;

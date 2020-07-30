@@ -1,7 +1,7 @@
 export interface TableListItem {
-  CreatedAt: Date;
+  created_at: Date;
   DeletedAt: Date;
-  ID: number;
+  id: number;
   UpdatedAt: Date;
   UserId: 1;
   address: string;

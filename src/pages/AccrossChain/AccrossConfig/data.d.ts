@@ -1,9 +1,16 @@
 export interface TableListItem {
-  ctx_id: string;
-  event: number;
-  network_id: number;
-  status: number;
-  tx_hash: string;
+  created_at: Date;
+  deleted_at: Date;
+  id: number;
+  source_chain_coin: string;
+  source_chain_id: number;
+  source_chain_name: string;
+  source_reward: number;
+  target_chain_coin: string;
+  target_chain_id: number;
+  target_chain_name: string;
+  target_reward: number;
+  updated_at: Date;
 }
 
 export interface TableListPagination {
@@ -15,7 +22,7 @@ export interface TableListPagination {
 export interface ChainListItem {
   CreatedAt: Date;
   DeletedAt: Date;
-  ID: number;
+  id: number;
   UpdatedAt: Date;
   coin_name: string;
   name: string;
@@ -26,9 +33,9 @@ export interface ChainListItem {
 export interface WalletListItem {
   CreatedAt: Date;
   DeletedAt: Date;
-  ID: number;
+  id: number;
   UpdatedAt: Date;
-  UserId: 1;
+  UserId: number;
   address: string;
   content: string;
   name: string;

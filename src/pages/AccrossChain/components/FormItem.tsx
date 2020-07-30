@@ -46,7 +46,7 @@ const FormItem: React.FC<FormItemProps> = (props) => {
           >
             {item.dataSource &&
               item.dataSource.map((option) => (
-                <Option value={option.ID} key={`${option.ID}${option.name}`}>
+                <Option value={option.id} key={`${option.id || option.ID}${option.name}`}>
                   {option.name}
                 </Option>
               ))}

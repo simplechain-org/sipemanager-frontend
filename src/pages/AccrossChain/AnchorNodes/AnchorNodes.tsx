@@ -52,8 +52,8 @@ const AnchorNodes = (props: PropsType) => {
   const submitHandle = () => {
     validateFields()
       .then((values: any) => {
-        if (currentAnchor?.ID) {
-          updateHandle({ ...values, id: currentAnchor?.ID });
+        if (currentAnchor?.id) {
+          updateHandle({ ...values, id: currentAnchor?.id });
         } else {
           addHandle(values as TableListItem);
         }
@@ -83,8 +83,8 @@ const AnchorNodes = (props: PropsType) => {
       });
   };
 
-  const changeNodeList = async (ID: number, type: string) => {
-    const res = await getNodeByChain({ chain_id: ID });
+  const changeNodeList = async (id: number, type: string) => {
+    const res = await getNodeByChain({ chain_id: id });
     if (type === 'source') {
       setSourceNodeList(res.data);
     } else {
@@ -104,7 +104,7 @@ const AnchorNodes = (props: PropsType) => {
     {
       formItemYype: '',
       formItemLabel: '',
-      fieldName: '',
+      fieldName: 'word_tip',
       isSelect: false,
       dataSource: [],
       extra: '删除后，将从区块链上移除该锚定节点的签名资格，请再次确定是否要删除锚定节点。',
@@ -394,7 +394,7 @@ const AnchorNodes = (props: PropsType) => {
         <>
           <a
             onClick={() => {
-              history.push(`/accrossChain/anchor-nodes/details/${record.ID}`);
+              history.push(`/accrossChain/anchor-nodes/details/${record.id}`);
             }}
           >
             查看

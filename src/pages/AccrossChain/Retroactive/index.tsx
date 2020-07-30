@@ -8,10 +8,6 @@ import CreateForm from './components/CreateForm';
 import { TableListItem, ChainListItem } from './data';
 import { queryRule, addRule, queryChain } from './service';
 
-/**
- * 添加节点
- * @param fields
- */
 const handleAdd = async (fields: any) => {
   const hide = message.loading('正在添加');
   try {
@@ -20,9 +16,6 @@ const handleAdd = async (fields: any) => {
     if (res.code === 0) {
       message.success('添加成功');
     }
-    // else {
-    //   message.error(res.msg || '添加失败');
-    // }
     return true;
   } catch (error) {
     hide();
@@ -48,15 +41,15 @@ const Retroactive: React.FC<{}> = () => {
     },
     {
       title: '登记时间',
-      dataIndex: 'CreatedAt',
-      key: 'CreatedAt',
+      dataIndex: 'created_at',
+      key: 'created_at',
       hideInSearch: true,
       hideInForm: true,
     },
     {
       title: '原交易哈希',
-      dataIndex: 'tx_hash',
-      key: 'tx_hash',
+      dataIndex: 'transaction_hash',
+      key: 'transaction_hash',
       hideInSearch: true,
       rules: [
         {
@@ -105,7 +98,7 @@ const Retroactive: React.FC<{}> = () => {
     setChainList(
       res.data.page_data.map((item: ChainListItem) => ({
         text: item.name,
-        value: item.ID,
+        value: item.id,
         ...item,
       })),
     );
@@ -127,7 +120,6 @@ const Retroactive: React.FC<{}> = () => {
           </Button>,
         ]}
         options={false}
-        // request={(params) => queryRule(params)}
         request={(params: any) =>
           queryRule({
             current_page: params.current,

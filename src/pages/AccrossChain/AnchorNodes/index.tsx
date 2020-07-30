@@ -14,7 +14,7 @@ const AnchorNode: React.FC<{}> = () => {
     const anchorRes = await queryRule();
     const enumMap = {};
     anchorRes.data.page_data.map((item: TableListItem) => {
-      enumMap[item.ID] = item.anchor_node_name;
+      enumMap[item.id] = item.anchor_node_name;
       return false;
     });
     setPublicList({

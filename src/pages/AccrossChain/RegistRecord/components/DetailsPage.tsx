@@ -36,7 +36,7 @@ const DetailsPage: React.FC<DetailsPageProps> = () => {
         if (res.data) {
           const anchorValueObj = {};
           res.data.anchor_nodes.forEach((item: any, index: number) => {
-            anchorValueObj[`anchor_node_${index + 1}`] = item.Name;
+            anchorValueObj[`anchor_node_${index + 1}`] = item.name;
           });
           resValue = {
             ...res.data,
@@ -49,7 +49,7 @@ const DetailsPage: React.FC<DetailsPageProps> = () => {
           const formList: FormProps[] = [
             {
               label: '日志编号',
-              name: 'ID',
+              name: 'id',
             },
             {
               label: '发起链',
