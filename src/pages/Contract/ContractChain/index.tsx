@@ -42,7 +42,7 @@ const ContractChain: React.FC<{}> = () => {
     const walletRes = await queryWallet();
     const contractRes = await queryContract();
     setChainList({
-      ...(chainRes.data.page_data || []).map((item: ChainListItem) => ({
+      ...(chainRes.data || []).map((item: ChainListItem) => ({
         text: item.name,
         value: item.id,
       })),
@@ -52,7 +52,7 @@ const ContractChain: React.FC<{}> = () => {
       walletRes.data.map((item: WalletListItem) => ({ label: item.name, value: item.id })),
     );
     setContractList(
-      contractRes.data.page_data.map((item: ContractListItem) => ({
+      contractRes.data.map((item: ContractListItem) => ({
         label: item.name,
         value: item.id,
       })),

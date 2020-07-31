@@ -3,7 +3,14 @@ import { Button, Form, message, Divider } from 'antd';
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { queryFee, addFee, queryChargeFee, queryNode, queryRule, queryWallet } from './service';
+import {
+  queryFee,
+  addFee,
+  queryChargeFee,
+  queryNodeAll,
+  queryAnchorAll,
+  queryWalletAll,
+} from './service';
 import FormItem from '../components/FormItem';
 import {
   FeeTableListItem,
@@ -39,21 +46,21 @@ const Fee = () => {
   };
 
   const getOptionList = async () => {
-    const nodeRes = await queryNode();
-    const walletRes = await queryWallet();
-    const anchorRes = await queryRule();
+    const nodeRes = await queryNodeAll();
+    const walletRes = await queryWalletAll();
+    const anchorRes = await queryAnchorAll();
     setPublicList({
       nodeList: nodeRes.data || [],
       wallestList: walletRes.data || [],
-      anchorNodeList: anchorRes.data.page_data.map((item: AnchorNodeItem) => ({
+      anchorNodeList: anchorRes.data.map((item: AnchorNodeItem) => ({
         text: item.anchor_node_name,
-        name: item.anchor_node_name,
+        name: item.name,
         ...item,
       })),
     });
     const enumMap = {};
-    anchorRes.data.page_data.map((item: AnchorNodeItem) => {
-      enumMap[item.id] = item.anchor_node_name;
+    anchorRes.data.map((item: AnchorNodeItem) => {
+      enumMap[item.id] = item.name;
       return false;
     });
     setAnchorEnum(enumMap);

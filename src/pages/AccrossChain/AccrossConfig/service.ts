@@ -27,9 +27,9 @@ export async function updateRule(params: TableListItem) {
 }
 
 export async function queryChain() {
-  return request('/api/v1/chain/list', {});
+  return request('/api/v1/chain/list/all', {});
 }
 
 export async function queryWallet() {
-  return request('/api/v1/wallet/list', {});
+  return request('/api/v1/wallet/list/all', {});
 }

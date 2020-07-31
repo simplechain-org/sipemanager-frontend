@@ -163,3 +163,23 @@ export async function queryReward(params: any) {
     params,
   });
 }
+
+// 查询所有钱包
+export async function queryWalletAll() {
+  return request('/api/v1/wallet/list/all', {});
+}
+// 查询所有链
+export async function queryChainAll() {
+  return request('/api/v1/chain/list/all', {});
+}
+// 查询所有节点
+export async function queryNodeAll() {
+  return request('/api/v1/node/list/all', {});
+}
+
+// 查询所有锚定节点
+export async function queryAnchorAll(params?: QueryParamsType) {
+  return request('/api/v1/anchor/node/list/all', {
+    params,
+  });
+}

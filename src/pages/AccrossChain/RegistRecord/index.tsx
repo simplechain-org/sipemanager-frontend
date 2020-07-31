@@ -146,7 +146,7 @@ const RegistRecord: React.FC<{}> = () => {
   const getChainList = async () => {
     const res = await queryChain();
     const walletRes = await queryWallet();
-    setChainList(res.data.page_data);
+    setChainList(res.data);
     setWalletList(walletRes.data);
   };
 
@@ -336,7 +336,7 @@ const RegistRecord: React.FC<{}> = () => {
                 name="pledge"
                 rules={[{ required: true, message: '请输入锚定节点质押金额' }]}
               >
-                <Input suffix="SIPC" />
+                <Input suffix="SIPC(Wei)" />
               </Form.Item>
             </Col>
             <Col span={12}>

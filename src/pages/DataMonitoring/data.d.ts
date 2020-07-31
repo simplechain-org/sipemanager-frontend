@@ -40,7 +40,8 @@ export interface FinishParams {
 
 export interface AnchorNodeItem {
   id: number;
-  anchor_node_name: string;
+  name?: string;
+  anchor_node_name?: string;
   chain_a: string;
   chain_a_id: number;
   chain_b: string;

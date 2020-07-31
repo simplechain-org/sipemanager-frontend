@@ -16,6 +16,7 @@ const WalletManage: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm();
   const { setFieldsValue, validateFields } = form;
+  const [pageCount, setPageCount] = useState(0);
   const [chainList, setChainList] = useState<ChainListItem[]>([]);
 
   const onReset = () => {
@@ -31,7 +32,7 @@ const WalletManage: React.FC<{}> = () => {
 
   const getChainList = async () => {
     const res = await queryChain();
-    setChainList(res.data.page_data);
+    setChainList(res.data);
   };
 
   const handleRemove = async (value: number) => {
@@ -158,7 +159,20 @@ const WalletManage: React.FC<{}> = () => {
           </Button>,
         ]}
         options={false}
-        request={(params) => queryRule(params)}
+        request={(params: any) =>
+          queryRule({
+            page_size: params.pageSize || 10,
+            current_page: params.current || 1,
+          })
+        }
+        postData={(data: any) => {
+          setPageCount(data.total_count);
+          return data.page_data;
+        }}
+        pagination={{
+          total: pageCount,
+          defaultPageSize: 10,
+        }}
         columns={columns}
       />
       <UpdateForm
