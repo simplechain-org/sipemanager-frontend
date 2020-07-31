@@ -5,6 +5,7 @@
 import { extend } from 'umi-request';
 import { Modal, notification, message } from 'antd';
 import { setAuthority } from './authority';
+import { msgConstant } from './msgConstant';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -80,8 +81,9 @@ request.interceptors.response.use(async (response) => {
       },
     });
   }
-  if (data.code === -1) {
-    message.error(data.msg || '请求失败，请稍候再试');
+
+  if (data.code !== 0) {
+    message.error(msgConstant[data.code] || '请求失败，请稍后再试');
   }
   return response;
 });

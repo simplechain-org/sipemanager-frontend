@@ -63,6 +63,7 @@ const ContractManage: React.FC<{}> = () => {
     if (res.code === 0) {
       alertMsg('success', '删除成功');
     }
+    actionRef.current?.reload();
     // else {
     //   alertMsg('error', res.msg || '删除失败');
     // }
