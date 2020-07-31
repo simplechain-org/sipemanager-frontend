@@ -44,17 +44,17 @@ const ContractChain: React.FC<{}> = () => {
     setChainList({
       ...(chainRes.data.page_data || []).map((item: ChainListItem) => ({
         text: item.name,
-        value: item.ID,
+        value: item.id,
       })),
     });
-    setNodeList(res.data.map((item: NodeListItem) => ({ label: item.name, value: item.ID })));
+    setNodeList(res.data.map((item: NodeListItem) => ({ label: item.name, value: item.id })));
     setWalletList(
-      walletRes.data.map((item: WalletListItem) => ({ label: item.name, value: item.ID })),
+      walletRes.data.map((item: WalletListItem) => ({ label: item.name, value: item.id })),
     );
     setContractList(
       contractRes.data.page_data.map((item: ContractListItem) => ({
         label: item.name,
-        value: item.ID,
+        value: item.id,
       })),
     );
   };
@@ -112,8 +112,8 @@ const ContractChain: React.FC<{}> = () => {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '创建时间',
-      dataIndex: 'CreatedAt',
-      key: 'CreatedAt',
+      dataIndex: 'created_at',
+      key: 'created_at',
       valueType: 'date',
       hideInSearch: true,
       hideInForm: true,

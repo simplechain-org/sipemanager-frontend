@@ -26,8 +26,8 @@ const RegistRecord: React.FC<{}> = () => {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '注册时间',
-      dataIndex: 'CreatedAt',
-      key: 'CreatedAt',
+      dataIndex: 'created_at',
+      key: 'created_at',
       valueType: 'date',
     },
     {
@@ -76,7 +76,7 @@ const RegistRecord: React.FC<{}> = () => {
 
           <a
             onClick={() => {
-              history.push(`/accrossChain/regist-record/details/${record.ID}`);
+              history.push(`/accrossChain/regist-record/details/${record.id}`);
             }}
           >
             查看
@@ -220,7 +220,7 @@ const RegistRecord: React.FC<{}> = () => {
       <ProTable<TableListItem>
         headerTitle="跨链注册记录列表"
         actionRef={actionRef}
-        rowKey="tx_hash"
+        rowKey="id"
         onChange={() => {}}
         toolBarRender={() => [
           <Button
@@ -273,7 +273,7 @@ const RegistRecord: React.FC<{}> = () => {
               >
                 <Select onChange={changeSourceChain}>
                   {chainList.map((item: ChainListType) => (
-                    <Select.Option value={item.ID} key={item.ID}>
+                    <Select.Option value={item.id} key={item.id}>
                       {item.name}
                     </Select.Option>
                   ))}
@@ -288,7 +288,7 @@ const RegistRecord: React.FC<{}> = () => {
               >
                 <Select>
                   {sourceNodeList.map((item: NodeItem) => (
-                    <Select.Option value={item.ID} key={item.ID}>
+                    <Select.Option value={item.id} key={item.id}>
                       {item.name}
                     </Select.Option>
                   ))}
@@ -305,7 +305,7 @@ const RegistRecord: React.FC<{}> = () => {
               >
                 <Select onChange={changeTargetChain}>
                   {chainList.map((item: ChainListType) => (
-                    <Select.Option value={item.ID} key={item.ID}>
+                    <Select.Option value={item.id} key={item.id}>
                       {item.name}
                     </Select.Option>
                   ))}
@@ -320,7 +320,7 @@ const RegistRecord: React.FC<{}> = () => {
               >
                 <Select>
                   {targetNodeList.map((item: NodeItem) => (
-                    <Select.Option value={item.ID} key={item.ID}>
+                    <Select.Option value={item.id} key={item.id}>
                       {item.name}
                     </Select.Option>
                   ))}
@@ -370,7 +370,7 @@ const RegistRecord: React.FC<{}> = () => {
                   >
                     <Select>
                       {walletList.map((item: WalletListItem) => (
-                        <Select.Option value={item.ID} key={item.ID}>
+                        <Select.Option value={item.id} key={item.id}>
                           {item.name}
                         </Select.Option>
                       ))}

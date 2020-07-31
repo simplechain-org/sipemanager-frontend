@@ -2,7 +2,7 @@ export interface TableListItem {
   name: string;
   createdAt: string;
   network_id: number;
-  ID: number;
+  id: number;
   coin_name: string;
   symbol: string;
   GasPrice: string;
@@ -39,7 +39,7 @@ export interface FinishParams {
 }
 
 export interface AnchorNodeItem {
-  ID: number;
+  id: number;
   anchor_node_name: string;
   chain_a: string;
   chain_a_id: number;
@@ -75,6 +75,6 @@ export interface NodeProps {
 }
 
 export interface ChainItem {
-  ID: number;
+  id: number;
   name: string;
 }

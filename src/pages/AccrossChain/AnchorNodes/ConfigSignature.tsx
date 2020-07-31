@@ -76,7 +76,7 @@ const ConfigSignature = () => {
         };
         const editParams = {
           ...values,
-          id: currentReward?.ID,
+          id: currentReward?.id,
           regulation_cycle: parseInt(values.regulation_cycle, 10),
         };
         if (isEdit) {
@@ -95,7 +95,7 @@ const ConfigSignature = () => {
   };
 
   const deleteHandle = async (record: RewardListItem) => {
-    const res = await deleteReward(record.ID);
+    const res = await deleteReward(record.id);
     if (res.code === 0) {
       message.success('删除成功');
       actionRef.current?.reload();
@@ -243,7 +243,7 @@ const ConfigSignature = () => {
       <ProTable<RewardListItem>
         headerTitle="签名奖励配置"
         actionRef={actionRef}
-        rowKey="ID"
+        rowKey="id"
         options={false}
         toolBarRender={() => [
           <Button

@@ -66,7 +66,7 @@ const Punish = () => {
     });
     const enumMap = {};
     anchorRes.data.page_data.map((item: AnchorNodeItem) => {
-      enumMap[item.ID] = item.anchor_node_name;
+      enumMap[item.id] = item.anchor_node_name;
       return false;
     });
     setAnchorEnum(enumMap);
@@ -78,8 +78,8 @@ const Punish = () => {
   const fourthColumns: ProColumns<PunishListItem>[] = [
     {
       title: '时间',
-      dataIndex: 'CreatedAt',
-      key: 'CreatedAt',
+      dataIndex: 'created_at',
+      key: 'created_at',
       valueType: 'date',
       hideInSearch: true,
     },
@@ -135,7 +135,7 @@ const Punish = () => {
   };
 
   const changeNode = (value: number) => {
-    setCurrentNode(publicList.nodeList.filter((item: NodeListItem) => item.ID === value)[0]);
+    setCurrentNode(publicList.nodeList.filter((item: NodeListItem) => item.id === value)[0]);
   };
 
   const fiftyFormPropsList: FormPropsType[] = [
@@ -164,15 +164,15 @@ const Punish = () => {
       handle: changeDisplay,
       dataSource: [
         {
-          ID: 'token',
+          id: 'token',
           name: '扣减质押Token',
         },
         {
-          ID: 'suspend',
+          id: 'suspend',
           name: '暂停签名资格',
         },
         {
-          ID: 'recovery',
+          id: 'recovery',
           name: '恢复签名资格',
         },
       ],
@@ -199,7 +199,7 @@ const Punish = () => {
       <ProTable<PunishListItem>
         headerTitle="惩罚管理列表"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         options={false}
         toolBarRender={() => [
           <Button

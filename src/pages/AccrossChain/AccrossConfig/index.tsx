@@ -60,11 +60,11 @@ const AccrossConfig: React.FC<{}> = () => {
         },
       ],
       renderFormItem: (_, config) => {
-        setCurrentSource(chainList.find((item: ChainListItem) => item.ID === config.value));
+        setCurrentSource(chainList.find((item: ChainListItem) => item.id === config.value));
         return (
           <Select onChange={config.onChange} value={config.value}>
             {chainList.map((item: ChainListItem) => (
-              <Select.Option value={item.ID} key={item.ID}>
+              <Select.Option value={item.id} key={item.id}>
                 {item.name}
               </Select.Option>
             ))}
@@ -79,11 +79,11 @@ const AccrossConfig: React.FC<{}> = () => {
       key: 'target_chain_id',
       hideInTable: true,
       renderFormItem: (_, config) => {
-        setCurrentTarget(chainList.find((item: ChainListItem) => item.ID === config.value));
+        setCurrentTarget(chainList.find((item: ChainListItem) => item.id === config.value));
         return (
           <Select onChange={config.onChange} value={config.value}>
             {chainList.map((item: ChainListItem) => (
-              <Select.Option value={item.ID} key={item.ID}>
+              <Select.Option value={item.id} key={item.id}>
                 {item.name}
               </Select.Option>
             ))}
@@ -191,13 +191,13 @@ const AccrossConfig: React.FC<{}> = () => {
     setChainList(
       res.data.page_data.map((item: ChainListItem) => ({
         text: item.name,
-        value: item.ID,
+        value: item.id,
         ...item,
       })),
     );
     const enumObj = {};
     (walletRes.data || []).forEach((item: WalletListItem) => {
-      enumObj[item.ID] = item.name;
+      enumObj[item.id] = item.name;
     });
     setWalletList(enumObj);
   };
@@ -230,7 +230,7 @@ const AccrossConfig: React.FC<{}> = () => {
       <ProTable<TableListItem>
         headerTitle="跨链配置列表"
         actionRef={actionRef}
-        rowKey="ID"
+        rowKey="id"
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
@@ -268,7 +268,7 @@ const AccrossConfig: React.FC<{}> = () => {
           form={{
             initialValues: currentConfigItem,
           }}
-          rowKey="key"
+          rowKey="id"
           type="form"
           columns={columns}
         />

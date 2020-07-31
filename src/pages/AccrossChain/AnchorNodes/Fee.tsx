@@ -52,8 +52,8 @@ const Fee = () => {
       })),
     });
     const enumMap = {};
-    anchorRes.data.page_data.map((item: any) => {
-      enumMap[item.ID] = item.anchor_node_name;
+    anchorRes.data.page_data.map((item: AnchorNodeItem) => {
+      enumMap[item.id] = item.anchor_node_name;
       return false;
     });
     setAnchorEnum(enumMap);
@@ -149,10 +149,16 @@ const Fee = () => {
     },
     {
       title: '报销手续费',
-      dataIndex: 'fee',
+      dataIndex: ['fee', 'coin'],
       key: 'fee',
       hideInSearch: true,
       hideInForm: true,
+      render: (_, record) => (
+        <span>
+          {record.fee}
+          {record.coin}
+        </span>
+      ),
     },
   ];
 
@@ -208,7 +214,7 @@ const Fee = () => {
       <ProTable<FeeTableListItem>
         headerTitle="手续费列表"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         options={false}
         toolBarRender={() => [
           <Button

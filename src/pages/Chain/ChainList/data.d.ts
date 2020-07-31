@@ -1,8 +1,8 @@
 export interface TableListItem {
   name: string;
-  createdAt: string;
+  created_at: string;
   network_id: number;
-  ID: number;
+  id: number;
   coin_name: string;
   symbol: string;
 }

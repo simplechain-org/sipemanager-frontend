@@ -53,9 +53,6 @@ const AddReward = () => {
     if (res.code === 0) {
       message.success('添加成功');
     }
-    // else {
-    //   message.error(res.msg || '添加失败');
-    // }
     cancleHandle();
     setRemainTotal(0);
     setRewardChain(0);
@@ -65,8 +62,10 @@ const AddReward = () => {
     setCurrentNode(nodeList.filter((item: NodeListItem) => item.id === value)[0]);
   };
 
-  const changeAnchorNode = (value: number) => {
-    setCurrentAnchorNode(anchorList.filter((item: AnchorNodeItem) => item.id === value)[0]);
+  const changeAnchorNode = (value: any) => {
+    setCurrentAnchorNode(
+      anchorList.filter((item: AnchorNodeItem) => item.id === parseInt(value, 10))[0],
+    );
   };
 
   useEffect(() => {
@@ -83,8 +82,8 @@ const AddReward = () => {
       setNodeList(nodeRes.data);
       setWalletList(walletRes.data);
       const enumMap = {};
-      res.data.page_data.map((item: any) => {
-        enumMap[item.ID] = item.anchor_node_name;
+      res.data.page_data.map((item: AnchorNodeItem) => {
+        enumMap[item.id] = item.anchor_node_name;
         return false;
       });
       setAnchorEnum(enumMap);
@@ -151,8 +150,8 @@ const AddReward = () => {
     },
     {
       title: '签名量占比',
-      dataIndex: 'percent',
-      key: 'percent',
+      dataIndex: 'rate',
+      key: 'rate',
       hideInSearch: true,
     },
     {
@@ -231,7 +230,7 @@ const AddReward = () => {
       <ProTable<TableListItem>
         headerTitle="签名奖励发放"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         options={false}
         toolBarRender={() => [
           <Button

@@ -1,6 +1,6 @@
 export interface TableListItem {
-  ID: number;
-  CreatedAt: Date;
+  id: number;
+  created_at: Date;
   DeletedAt: Date;
   UpdatedAt: Date;
   address: string;
@@ -27,17 +27,17 @@ export interface AddRegisteType {
 
 export interface ChainListType {
   name: string;
-  createdAt: string;
+  created_at: string;
   network_id: number;
-  ID: number;
+  id: number;
   coin_name: string;
   symbol: string;
 }
 
 export interface NodeItem {
-  CreatedAt: Date;
+  created_at: Date;
   DeletedAt: Date;
-  ID: number;
+  id: number;
   UpdatedAt: Date;
   address: string;
   chain_id: number;

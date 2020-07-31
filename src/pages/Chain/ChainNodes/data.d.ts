@@ -1,7 +1,7 @@
 export interface TableListItem {
   created_at: Date;
   DeletedAt: Date;
-  ID: number;
+  id: number;
   UpdatedAt: Date;
   address: string;
   chain_id: number;
@@ -17,7 +17,7 @@ export interface TableListItem {
 export interface ChainListItem {
   CreatedAt: Date;
   DeletedAt: Date;
-  ID: number;
+  id: number;
   UpdatedAt: Date;
   coin_name: string;
   name: string;

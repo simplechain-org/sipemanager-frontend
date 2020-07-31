@@ -30,9 +30,6 @@ const WalletManage: React.FC<{}> = () => {
       handleModalVisible(false);
       message.success('操作成功');
     }
-    //  else {
-    //   message.error(addRes.msg || '操作失败');
-    // }
   };
 
   const updHandle = async (values: UpdParams) => {
@@ -43,9 +40,6 @@ const WalletManage: React.FC<{}> = () => {
       message.success('操作成功');
       setCurrentItem(undefined);
     }
-    //  else {
-    //   message.error(addRes.msg || '操作失败');
-    // }
   };
 
   const updClick = (record: TableListItem) => {
@@ -57,8 +51,8 @@ const WalletManage: React.FC<{}> = () => {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '创建时间',
-      dataIndex: 'CreatedAt',
-      key: 'CreatedAt',
+      dataIndex: 'created_at',
+      key: 'created_at',
       valueType: 'date',
       hideInForm: true,
     },
@@ -82,14 +76,11 @@ const WalletManage: React.FC<{}> = () => {
         <>
           <a
             onClick={async () => {
-              const res = await removeRule({ wallet_id: record.ID });
+              const res = await removeRule({ wallet_id: record.id });
               if (res.code === 0) {
                 message.success('删除成功');
                 actionRef.current?.reload();
               }
-              // else {
-              //   message.error(res.msg || '删除失败');
-              // }
             }}
           >
             删除
@@ -110,9 +101,9 @@ const WalletManage: React.FC<{}> = () => {
   const submitHandle = () => {
     validateFields()
       .then((values) => {
-        if (currentItem?.ID) {
+        if (currentItem?.id) {
           updHandle({
-            wallet_id: currentItem?.ID,
+            wallet_id: currentItem?.id,
             old_password: values.old_password,
             new_password: values.new_password,
           });
@@ -130,7 +121,7 @@ const WalletManage: React.FC<{}> = () => {
       <ProTable<TableListItem>
         headerTitle="账户列表"
         actionRef={actionRef}
-        rowKey="ID"
+        rowKey="id"
         search={false}
         toolBarRender={() => [
           <Button

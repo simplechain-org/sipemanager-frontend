@@ -1,7 +1,7 @@
 export interface TableListItem {
-  CreatedAt: Date;
+  created_at: Date;
   DeletedAt: Date;
-  ID: number;
+  id: number;
   UpdatedAt: Date;
   address: string;
   chain_id: number;
@@ -19,9 +19,9 @@ export interface FormPropsType {
 }
 
 export interface ChainListItem {
-  CreatedAt: Date;
+  created_at: Date;
   DeletedAt: Date;
-  ID: number;
+  id: number;
   UpdatedAt: Date;
   coin_name: string;
   name: string;
@@ -30,9 +30,9 @@ export interface ChainListItem {
 }
 
 export interface NodeListItem {
-  CreatedAt: Date;
+  created_at: Date;
   DeletedAt: Date;
-  ID: number;
+  id: number;
   UpdatedAt: Date;
   address: string;
   chain_id: number;
@@ -46,9 +46,9 @@ export interface NodeListItem {
 }
 
 export interface ContractListItem {
-  CreatedAt: Date;
+  created_at: Date;
   DeletedAt: Date;
-  ID: number;
+  id: number;
   UpdatedAt: Date;
   abi: string;
   bin: string;
@@ -58,8 +58,8 @@ export interface ContractListItem {
 }
 
 export interface WalletListItem {
-  CreatedAt: Date;
-  ID: number;
+  created_at: Date;
+  id: number;
   name: string;
   address: string;
 }
