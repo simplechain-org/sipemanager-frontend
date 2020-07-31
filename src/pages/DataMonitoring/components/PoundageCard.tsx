@@ -41,7 +41,7 @@ export default function PoundageCard() {
       let formatStr = '';
       switch (filterType) {
         case 'hour':
-          formatStr = 'YYYY-MM-DD hh:mm:ss';
+          formatStr = 'YYYY-MM-DD HH:mm:ss';
           startTime = moment().subtract(24, 'hours');
           break;
         case 'day':
