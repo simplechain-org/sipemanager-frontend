@@ -1,5 +1,5 @@
 export interface TableListItem {
-  ctx_id: string;
+  id: string;
   event: number;
   network_id: number;
   status: number;

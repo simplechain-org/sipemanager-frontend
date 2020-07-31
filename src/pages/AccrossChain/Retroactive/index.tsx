@@ -27,8 +27,8 @@ const handleAdd = async (fields: any) => {
 const Retroactive: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [pageCount] = useState(0);
   // const [pageCount, setPageCount] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
   const [chainList, setChainList] = useState([]);
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -113,7 +113,7 @@ const Retroactive: React.FC<{}> = () => {
       <ProTable<TableListItem>
         headerTitle="补签登记记录"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
@@ -122,15 +122,15 @@ const Retroactive: React.FC<{}> = () => {
         options={false}
         request={(params: any) =>
           queryRule({
-            current_page: params.current,
-            page_size: params.pageSize,
-            status: params.status,
+            current_page: params.current || 1,
+            page_size: params.pageSize || 10,
+            // status: params.status,
           })
         }
-        // postData={(data) => {
-        //   setPageCount(data.total_count);
-        //   return data
-        // }}
+        postData={(data: any) => {
+          setPageCount(data.total_count);
+          return data;
+        }}
         search={false}
         pagination={{
           total: pageCount,
@@ -149,7 +149,7 @@ const Retroactive: React.FC<{}> = () => {
               }
             }
           }}
-          rowKey="key"
+          rowKey="id"
           type="form"
           columns={columns}
         />
