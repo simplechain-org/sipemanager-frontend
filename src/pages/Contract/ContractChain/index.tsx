@@ -178,7 +178,7 @@ const ContractChain: React.FC<{}> = () => {
       ],
     },
     {
-      title: '合约abi',
+      title: '合约ABI',
       dataIndex: 'abi',
       key: 'abi',
       hideInSearch: true,
@@ -187,12 +187,12 @@ const ContractChain: React.FC<{}> = () => {
       rules: [
         {
           required: true,
-          message: '请输入合约abi',
+          message: '请输入合约ABI',
         },
       ],
     },
     {
-      title: '合约bin',
+      title: 'Bytecode',
       dataIndex: 'bin',
       key: 'bin',
       hideInSearch: true,
@@ -201,7 +201,7 @@ const ContractChain: React.FC<{}> = () => {
       rules: [
         {
           required: true,
-          message: '请输入合约bin',
+          message: '请输入Bytecode',
         },
       ],
     },

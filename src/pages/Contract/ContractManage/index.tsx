@@ -129,14 +129,14 @@ const ContractManage: React.FC<{}> = () => {
     },
     {
       formItemYype: 'textarea',
-      formItemLabel: '合约abi',
+      formItemLabel: '合约ABI',
       fieldName: 'abi',
       isRequire: true,
       dataSource: [],
     },
     {
       formItemYype: 'textarea',
-      formItemLabel: '合约bin',
+      formItemLabel: 'Bytecode',
       fieldName: 'bin',
       isRequire: true,
       dataSource: [],
