@@ -89,11 +89,16 @@ export const transTime = (date: string) => {
 //   return port;
 // };
 
-// 根据token decimal 转换为wei
-
 const BigNumber = require('bignumber.js');
 
+// 转换wei
 export const formDecimalWei = (value: string, decimal: number = 18): string => {
   const newValue = BigNumber(value).div(BigNumber(10).power(decimal));
+  return BigNumber(newValue).toString(10) === 'NaN' ? '0' : BigNumber(newValue).toString(10);
+};
+
+// 转换为Wei
+export const transToWei = (value: string, decimal: number = 18): string => {
+  const newValue = BigNumber(value).times(BigNumber(10).pow(decimal));
   return BigNumber(newValue).toString(10) === 'NaN' ? '0' : BigNumber(newValue).toString(10);
 };

@@ -38,14 +38,25 @@ const AddReward = () => {
   const [form] = Form.useForm();
   const { validateFields, resetFields } = form;
 
+  const resetPValue = () => {
+    setRemainTotal(0);
+    setRewardChain(0);
+    setSignatureCount({ sign_count: '', rate: '' });
+    setSingleReward(0);
+    setCurrentNode(undefined);
+    setCurrentAnchorNode(undefined);
+  };
+
   const onReset = () => {
     resetFields();
+    resetPValue();
   };
 
   const cancleHandle = () => {
     handleProvideModalVisible(false);
-    setCurrentNode(undefined);
-    setCurrentAnchorNode(undefined);
+    // setCurrentNode(undefined);
+    // setCurrentAnchorNode(undefined);
+    resetPValue();
   };
 
   const addHandle = async (params: any) => {
@@ -55,10 +66,7 @@ const AddReward = () => {
     }
     actionRef.current?.reload();
     cancleHandle();
-    setRemainTotal(0);
-    setRewardChain(0);
-    setSignatureCount({ sign_count: '', rate: '' });
-    setSingleReward(0);
+    resetPValue();
   };
   const changeNode = (value: number) => {
     setCurrentNode(nodeList.filter((item: NodeListItem) => item.id === value)[0]);
