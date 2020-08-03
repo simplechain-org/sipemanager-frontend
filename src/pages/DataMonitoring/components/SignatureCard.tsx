@@ -24,6 +24,7 @@ export default function SignatureCard(props: SignatureProps) {
     },
     Count: {
       nice: true,
+      alias: '次',
       // formatter: (value: number) => {
       //   // console.log(value);
       //   return Web3Utils.fromWei(value.toString());
@@ -139,6 +140,7 @@ export default function SignatureCard(props: SignatureProps) {
           <Axis name="Date" />
           <Axis
             name="Count"
+            title
             label={{
               formatter: (val) => {
                 return val;

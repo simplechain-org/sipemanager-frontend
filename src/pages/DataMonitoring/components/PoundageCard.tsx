@@ -86,6 +86,7 @@ export default function PoundageCard() {
         // console.log(value);
         return Web3Utils.fromWei(new BigNumber(value).toFixed());
       },
+      alias: 'SIPC',
     },
   };
 
@@ -145,9 +146,9 @@ export default function PoundageCard() {
           <Axis name="date" />
           <Axis
             name="fee"
+            title
             label={{
               formatter: (val) => {
-                // console.log(val);
                 return val;
               },
             }}
