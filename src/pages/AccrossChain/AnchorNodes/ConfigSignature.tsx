@@ -98,7 +98,7 @@ const ConfigSignature = () => {
     const res = await deleteReward(record.id);
     if (res.code === 0) {
       message.success('删除成功');
-      actionRef.current?.reload();
+      actionRef.current?.reload(true);
     }
   };
 

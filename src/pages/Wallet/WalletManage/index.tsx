@@ -79,7 +79,7 @@ const WalletManage: React.FC<{}> = () => {
               const res = await removeRule({ wallet_id: record.id });
               if (res.code === 0) {
                 message.success('删除成功');
-                actionRef.current?.reload();
+                actionRef.current?.reload(true);
               }
             }}
           >

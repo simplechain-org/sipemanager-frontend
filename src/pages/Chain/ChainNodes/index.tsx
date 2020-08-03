@@ -38,7 +38,7 @@ const WalletManage: React.FC<{}> = () => {
   const handleRemove = async (value: number) => {
     const res = await removeRule(value);
     if (res?.code === 0) {
-      actionRef.current?.reload();
+      actionRef.current?.reload(true);
       alertMsg('success', '删除成功');
     }
   };
