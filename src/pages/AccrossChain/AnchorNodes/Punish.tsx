@@ -106,9 +106,9 @@ const Punish = () => {
           case 'token':
             return '扣减质押Token';
           case 'suspend':
-            return '-';
+            return '暂停签名资格';
           case 'recovery':
-            return '-';
+            return '恢复签名资格';
           default:
             return '-';
         }
@@ -120,7 +120,11 @@ const Punish = () => {
       key: 'value',
       hideInSearch: true,
       render: (_, record) => {
-        return <span>{`${record.value}${record.coin}`}</span>;
+        return record.manage_type === 'token' ? (
+          <span>{`${record.value}${record.coin}`}</span>
+        ) : (
+          '--'
+        );
       },
     },
   ];
