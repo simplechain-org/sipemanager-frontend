@@ -42,7 +42,8 @@ export default function SignatureCard(props: SignatureProps) {
         ...res.data[key].map((item: any) => {
           return {
             ...item,
-            AnchorId: `锚定节点${key}`,
+            // AnchorId: `锚定节点${key}`,
+            AnchorId: item.AnchorName,
           };
         }),
       ];
