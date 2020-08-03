@@ -83,7 +83,7 @@ export default function PoundageCard() {
     fee: {
       nice: true,
       formatter: (value: number) => {
-        console.log(value);
+        // console.log(value);
         return Web3Utils.fromWei(new BigNumber(value).toFixed());
       },
     },
