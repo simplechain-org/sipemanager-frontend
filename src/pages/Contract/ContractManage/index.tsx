@@ -63,6 +63,7 @@ const ContractManage: React.FC<{}> = () => {
     if (res.code === 0) {
       alertMsg('success', '删除成功');
     }
+    actionRef.current?.reload();
     // else {
     //   alertMsg('error', res.msg || '删除失败');
     // }
@@ -129,14 +130,14 @@ const ContractManage: React.FC<{}> = () => {
     },
     {
       formItemYype: 'textarea',
-      formItemLabel: '合约abi',
+      formItemLabel: '合约ABI',
       fieldName: 'abi',
       isRequire: true,
       dataSource: [],
     },
     {
       formItemYype: 'textarea',
-      formItemLabel: '合约bin',
+      formItemLabel: 'Bytecode',
       fieldName: 'bin',
       isRequire: true,
       dataSource: [],

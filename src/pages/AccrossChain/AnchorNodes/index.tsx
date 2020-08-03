@@ -2,19 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import AnchorNodes from './AnchorNodes';
 import { TableListItem } from './data.d';
-import { queryChain, queryRule, queryNode, queryWallet } from './service';
+import { queryChainAll, queryRule, queryNodeAll, queryWalletAll, queryAnchorAll } from './service';
 
 const AnchorNode: React.FC<{}> = () => {
   const [publicList, setPublicList] = useState({});
 
   const getOptionList = async () => {
-    const chainRes = await queryChain();
-    const nodeRes = await queryNode();
-    const walletRes = await queryWallet();
+    const chainRes = await queryChainAll();
+    const nodeRes = await queryNodeAll();
+    const walletRes = await queryWalletAll();
     const anchorRes = await queryRule();
+    const anchorAllRes = await queryAnchorAll();
     const enumMap = {};
-    anchorRes.data.page_data.map((item: TableListItem) => {
-      enumMap[item.id] = item.anchor_node_name;
+    anchorAllRes.data.map((item: TableListItem) => {
+      enumMap[item.id] = item.name;
       return false;
     });
     setPublicList({
@@ -25,7 +26,7 @@ const AnchorNode: React.FC<{}> = () => {
         name: item.anchor_node_name,
         ...item,
       })),
-      chainList: chainRes.data.page_data || [],
+      chainList: chainRes.data || [],
       anchorEnum: enumMap,
     });
   };

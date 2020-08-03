@@ -62,8 +62,8 @@ export default function SignatureCard(props: SignatureProps) {
       let formatStr = '';
       switch (filterType) {
         case 'hour':
-          formatStr = 'YYYY-MM-DD hh:mm:ss';
-          startTime = moment().subtract(48, 'hours');
+          formatStr = 'YYYY-MM-DD HH:mm:ss';
+          startTime = moment().subtract(12, 'hours');
           break;
         case 'day':
         default:
@@ -78,7 +78,7 @@ export default function SignatureCard(props: SignatureProps) {
       }
       getChartData({
         startTime: startTime.format(formatStr),
-        endTime: moment().subtract(24, 'hours').format(formatStr),
+        endTime: moment().format(formatStr),
         tokenKey: curCrossChain,
         timeType: filterType,
       });

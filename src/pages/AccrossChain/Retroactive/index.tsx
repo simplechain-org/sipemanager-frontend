@@ -11,7 +11,7 @@ import { queryRule, addRule, queryChain } from './service';
 const handleAdd = async (fields: any) => {
   const hide = message.loading('正在添加');
   try {
-    const res = await addRule({ ...fields, network_id: parseInt(fields.chain_id, 10) });
+    const res = await addRule({ ...fields, network_id: parseInt(fields.network_id, 10) });
     hide();
     if (res.code === 0) {
       message.success('添加成功');
@@ -27,9 +27,8 @@ const handleAdd = async (fields: any) => {
 const Retroactive: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  // const [pageCount, setPageCount] = useState(0);
   const [pageCount, setPageCount] = useState(0);
-  const [chainList, setChainList] = useState([]);
+  const [chainList, setChainList] = useState<any>(undefined);
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '选择节点',
@@ -48,8 +47,8 @@ const Retroactive: React.FC<{}> = () => {
     },
     {
       title: '原交易哈希',
-      dataIndex: 'transaction_hash',
-      key: 'transaction_hash',
+      dataIndex: 'tx_hash',
+      key: 'tx_hash',
       hideInSearch: true,
       rules: [
         {
@@ -60,10 +59,10 @@ const Retroactive: React.FC<{}> = () => {
     },
     {
       title: '交易所在链',
-      // dataIndex: 'network_id',
-      // key: 'network_id',
-      dataIndex: 'chain_id',
-      key: 'chain_id',
+      dataIndex: 'network_id',
+      key: 'network_id',
+      // dataIndex: 'chain_id',
+      // key: 'chain_id',
       hideInSearch: true,
       hideInTable: true,
       rules: [
@@ -72,7 +71,7 @@ const Retroactive: React.FC<{}> = () => {
           message: '请选择交易所在链',
         },
       ],
-      valueEnum: { ...chainList },
+      valueEnum: chainList,
     },
     {
       title: '状态',
@@ -95,13 +94,16 @@ const Retroactive: React.FC<{}> = () => {
 
   const getChainList = async () => {
     const res = await queryChain();
-    setChainList(
-      res.data.page_data.map((item: ChainListItem) => ({
-        text: item.name,
-        value: item.id,
-        ...item,
-      })),
-    );
+    const enumMap = {};
+    console.log(res.data);
+    res.data.map((item: ChainListItem) => {
+      // text: item.name,
+      // value: item.id,
+      // ...item,
+      enumMap[item.network_id] = item.name;
+      return false;
+    });
+    setChainList(enumMap);
   };
 
   useEffect(() => {
@@ -122,20 +124,20 @@ const Retroactive: React.FC<{}> = () => {
         options={false}
         request={(params: any) =>
           queryRule({
-            current_page: params.current || 1,
             page_size: params.pageSize || 10,
-            // status: params.status,
+            current_page: params.current || 1,
+            // status
           })
         }
         postData={(data: any) => {
           setPageCount(data.total_count);
           return data;
         }}
-        search={false}
         pagination={{
           total: pageCount,
           defaultPageSize: 10,
         }}
+        search={false}
         columns={columns}
       />
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>

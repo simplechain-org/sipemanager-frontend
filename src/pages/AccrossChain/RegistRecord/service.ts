@@ -37,7 +37,7 @@ export async function updateRule(params: TableListParams) {
 }
 
 export async function queryChain(params?: TableListParams) {
-  return request('/api/v1/chain/list', {
+  return request('/api/v1/chain/list/all', {
     params,
   });
 }
@@ -52,5 +52,5 @@ export async function getNodeByChain(params: { chain_id: string }) {
   return request('/api/v1/chain/node', { params });
 }
 export async function queryWallet() {
-  return request('/api/v1/wallet/list', {});
+  return request('/api/v1/wallet/list/all', {});
 }

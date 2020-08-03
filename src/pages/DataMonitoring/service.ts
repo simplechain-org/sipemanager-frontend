@@ -49,6 +49,6 @@ export async function queryFinishList(params: FinishParams) {
 
 // 锚定节点列表
 export async function queryAnchorList() {
-  return request('/api/v1/service/charge/list');
-  // return request('/api/v1/anchor/node/list/all');
+  // return request('/api/v1/service/charge/list');
+  return request('/api/v1/anchor/node/list/all');
 }

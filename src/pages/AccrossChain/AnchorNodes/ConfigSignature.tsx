@@ -6,7 +6,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
   addRewardConfig,
   queryRewardConfigList,
-  queryChain,
+  queryChainAll,
   deleteReward,
   updateRewardConfig,
 } from './service';
@@ -32,8 +32,8 @@ const ConfigSignature = () => {
 
   useEffect(() => {
     async function getChainList() {
-      const res = await queryChain();
-      setChainList(res.data.page_data);
+      const res = await queryChainAll();
+      setChainList(res.data);
     }
     getChainList();
   }, []);

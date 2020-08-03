@@ -42,7 +42,7 @@ const ContractChain: React.FC<{}> = () => {
     const walletRes = await queryWallet();
     const contractRes = await queryContract();
     setChainList({
-      ...(chainRes.data.page_data || []).map((item: ChainListItem) => ({
+      ...(chainRes.data || []).map((item: ChainListItem) => ({
         text: item.name,
         value: item.id,
       })),
@@ -52,7 +52,7 @@ const ContractChain: React.FC<{}> = () => {
       walletRes.data.map((item: WalletListItem) => ({ label: item.name, value: item.id })),
     );
     setContractList(
-      contractRes.data.page_data.map((item: ContractListItem) => ({
+      contractRes.data.map((item: ContractListItem) => ({
         label: item.name,
         value: item.id,
       })),
@@ -178,7 +178,7 @@ const ContractChain: React.FC<{}> = () => {
       ],
     },
     {
-      title: '合约abi',
+      title: '合约ABI',
       dataIndex: 'abi',
       key: 'abi',
       hideInSearch: true,
@@ -187,12 +187,12 @@ const ContractChain: React.FC<{}> = () => {
       rules: [
         {
           required: true,
-          message: '请输入合约abi',
+          message: '请输入合约ABI',
         },
       ],
     },
     {
-      title: '合约bin',
+      title: 'Bytecode',
       dataIndex: 'bin',
       key: 'bin',
       hideInSearch: true,
@@ -201,7 +201,7 @@ const ContractChain: React.FC<{}> = () => {
       rules: [
         {
           required: true,
-          message: '请输入合约bin',
+          message: '请输入Bytecode',
         },
       ],
     },

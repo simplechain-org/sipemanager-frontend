@@ -46,17 +46,19 @@ export async function addInstance(params: TableListItem) {
 }
 
 export async function queryChain() {
-  return request('/api/v1/chain/list', {});
+  return request('/api/v1/chain/list/all', {});
 }
 
 export async function queryNode() {
-  return request('/api/v1/node/list', {});
+  return request('/api/v1/node/list/all', {});
+  // return request('/api/v1/node/list', {});
 }
 
 export async function queryWallet() {
-  return request('/api/v1/wallet/list', {});
+  return request('/api/v1/wallet/list/all', {});
+  // return request('/api/v1/wallet/list', {});
 }
 
 export async function queryContract() {
-  return request('/api/v1/contract/list', {});
+  return request('/api/v1/contract/list/all', {});
 }

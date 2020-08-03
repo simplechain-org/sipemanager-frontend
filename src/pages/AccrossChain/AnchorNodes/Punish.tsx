@@ -3,7 +3,7 @@ import { Button, Form, message, Input } from 'antd';
 import React, { useState, useRef, Fragment, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import { queryPunish, addPunish, queryNode, queryWallet, queryRule } from './service';
+import { queryPunish, addPunish, queryNodeAll, queryWalletAll, queryAnchorAll } from './service';
 import FormItem from '../components/FormItem';
 import { PunishListItem, FormPropsType, NodeListItem, AddFee, AnchorNodeItem } from './data';
 import CreateForm from './components/CreateForm';
@@ -53,20 +53,20 @@ const Punish = () => {
   };
 
   const getOptionList = async () => {
-    const nodeRes = await queryNode();
-    const walletRes = await queryWallet();
-    const anchorRes = await queryRule();
+    const nodeRes = await queryNodeAll();
+    const walletRes = await queryWalletAll();
+    const anchorRes = await queryAnchorAll();
     setPublicList({
       nodeList: nodeRes.data || [],
       wallestList: walletRes.data || [],
-      anchorNodeList: anchorRes.data.page_data.map((item: AnchorNodeItem) => ({
+      anchorNodeList: anchorRes.data.map((item: AnchorNodeItem) => ({
         ...item,
-        name: item.anchor_node_name,
+        name: item.name,
       })),
     });
     const enumMap = {};
-    anchorRes.data.page_data.map((item: AnchorNodeItem) => {
-      enumMap[item.id] = item.anchor_node_name;
+    anchorRes.data.map((item: AnchorNodeItem) => {
+      enumMap[item.id] = item.name;
       return false;
     });
     setAnchorEnum(enumMap);
@@ -101,6 +101,18 @@ const Punish = () => {
       dataIndex: 'manage_type',
       key: 'manage_type',
       hideInSearch: true,
+      render: (text) => {
+        switch (text) {
+          case 'token':
+            return '扣减质押Token';
+          case 'suspend':
+            return '-';
+          case 'recovery':
+            return '-';
+          default:
+            return '-';
+        }
+      },
     },
     {
       title: '数值',

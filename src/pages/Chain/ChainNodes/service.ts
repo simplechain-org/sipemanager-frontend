@@ -2,13 +2,13 @@ import request from '@/utils/request';
 import { TableListParams, TableListItem } from './data';
 
 export async function queryRule(params?: TableListParams) {
-  return request('/api/v1/node/list', {
+  return request('/api/v1/node/list/page', {
     params,
   });
 }
 
-export async function removeRule(ID: number) {
-  return request(`/api/v1/node/remove/${ID}`, {
+export async function removeRule(id: number) {
+  return request(`/api/v1/node/remove/${id}`, {
     method: 'DELETE',
     // data: {
     //   ...params,
@@ -38,7 +38,7 @@ export async function updateRule(params: TableListParams) {
 }
 
 export async function queryChain(params?: TableListParams) {
-  return request('/api/v1/chain/list', {
+  return request('/api/v1/chain/list/all', {
     params,
   });
 }

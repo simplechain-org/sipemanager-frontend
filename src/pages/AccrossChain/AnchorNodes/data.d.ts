@@ -1,5 +1,6 @@
 export interface TableListItem {
-  anchor_node_name: string;
+  anchor_node_name?: string;
+  name?: string;
   id: number;
   anchor_address: string;
   anchor_name: string;
@@ -60,7 +61,8 @@ export interface FeeCollectionType {
 
 export interface AnchorNodeItem {
   id: number;
-  anchor_node_name: string;
+  anchor_node_name?: string;
+  name?: string;
   chain_a: string;
   chain_a_id: number;
   chain_b: string;

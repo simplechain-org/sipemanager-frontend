@@ -51,4 +51,6 @@ export interface TableListParams {
   key?: number;
   pageSize?: number;
   currentPage?: number;
+  current_page?: number;
+  page_size?: number;
 }

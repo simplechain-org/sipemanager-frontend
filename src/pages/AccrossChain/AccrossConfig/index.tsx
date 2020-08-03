@@ -189,7 +189,7 @@ const AccrossConfig: React.FC<{}> = () => {
     const res = await queryChain();
     const walletRes = await queryWallet();
     setChainList(
-      res.data.page_data.map((item: ChainListItem) => ({
+      res.data.map((item: ChainListItem) => ({
         text: item.name,
         value: item.id,
         ...item,

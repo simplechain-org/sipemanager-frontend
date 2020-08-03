@@ -19,5 +19,5 @@ export async function addRule(params: TableListItem) {
 }
 
 export async function queryChain() {
-  return request('/api/v1/chain/list', {});
+  return request('/api/v1/chain/list/all', {});
 }

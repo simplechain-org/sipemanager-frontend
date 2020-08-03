@@ -22,7 +22,7 @@ export default function AbnormalCard() {
   useEffect(() => {
     queryMaxUncle().then((res) => {
       console.log(res);
-      setTableData(res.data);
+      setTableData(res.data || []);
       setLoading(false);
     });
   }, []);

@@ -5,13 +5,13 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
   queryReward,
-  queryRule,
+  queryAnchorAll,
   rewardAdd,
   queryRewardTotal,
   queryRewardChain,
   querySignatureCount,
-  queryNode,
-  queryWallet,
+  queryNodeAll,
+  queryWalletAll,
 } from './service';
 import FormItem from '../components/FormItem';
 import { TableListItem, FormPropsType, NodeListItem, AnchorNodeItem } from './data';
@@ -53,10 +53,12 @@ const AddReward = () => {
     if (res.code === 0) {
       message.success('添加成功');
     }
+    actionRef.current?.reload();
     cancleHandle();
     setRemainTotal(0);
     setRewardChain(0);
     setSignatureCount({ sign_count: '', rate: '' });
+    setSingleReward(0);
   };
   const changeNode = (value: number) => {
     setCurrentNode(nodeList.filter((item: NodeListItem) => item.id === value)[0]);
@@ -70,20 +72,20 @@ const AddReward = () => {
 
   useEffect(() => {
     async function getOptions() {
-      const res = await queryRule();
-      const nodeRes = await queryNode();
-      const walletRes = await queryWallet();
+      const res = await queryAnchorAll();
+      const nodeRes = await queryNodeAll();
+      const walletRes = await queryWalletAll();
       setAnchorList(
-        res.data.page_data.map((item: AnchorNodeItem) => ({
+        res.data.map((item: AnchorNodeItem) => ({
           ...item,
-          name: item.anchor_node_name,
+          name: item.name,
         })),
       );
       setNodeList(nodeRes.data);
       setWalletList(walletRes.data);
       const enumMap = {};
-      res.data.page_data.map((item: AnchorNodeItem) => {
-        enumMap[item.id] = item.anchor_node_name;
+      res.data.map((item: AnchorNodeItem) => {
+        enumMap[item.id] = item.name;
         return false;
       });
       setAnchorEnum(enumMap);
