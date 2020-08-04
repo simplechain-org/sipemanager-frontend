@@ -9,9 +9,7 @@ import DetailsForm from './components/DetailsForm';
 import { TableListItem, ChainListType, NodeItem, AddRegisteType } from './data';
 import { queryRule, queryChain, getNodeByChain, queryWallet, addRule } from './service';
 import { WalletListItem } from '../AnchorNodes/data';
-// import { formDecimalWei } from '@/utils/utils';
-
-// const BigNumber = require('bignumber.js');
+import { transToWei } from '@/utils/utils';
 
 const RegistRecord: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -155,15 +153,6 @@ const RegistRecord: React.FC<{}> = () => {
 
   useEffect(() => {
     getChainList();
-    // const value = BigNumber(10).pow(18);
-    // console.log(value);
-
-    // const formDecimalWei = (value: string, decimal: number = 18): string => {
-    //   const newValue = BigNumber(value).times(BigNumber(10).pow(decimal));
-    //   console.log(newValue.toString(10));
-    //   return BigNumber(newValue).toString(10) === 'NaN' ? '0' : BigNumber(newValue).toString(10);
-    // };
-    // formDecimalWei('1');
   }, []);
 
   const getNodeByChainId = async (chain_id: string, type: string) => {
@@ -218,8 +207,8 @@ const RegistRecord: React.FC<{}> = () => {
           anchor_addresses: anchorAddresses,
           anchor_names: anchorNames,
           // 锚定节点质押金额
-          pledge: values.pledge,
-          // pledge: formDecimalWei(values.pledge),
+          // pledge: values.pledge,
+          pledge: transToWei(values.pledge),
         };
         addRegisteRecord(addParams);
         setCurrentHandle(undefined);

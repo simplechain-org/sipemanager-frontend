@@ -8,6 +8,7 @@ import { SignatureProps, SignatureChartParams } from '../data.d';
 const options = [
   { label: 'hour', value: 'hour' },
   { label: 'day', value: 'day' },
+  { label: 'week', value: 'week' },
 ];
 
 export default function SignatureCard(props: SignatureProps) {
@@ -21,9 +22,24 @@ export default function SignatureCard(props: SignatureProps) {
     Date: {
       type: 'time',
       mask: filterType === 'hour' ? 'HH:mm' : 'MM-DD',
+      formatter: (value: any) => {
+        // console.log('value', value);
+        switch (filterType) {
+          case 'hour':
+            return moment(value).add(8, 'hours').format('HH:mm');
+          case 'day':
+            return moment(value).add(8, 'hours').format('MM-DD');
+          case 'week':
+            // console.log('week', moment(value).add(8, 'hours').weeksInYear());
+            return `第${moment(value).add(8, 'hours').format('YYYYww').slice(4, 6)}周`;
+          default:
+            return '';
+        }
+      },
     },
     Count: {
       nice: true,
+      alias: '次',
       // formatter: (value: number) => {
       //   // console.log(value);
       //   return Web3Utils.fromWei(value.toString());
@@ -42,7 +58,8 @@ export default function SignatureCard(props: SignatureProps) {
         ...res.data[key].map((item: any) => {
           return {
             ...item,
-            AnchorId: `锚定节点${key}`,
+            // AnchorId: `锚定节点${key}`,
+            AnchorId: item.AnchorName,
           };
         }),
       ];
@@ -63,22 +80,21 @@ export default function SignatureCard(props: SignatureProps) {
       switch (filterType) {
         case 'hour':
           formatStr = 'YYYY-MM-DD HH:mm:ss';
-          startTime = moment().subtract(12, 'hours');
+          startTime = moment().subtract(24, 'hours');
           break;
         case 'day':
         default:
           formatStr = 'YYYY-MM-DD';
           startTime = moment().subtract(7, 'days');
           break;
-        // case 'week':
-        // default:
-        //   formatStr = 'YYYYww';
-        //   startTime = moment().subtract(7, 'weeks');
-        //   break;
+        case 'week':
+          formatStr = 'YYYYww';
+          startTime = moment().subtract(7, 'weeks');
+          break;
       }
       getChartData({
-        startTime: startTime.format(formatStr),
-        endTime: moment().format(formatStr),
+        startTime: startTime.subtract(8, 'hours').format(formatStr),
+        endTime: moment().subtract(8, 'hours').format(formatStr),
         tokenKey: curCrossChain,
         timeType: filterType,
       });
@@ -138,6 +154,7 @@ export default function SignatureCard(props: SignatureProps) {
           <Axis name="Date" />
           <Axis
             name="Count"
+            title
             label={{
               formatter: (val) => {
                 return val;

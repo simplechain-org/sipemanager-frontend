@@ -100,6 +100,7 @@ const Retroactive: React.FC<{}> = () => {
       // text: item.name,
       // value: item.id,
       // ...item,
+      // enumMap[item.id] = item.name;
       enumMap[item.network_id] = item.name;
       return false;
     });
