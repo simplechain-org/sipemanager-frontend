@@ -41,12 +41,11 @@ const ContractChain: React.FC<{}> = () => {
     const res = await queryNode();
     const walletRes = await queryWallet();
     const contractRes = await queryContract();
-    setChainList({
-      ...(chainRes.data || []).map((item: ChainListItem) => ({
-        text: item.name,
-        value: item.id,
-      })),
+    const enumMap = {};
+    (chainRes.data || []).forEach((item: ChainListItem) => {
+      enumMap[item.id] = item.name;
     });
+    setChainList(enumMap);
     setNodeList(res.data.map((item: NodeListItem) => ({ label: item.name, value: item.id })));
     setWalletList(
       walletRes.data.map((item: WalletListItem) => ({ label: item.name, value: item.id })),
