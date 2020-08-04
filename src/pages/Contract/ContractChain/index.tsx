@@ -260,7 +260,7 @@ const ContractChain: React.FC<{}> = () => {
       <ProTable<TableListItem>
         headerTitle="合约上链列表"
         actionRef={actionRef}
-        rowKey="tx_hash"
+        rowKey="id"
         search={false}
         toolBarRender={() => [
           <Space>
