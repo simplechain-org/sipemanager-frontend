@@ -101,7 +101,7 @@ const WalletManage: React.FC<{}> = () => {
   const submitHandle = () => {
     validateFields()
       .then((values) => {
-        if (currentItem?.id) {
+        if (currentItem && currentItem.id) {
           updHandle({
             wallet_id: currentItem?.id,
             old_password: values.old_password,
