@@ -13,7 +13,7 @@ const BigNumber = require('bignumber.js');
 const options = [
   { label: 'hour', value: 'hour' },
   { label: 'day', value: 'day' },
-  // { label: 'week', value: 'week' },
+  { label: 'week', value: 'week' },
 ];
 
 export default function PoundageCard() {
@@ -52,15 +52,14 @@ export default function PoundageCard() {
           formatStr = 'YYYY-MM-DD';
           startTime = moment().subtract(7, 'days');
           break;
-        // case 'week':
-        // default:
-        //   formatStr = 'YYYYww';
-        //   startTime = moment().subtract(7, 'weeks');
-        //   break;
+        case 'week':
+          formatStr = 'YYYYww';
+          startTime = moment().subtract(7, 'weeks');
+          break;
       }
       getFee({
-        startTime: startTime.format(formatStr),
-        endTime: moment().format(formatStr),
+        startTime: startTime.subtract(8, 'hours').format(formatStr),
+        endTime: moment().subtract(8, 'hours').format(formatStr),
         chainId: curChain,
         timeType: filterType,
       });
@@ -79,6 +78,19 @@ export default function PoundageCard() {
     date: {
       type: 'time',
       mask: filterType === 'hour' ? 'HH:mm' : 'MM-DD',
+      formatter: (value: any) => {
+        switch (filterType) {
+          case 'hour':
+            return moment(value).add(8, 'hours').format('HH:mm');
+          case 'day':
+            return moment(value).add(8, 'hours').format('MM-DD');
+          case 'week':
+            // console.log('week', moment(value).add(8, 'hours').weeksInYear());
+            return `第${moment(value).add(8, 'hours').format('YYYYww').slice(4, 6)}周`;
+          default:
+            return '';
+        }
+      },
     },
     fee: {
       nice: true,
