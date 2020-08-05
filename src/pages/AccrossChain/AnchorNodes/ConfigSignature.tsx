@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Form, message, Divider, Space } from 'antd';
+import { Button, Form, message, Divider } from 'antd';
 import React, { useState, useRef, Fragment, useEffect } from 'react';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -147,7 +147,7 @@ const ConfigSignature = () => {
       hideInSearch: true,
       render: (_, record) => {
         return (
-          <Space>
+          <>
             <a
               onClick={() => {
                 onReset();
@@ -158,9 +158,9 @@ const ConfigSignature = () => {
             >
               编辑
             </a>
-            <Divider />
+            <Divider type="vertical" />
             <a onClick={() => deleteHandle(record)}>删除</a>
-          </Space>
+          </>
         );
       },
     },

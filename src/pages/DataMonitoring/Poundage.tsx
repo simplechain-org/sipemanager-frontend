@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import moment from 'moment';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { transTime } from '@/utils/utils';
 import { TableListItem, AnchorNodeItem } from './data.d';
@@ -37,6 +38,9 @@ export default function Poundage() {
       title: '时间',
       dataIndex: 'Timestamp',
       valueType: 'dateTimeRange',
+      render: (text: any) => {
+        return moment(text).format('YYYY-MM-DD HH:mm:ss');
+      },
     },
     {
       title: '跨链对',
