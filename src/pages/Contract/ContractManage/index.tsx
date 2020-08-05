@@ -3,11 +3,13 @@ import { Button, Divider, message, Form } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import { request } from 'umi';
 
 import UploadForm from './components/UploadForm';
 import FormItem from '../components/FormItem';
 import { TableListItem } from './data';
-import { queryRule, addRule, removeRule, updateRule } from './service';
+// import {} from 'umi-request'
+import { queryRule, removeRule } from './service';
 
 const ContractManage: React.FC<{}> = () => {
   const [uploadModalVisible, handleUploadModalVisible] = useState<boolean>(false);
@@ -27,35 +29,42 @@ const ContractManage: React.FC<{}> = () => {
     }
   };
 
-  const addHandle = async (params: any) => {
+  const addHandle = async (formData: any) => {
     const id = currentItem ? currentItem.id : null;
-    let res;
-    if (id) {
-      res = await updateRule({ ...params, id });
-    } else {
-      res = await addRule(params);
-    }
-
-    if (res.code === 0) {
-      alertMsg('success', id ? '编辑成功' : '上传成功');
-    }
-    // else {
-    //   alertMsg('error', res.msg || '操作失败');
-    // }
+    request(id ? '/api/v1/contract/update/file' : '/api/v1/contract/add/file', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      },
+      body: formData,
+      method: 'POST',
+    })
+      .then((res) => {
+        if (res.code === 0) {
+          handleUploadModalVisible(false);
+          message.success('上传成功');
+          actionRef.current?.reload();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     handleUploadModalVisible(false);
     setCurrentItem(undefined);
     actionRef.current?.reload();
   };
 
   const submitHandle = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        addHandle(values as TableListItem);
-      })
-      .catch((errorInfo) => {
-        console.log(errorInfo);
-      });
+    form.validateFields().then((values) => {
+      const formData = new FormData();
+      formData.append('name', values.name);
+      formData.append('abi', values.abi.file);
+      formData.append('bin', values.bin.file);
+      formData.append('sol', values.sol.file);
+      if (currentItem) {
+        formData.append('id', currentItem.id.toString());
+      }
+      addHandle(formData);
+    });
   };
 
   const removeHandle = async (id: number) => {
@@ -64,9 +73,6 @@ const ContractManage: React.FC<{}> = () => {
       alertMsg('success', '删除成功');
     }
     actionRef.current?.reload(true);
-    // else {
-    //   alertMsg('error', res.msg || '删除失败');
-    // }
   };
 
   const columns: ProColumns<TableListItem>[] = [
@@ -129,21 +135,21 @@ const ContractManage: React.FC<{}> = () => {
       dataSource: [],
     },
     {
-      formItemYype: 'textarea',
+      formItemYype: 'upload',
       formItemLabel: '合约ABI',
       fieldName: 'abi',
       isRequire: true,
       dataSource: [],
     },
     {
-      formItemYype: 'textarea',
+      formItemYype: 'upload',
       formItemLabel: 'Bytecode',
       fieldName: 'bin',
       isRequire: true,
       dataSource: [],
     },
     {
-      formItemYype: 'textarea',
+      formItemYype: 'upload',
       formItemLabel: '合约源码',
       fieldName: 'sol',
       isRequire: true,

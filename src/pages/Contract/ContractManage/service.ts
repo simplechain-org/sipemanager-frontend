@@ -14,7 +14,8 @@ export async function removeRule(id: number) {
 }
 
 export async function addRule(params: TableListItem) {
-  return request('/api/v1/contract/add', {
+  // return request('/api/v1/contract/add', {
+  return request('/api/v1/contract/add/file', {
     method: 'POST',
     data: {
       ...params,
@@ -23,7 +24,7 @@ export async function addRule(params: TableListItem) {
 }
 
 export async function updateRule(params: TableListParams) {
-  return request('/api/v1/contract/update', {
+  return request('/api/v1/contract/update/file', {
     method: 'PUT',
     data: {
       ...params,

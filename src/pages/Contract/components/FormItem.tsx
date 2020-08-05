@@ -1,5 +1,6 @@
-import React from 'react';
-import { Form, Input, Select } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Form, Input, Select, Upload, Button } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 
 interface FormItemProps {
   formPropsList: Item[];
@@ -19,6 +20,32 @@ const { Option } = Select;
 
 const FormItem: React.FC<FormItemProps> = (props) => {
   const { formPropsList, form } = props;
+  const [fileListMap, setFileListMap] = useState({});
+
+  useEffect(() => {
+    const enumObj = {};
+    (formPropsList || []).forEach((item) => {
+      if (item.formItemYype === 'upload') {
+        enumObj[item.fieldName] = undefined;
+      }
+    });
+    setFileListMap(enumObj);
+  }, [formPropsList]);
+
+  const uploadChange = (info: File, name: string) => {
+    let newList = Array(info);
+    newList = newList.slice(-1);
+    setFileListMap(() => ({ ...fileListMap, [name]: newList }));
+    return false;
+  };
+
+  const removeFiles = (file: any, name: string) => {
+    const fileList = fileListMap[name] || [];
+    const index = fileList.indexOf(file);
+    const newFileList = fileList.slice();
+    newFileList.splice(index, 1);
+    setFileListMap({ ...fileListMap, [name]: newFileList });
+  };
 
   const formType = (item: Item) => {
     switch (item.formItemYype) {
@@ -38,6 +65,19 @@ const FormItem: React.FC<FormItemProps> = (props) => {
             ))}
           </Select>
         );
+      case 'upload':
+        return (
+          <Upload
+            key={item.fieldName}
+            fileList={fileListMap[item.fieldName]}
+            beforeUpload={(info) => uploadChange(info, item.fieldName)}
+            onRemove={(info) => removeFiles(info, item.fieldName)}
+          >
+            <Button>
+              <UploadOutlined /> 点击上传
+            </Button>
+          </Upload>
+        );
       default:
         return null;
     }
@@ -56,6 +96,8 @@ const FormItem: React.FC<FormItemProps> = (props) => {
           return [{ required: true, message: `请输入${item.formItemLabel}！` }];
         case 'select':
           return [{ required: true, message: `请选择${item.formItemLabel}！` }];
+        case 'upload':
+          return [{ required: true, message: `您还未上传${item.formItemLabel}` }];
         default:
       }
     }
@@ -71,6 +113,7 @@ const FormItem: React.FC<FormItemProps> = (props) => {
           label={item.formItemLabel}
           extra={item.extra || ''}
           rules={checkRules(item) || []}
+          // valuePropName={item.formItemYype === 'upload' ? 'file' : 'text'}
         >
           {formType(item)}
         </Form.Item>

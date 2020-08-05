@@ -307,7 +307,7 @@ const ContractChain: React.FC<{}> = () => {
               }
             }
           }}
-          rowKey="key"
+          rowKey="id"
           type="form"
           columns={columns}
           rowSelection={{}}
