@@ -9,13 +9,13 @@ export default function AbnormalCard() {
   const columns = [
     {
       title: '链名称',
-      dataIndex: 'chainId',
-      key: 'index',
+      dataIndex: 'ChainName',
+      key: 'ChainName',
     },
     {
       title: '近10000个区块最大分叉高度',
-      dataIndex: 'blockNumber',
-      key: 'keyword',
+      dataIndex: 'BlockNumber',
+      key: 'BlockNumber',
     },
   ];
 
@@ -37,7 +37,7 @@ export default function AbnormalCard() {
       }}
     >
       <Table<any>
-        rowKey={(record) => record.index}
+        rowKey="ChainId"
         size="small"
         columns={columns}
         dataSource={tableData}
