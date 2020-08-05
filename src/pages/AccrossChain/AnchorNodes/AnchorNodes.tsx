@@ -1,6 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Drawer, Divider, Form, message } from 'antd';
 import React, { useState, useRef } from 'react';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { history } from 'umi';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { addRule, getNodeByChain, removeRule, queryRule, updateAnchor } from './service';
@@ -418,11 +419,12 @@ const AnchorNodes = (props: PropsType) => {
   ];
 
   return (
-    <>
+    <PageHeaderWrapper>
       <ProTable<TableListItem>
         headerTitle="锚定节点列表"
         actionRef={actionRef}
-        rowKey="created_at"
+        // rowKey={`${Math.random()}`}
+        rowKey="id"
         options={false}
         toolBarRender={() => [
           <Button
@@ -443,7 +445,7 @@ const AnchorNodes = (props: PropsType) => {
           })
         }
         postData={(data: any) => {
-          console.log('data-----', data.page_data);
+          console.log('data-----555', data.page_data);
           setPageCount(data.total_count);
           return data.page_data;
         }}
@@ -500,7 +502,7 @@ const AnchorNodes = (props: PropsType) => {
       >
         <FormItem form={form} formPropsList={detailFormPropsList} />
       </Drawer>
-    </>
+    </PageHeaderWrapper>
   );
 };
 
