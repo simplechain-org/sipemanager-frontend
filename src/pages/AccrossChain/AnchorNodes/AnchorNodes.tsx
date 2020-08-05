@@ -72,11 +72,12 @@ const AnchorNodes = (props: PropsType) => {
 
   const deleteHandle = () => {
     validateFields()
-      .then(async (values) => {
-        const res = await removeRule(values as TableListItem);
+      .then(async (values: any) => {
+        const res = await removeRule({ ...values, anchor_node_id: currentAnchor?.id });
         if (res.code === 0) {
           message.success('删除成功');
           actionRef.current?.reload(true);
+          setCurrentAnchor(null);
         }
       })
       .catch((errorInfo) => {
@@ -358,6 +359,12 @@ const AnchorNodes = (props: PropsType) => {
       key: 'source_rpc_url',
       hideInSearch: true,
       hideInForm: true,
+      ellipsis: true,
+      style: {
+        wordWrap: 'break-word',
+        wordBreak: 'break-word',
+        // width: 180,
+      },
     },
     {
       title: '归属链B',
@@ -372,6 +379,11 @@ const AnchorNodes = (props: PropsType) => {
       key: 'target_rpc_url',
       hideInSearch: true,
       hideInForm: true,
+      ellipsis: true,
+      style: {
+        wordWrap: 'break-word',
+        width: 180,
+      },
     },
     {
       title: '质押金额',
@@ -411,7 +423,14 @@ const AnchorNodes = (props: PropsType) => {
             编辑
           </a>
           <Divider type="vertical" />
-          <a onClick={() => deleteModal(record)}>删除</a>
+          <a
+            onClick={() => {
+              setCurrentAnchor(record);
+              deleteModal(record);
+            }}
+          >
+            删除
+          </a>
         </>
       ),
     },
@@ -455,7 +474,10 @@ const AnchorNodes = (props: PropsType) => {
         }}
       />
       <CreateForm
-        onCancel={() => handleDeleteModalVisible(false)}
+        onCancel={() => {
+          setCurrentAnchor(null);
+          handleDeleteModalVisible(false);
+        }}
         onReset={onReset}
         onClick={deleteHandle}
         modalVisible={deleteModalVisible}
