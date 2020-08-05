@@ -198,7 +198,10 @@ const WalletManage: React.FC<{}> = () => {
         </Form>
       </CreateForm>
       <UpdateForm
-        onCancel={() => handleUpdateModalVisible(false)}
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setCurrentItem(undefined);
+        }}
         modalVisible={updateModalVisible}
         onReset={onReset}
         submitHandle={submitHandle}
