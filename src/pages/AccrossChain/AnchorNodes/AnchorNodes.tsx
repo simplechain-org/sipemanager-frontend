@@ -1,7 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Drawer, Divider, Form, message } from 'antd';
 import React, { useState, useRef } from 'react';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { history } from 'umi';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { addRule, getNodeByChain, removeRule, queryRule, updateAnchor } from './service';
@@ -419,7 +418,7 @@ const AnchorNodes = (props: PropsType) => {
   ];
 
   return (
-    <PageHeaderWrapper>
+    <>
       <ProTable<TableListItem>
         headerTitle="锚定节点列表"
         actionRef={actionRef}
@@ -502,7 +501,7 @@ const AnchorNodes = (props: PropsType) => {
       >
         <FormItem form={form} formPropsList={detailFormPropsList} />
       </Drawer>
-    </PageHeaderWrapper>
+    </>
   );
 };
 

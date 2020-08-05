@@ -1,7 +1,8 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Space, Form } from 'antd';
+import { Button, message, Space, Form, Upload } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { request } from 'umi';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 // import { getRandomIP } from '@/utils/utils';
@@ -17,7 +18,6 @@ import {
 } from './data';
 import {
   queryRule,
-  addRule,
   queryChain,
   queryNode,
   queryWallet,
@@ -35,6 +35,7 @@ const ContractChain: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm();
   const [pageCount, setPageCount] = useState(0);
+  const [fileListMap, setFileListMap] = useState<any>({});
 
   const getOptionList = async () => {
     const chainRes = await queryChain();
@@ -92,13 +93,31 @@ const ContractChain: React.FC<{}> = () => {
       });
   };
 
-  const handleAdd = async (params: TableListItem) => {
+  const handleAdd = async (values: any) => {
+    const formData = new FormData();
+    formData.append('chain_id', values.chain_id);
+    formData.append('name', values.name);
+    formData.append('address', values.address);
+    formData.append('tx_hash', values.tx_hash);
+    formData.append('abi', values.abi.file);
+    formData.append('bin', values.bin.file);
+    formData.append('sol', values.sol.file);
     const hide = message.loading('正在添加');
     try {
-      await addRule({ ...params });
-      hide();
-      message.success('添加成功');
-      handleUploadModalVisible(false);
+      request('/api/v1/contract/instance/import/file', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+        body: formData,
+        method: 'POST',
+      }).then((res) => {
+        if (res.code === 0) {
+          hide();
+          message.success('添加成功');
+          actionRef.current?.reload();
+          handleUploadModalVisible(false);
+        }
+      });
       return true;
     } catch (error) {
       hide();
@@ -106,6 +125,21 @@ const ContractChain: React.FC<{}> = () => {
       handleUploadModalVisible(false);
       return false;
     }
+  };
+
+  const beforeFiles = (file: any, name: string) => {
+    let newList = Array(file);
+    newList = newList.slice(-1);
+    setFileListMap(() => ({ ...fileListMap, [name]: newList }));
+    return false;
+  };
+
+  const removeFiles = (file: any, name: string) => {
+    const fileList = fileListMap[name] || [];
+    const index = fileList.indexOf(file);
+    const newFileList = fileList.slice();
+    newFileList.splice(index, 1);
+    setFileListMap({ ...fileListMap, [name]: newFileList });
   };
 
   const columns: ProColumns<TableListItem>[] = [
@@ -186,9 +220,21 @@ const ContractChain: React.FC<{}> = () => {
       rules: [
         {
           required: true,
-          message: '请输入合约ABI',
+          message: '您还未上传文件',
         },
       ],
+      renderFormItem: (_, config) => {
+        return (
+          <Upload
+            onChange={config.onChange}
+            beforeUpload={(file) => beforeFiles(file, 'abi')}
+            fileList={fileListMap.abi}
+            onRemove={(file) => removeFiles(file, 'abi')}
+          >
+            点击上传文件
+          </Upload>
+        );
+      },
     },
     {
       title: 'Bytecode',
@@ -200,9 +246,21 @@ const ContractChain: React.FC<{}> = () => {
       rules: [
         {
           required: true,
-          message: '请输入Bytecode',
+          message: '您还未上传文件',
         },
       ],
+      renderFormItem: (_, config) => {
+        return (
+          <Upload
+            onChange={config.onChange}
+            beforeUpload={(file) => beforeFiles(file, 'bin')}
+            fileList={fileListMap.bin}
+            onRemove={(file) => removeFiles(file, 'bin')}
+          >
+            点击上传文件
+          </Upload>
+        );
+      },
     },
     {
       title: '合约源码',
@@ -214,9 +272,19 @@ const ContractChain: React.FC<{}> = () => {
       rules: [
         {
           required: true,
-          message: '请输入合约源码',
+          message: '您还未上传文件',
         },
       ],
+      renderFormItem: (_, config) => (
+        <Upload
+          onChange={config.onChange}
+          beforeUpload={(file) => beforeFiles(file, 'sol')}
+          fileList={fileListMap.sol}
+          onRemove={(file) => removeFiles(file, 'sol')}
+        >
+          点击上传文件
+        </Upload>
+      ),
     },
   ];
 
