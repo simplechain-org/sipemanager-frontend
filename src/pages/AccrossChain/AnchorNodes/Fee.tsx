@@ -244,6 +244,7 @@ const Fee = () => {
           })
         }
         postData={(data: any) => {
+          console.log('data-----', data.page_data);
           setPageCount(data.total_count);
           return data.page_data;
         }}
