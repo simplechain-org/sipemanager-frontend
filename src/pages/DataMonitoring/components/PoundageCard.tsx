@@ -58,8 +58,14 @@ export default function PoundageCard() {
           break;
       }
       getFee({
-        startTime: startTime.subtract(8, 'hours').format(formatStr),
-        endTime: moment().subtract(8, 'hours').format(formatStr),
+        startTime:
+          filterType === 'hour'
+            ? startTime.subtract(8, 'hours').format(formatStr)
+            : startTime.format(formatStr),
+        endTime:
+          filterType === 'hour'
+            ? moment().subtract(8, 'hours').format(formatStr)
+            : moment().format(formatStr),
         chainId: curChain,
         timeType: filterType,
       });
@@ -83,10 +89,9 @@ export default function PoundageCard() {
           case 'hour':
             return moment(value).add(8, 'hours').format('HH:mm');
           case 'day':
-            return moment(value).add(8, 'hours').format('MM-DD');
+            return moment(value).format('MM-DD');
           case 'week':
-            // console.log('week', moment(value).add(8, 'hours').weeksInYear());
-            return `第${moment(value).add(8, 'hours').format('YYYYww').slice(4, 6)}周`;
+            return `第${moment(value).format('YYYYww').slice(4, 6)}周`;
           default:
             return '';
         }
@@ -95,7 +100,6 @@ export default function PoundageCard() {
     fee: {
       nice: true,
       formatter: (value: number) => {
-        // console.log(value);
         return Web3Utils.fromWei(new BigNumber(value).toFixed());
       },
       alias: 'SIPC',
