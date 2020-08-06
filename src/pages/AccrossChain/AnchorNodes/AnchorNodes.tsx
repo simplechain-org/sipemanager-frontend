@@ -363,7 +363,7 @@ const AnchorNodes = (props: PropsType) => {
       render: (text) => (
         <div
           style={{
-            width: '100px',
+            maxWidth: '180px',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
             overflow: 'hidden',
@@ -387,10 +387,18 @@ const AnchorNodes = (props: PropsType) => {
       hideInSearch: true,
       hideInForm: true,
       ellipsis: true,
-      style: {
-        wordWrap: 'break-word',
-        width: 180,
-      },
+      render: (text) => (
+        <div
+          style={{
+            maxWidth: '180px',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+          }}
+        >
+          {text}
+        </div>
+      ),
     },
     {
       title: '质押金额',
