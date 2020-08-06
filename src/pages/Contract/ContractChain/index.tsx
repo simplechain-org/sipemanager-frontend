@@ -1,4 +1,4 @@
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, message, Space, Form, Upload } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -116,6 +116,7 @@ const ContractChain: React.FC<{}> = () => {
           message.success('添加成功');
           actionRef.current?.reload();
           handleUploadModalVisible(false);
+          setFileListMap({});
         }
       });
       return true;
@@ -123,6 +124,7 @@ const ContractChain: React.FC<{}> = () => {
       hide();
       message.error('添加失败请重试！');
       handleUploadModalVisible(false);
+      setFileListMap({});
       return false;
     }
   };
@@ -228,10 +230,13 @@ const ContractChain: React.FC<{}> = () => {
           <Upload
             onChange={config.onChange}
             beforeUpload={(file) => beforeFiles(file, 'abi')}
+            // fileList={fileListMap.abi}
             fileList={fileListMap.abi}
             onRemove={(file) => removeFiles(file, 'abi')}
           >
-            点击上传文件
+            <Button>
+              <UploadOutlined /> 点击上传
+            </Button>
           </Upload>
         );
       },
@@ -257,7 +262,9 @@ const ContractChain: React.FC<{}> = () => {
             fileList={fileListMap.bin}
             onRemove={(file) => removeFiles(file, 'bin')}
           >
-            点击上传文件
+            <Button>
+              <UploadOutlined /> 点击上传
+            </Button>
           </Upload>
         );
       },
@@ -282,7 +289,9 @@ const ContractChain: React.FC<{}> = () => {
           fileList={fileListMap.sol}
           onRemove={(file) => removeFiles(file, 'sol')}
         >
-          点击上传文件
+          <Button>
+            <UploadOutlined /> 点击上传
+          </Button>
         </Upload>
       ),
     },
@@ -364,8 +373,15 @@ const ContractChain: React.FC<{}> = () => {
         }}
         columns={columns}
       />
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
+      <CreateForm
+        onCancel={() => {
+          setFileListMap({});
+          handleModalVisible(false);
+        }}
+        modalVisible={createModalVisible}
+      >
         <ProTable<TableListItem, TableListItem>
+          onReset={() => setFileListMap({})}
           onSubmit={async (value) => {
             const success = await handleAdd(value);
             if (success) {
@@ -382,9 +398,13 @@ const ContractChain: React.FC<{}> = () => {
         />
       </CreateForm>
       <UploadForm
-        onCancel={() => handleUploadModalVisible(false)}
+        onCancel={() => {
+          handleUploadModalVisible(false);
+        }}
         modalVisible={uploadModalVisible}
-        onReset={() => form.resetFields()}
+        onReset={() => {
+          form.resetFields();
+        }}
         submitHandle={submitHandle}
       >
         <FormItem formPropsList={formPropsList} form={form} />

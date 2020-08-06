@@ -88,8 +88,8 @@ export default function Poundage() {
             page: `${params.current}`,
             limit: `${params.pageSize}`,
             anchorId: params.anchorId,
-            startTime: params.startTime,
-            endTime: params.endTime,
+            startTime: params.startTime.substring(0, 10),
+            endTime: params.endTime.substring(0, 10),
           });
         }}
         postData={(data: any) => {
