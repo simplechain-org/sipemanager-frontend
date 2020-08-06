@@ -50,16 +50,16 @@ export default function NodeCard(props: NodeProps) {
       render: (text: React.ReactNode) =>
         `${Web3Utils.fromWei(new BigNumber(text || 0).toFixed())}sipc`,
     },
+    // {
+    //   title: '是否在线',
+    //   dataIndex: 'OnLine',
+    //   key: 'OnLine',
+    //   render: (text: boolean) => (text ? '是' : '否'),
+    // },
     {
-      title: '是否在线',
-      dataIndex: 'OnLine',
-      key: 'OnLine',
-      render: (text: boolean) => (text ? '是' : '否'),
-    },
-    {
-      title: '连续未签名交易数',
-      dataIndex: 'UnSignTxCount',
-      key: 'UnSignTxCount',
+      title: '近200笔交易签名数',
+      dataIndex: 'SignTxCount',
+      key: 'SignTxCount',
     },
   ];
 
@@ -73,7 +73,7 @@ export default function NodeCard(props: NodeProps) {
           <Select
             style={{
               float: 'right',
-              width: 150,
+              width: 200,
             }}
             placeholder="选择跨链对"
             allowClear

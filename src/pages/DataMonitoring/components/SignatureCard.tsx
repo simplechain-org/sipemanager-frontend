@@ -116,7 +116,7 @@ export default function SignatureCard(props: SignatureProps) {
         <Form.Item label="选择跨链对">
           <Select
             style={{
-              width: 150,
+              width: 200,
             }}
             placeholder="选择跨链对"
             value={curCrossChain}
