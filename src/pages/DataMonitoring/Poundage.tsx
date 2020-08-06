@@ -33,6 +33,7 @@ export default function Poundage() {
       dataIndex: 'anchorId',
       valueEnum: anchorList,
       hideInTable: true,
+      hideInSearch: true,
     },
     {
       title: '时间',
@@ -74,12 +75,7 @@ export default function Poundage() {
     <PageHeaderWrapper>
       <ProTable<TableListItem>
         actionRef={actionRef}
-        // rowKey={(record) => record.toString()}
-        rowKey={(record) => {
-          console.log('record', record.toString());
-          console.log('record', JSON.stringify(record));
-          return record.toString();
-        }}
+        rowKey={(record) => record.toString()}
         beforeSearchSubmit={(params: any) => {
           return {
             startTime: `${transTime(params.Timestamp ? params.Timestamp[1] : '') || ''}` || '',

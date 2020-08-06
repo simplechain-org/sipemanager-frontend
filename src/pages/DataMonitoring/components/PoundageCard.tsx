@@ -119,12 +119,12 @@ export default function PoundageCard() {
           marginBottom: 15,
         }}
       >
-        <Form.Item label="选择Token">
+        <Form.Item label="选择链">
           <Select
             style={{
-              width: 150,
+              width: 200,
             }}
-            placeholder="选择Token"
+            placeholder="选择链"
             value={curChain}
             onChange={(value) => setCurChain(value)}
           >

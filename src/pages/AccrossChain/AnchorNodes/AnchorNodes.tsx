@@ -78,6 +78,7 @@ const AnchorNodes = (props: PropsType) => {
           message.success('删除成功');
           actionRef.current?.reload(true);
           setCurrentAnchor(null);
+          handleDeleteModalVisible(false);
         }
       })
       .catch((errorInfo) => {
