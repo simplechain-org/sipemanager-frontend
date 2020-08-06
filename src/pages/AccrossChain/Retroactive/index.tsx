@@ -3,7 +3,6 @@ import { Button, message } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import moment from 'moment';
 
 import CreateForm from './components/CreateForm';
 import { TableListItem, ChainListItem } from './data';
@@ -43,11 +42,12 @@ const Retroactive: React.FC<{}> = () => {
       title: '登记时间',
       dataIndex: 'created_at',
       key: 'created_at',
+      valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
-      render: (text: any) => {
-        return moment(text).format('YYYY-MM-DD HH:mm:ss');
-      },
+      // render: (text: any) => {
+      //   return moment(text).format('YYYY-MM-DD HH:mm:ss');
+      // },
     },
     {
       title: '原交易哈希',
@@ -135,7 +135,7 @@ const Retroactive: React.FC<{}> = () => {
           })
         }
         postData={(data: any) => {
-          setPageCount(data.total_count);
+          setPageCount(data.length);
           return data;
         }}
         pagination={{
