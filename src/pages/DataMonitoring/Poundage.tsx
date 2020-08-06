@@ -39,7 +39,8 @@ export default function Poundage() {
       dataIndex: 'Timestamp',
       valueType: 'dateTimeRange',
       render: (text: any) => {
-        return moment(text).format('YYYY-MM-DD HH:mm:ss');
+        return moment.unix(text).format('YYYY-MM-DD HH:mm:ss');
+        // return new Date(text * 1000).toLocaleDateString();
       },
     },
     {
@@ -73,7 +74,7 @@ export default function Poundage() {
     <PageHeaderWrapper>
       <ProTable<TableListItem>
         actionRef={actionRef}
-        rowKey="AnchorId"
+        rowKey="TxId"
         beforeSearchSubmit={(params: any) => {
           console.log('startTime:', params.Timestamp);
           return {
