@@ -136,7 +136,7 @@ const AddReward = () => {
       title: '发放时间',
       dataIndex: 'created_at',
       key: 'created_at',
-      valueType: 'date',
+      valueType: 'dateTime',
       hideInSearch: true,
     },
     {

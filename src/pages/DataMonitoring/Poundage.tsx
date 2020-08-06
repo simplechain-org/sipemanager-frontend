@@ -74,9 +74,13 @@ export default function Poundage() {
     <PageHeaderWrapper>
       <ProTable<TableListItem>
         actionRef={actionRef}
-        rowKey="TxId"
+        // rowKey={(record) => record.toString()}
+        rowKey={(record) => {
+          console.log('record', record.toString());
+          console.log('record', JSON.stringify(record));
+          return record.toString();
+        }}
         beforeSearchSubmit={(params: any) => {
-          console.log('startTime:', params.Timestamp);
           return {
             startTime: `${transTime(params.Timestamp ? params.Timestamp[1] : '') || ''}` || '',
             endTime: `${transTime(params.Timestamp ? params.Timestamp[1] : '') || ''}` || '',

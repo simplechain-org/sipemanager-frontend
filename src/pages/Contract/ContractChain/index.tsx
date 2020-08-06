@@ -147,7 +147,7 @@ const ContractChain: React.FC<{}> = () => {
       title: '创建时间',
       dataIndex: 'created_at',
       key: 'created_at',
-      valueType: 'date',
+      valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
     },

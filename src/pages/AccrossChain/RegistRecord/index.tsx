@@ -4,12 +4,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { history } from 'umi';
+import { transToWei } from '@/utils/utils';
 import CreateForm from './components/CreateForm';
 import DetailsForm from './components/DetailsForm';
 import { TableListItem, ChainListType, NodeItem, AddRegisteType } from './data';
 import { queryRule, queryChain, getNodeByChain, queryWallet, addRule } from './service';
 import { WalletListItem } from '../AnchorNodes/data';
-import { transToWei } from '@/utils/utils';
 
 const RegistRecord: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -29,7 +29,7 @@ const RegistRecord: React.FC<{}> = () => {
       title: '注册时间',
       dataIndex: 'created_at',
       key: 'created_at',
-      valueType: 'date',
+      valueType: 'dateTime',
     },
     {
       title: '发起链',

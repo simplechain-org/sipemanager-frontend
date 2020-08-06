@@ -131,7 +131,7 @@ const Fee = () => {
       title: '报销时间',
       dataIndex: 'created_at',
       key: 'created_at',
-      valueType: 'date',
+      valueType: 'dateTime',
       hideInSearch: true,
     },
     {
@@ -244,7 +244,6 @@ const Fee = () => {
           })
         }
         postData={(data: any) => {
-          console.log('data-----', data.page_data);
           setPageCount(data.total_count);
           return data.page_data;
         }}

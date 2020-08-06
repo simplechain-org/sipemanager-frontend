@@ -328,7 +328,7 @@ const AnchorNodes = (props: PropsType) => {
       title: '创建时间',
       dataIndex: 'created_at',
       key: 'created_at',
-      valueType: 'date',
+      valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
     },
@@ -360,11 +360,18 @@ const AnchorNodes = (props: PropsType) => {
       hideInSearch: true,
       hideInForm: true,
       ellipsis: true,
-      style: {
-        wordWrap: 'break-word',
-        wordBreak: 'break-word',
-        // width: 180,
-      },
+      render: (text) => (
+        <div
+          style={{
+            maxWidth: '180px',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+          }}
+        >
+          {text}
+        </div>
+      ),
     },
     {
       title: '归属链B',
@@ -380,10 +387,18 @@ const AnchorNodes = (props: PropsType) => {
       hideInSearch: true,
       hideInForm: true,
       ellipsis: true,
-      style: {
-        wordWrap: 'break-word',
-        width: 180,
-      },
+      render: (text) => (
+        <div
+          style={{
+            maxWidth: '180px',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+          }}
+        >
+          {text}
+        </div>
+      ),
     },
     {
       title: '质押金额',
