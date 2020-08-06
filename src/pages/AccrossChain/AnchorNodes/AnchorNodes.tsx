@@ -360,15 +360,18 @@ const AnchorNodes = (props: PropsType) => {
       hideInSearch: true,
       hideInForm: true,
       ellipsis: true,
-      style: {
-        // wordWrap: 'break-word',
-        // wordBreak: 'break-word',
-        // width: 180,
-        overflow: 'hidden',
-        whiteSpace: 'nowrap',
-        textOverflow: 'ellipsis',
-        maxWidth: '100px',
-      },
+      render: (text) => (
+        <div
+          style={{
+            width: '100px',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+          }}
+        >
+          {text}
+        </div>
+      ),
     },
     {
       title: '归属链B',
