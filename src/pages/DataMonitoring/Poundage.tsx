@@ -78,7 +78,7 @@ export default function Poundage() {
         rowKey={(record) => record.toString()}
         beforeSearchSubmit={(params: any) => {
           return {
-            startTime: `${transTime(params.Timestamp ? params.Timestamp[1] : '') || ''}` || '',
+            startTime: `${transTime(params.Timestamp ? params.Timestamp[0] : '') || ''}` || '',
             endTime: `${transTime(params.Timestamp ? params.Timestamp[1] : '') || ''}` || '',
             anchorId: params.anchorId ? params.anchorId : '',
           } as Partial<TableListItem>;

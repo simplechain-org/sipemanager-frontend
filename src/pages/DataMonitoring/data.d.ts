@@ -78,4 +78,5 @@ export interface NodeProps {
 export interface ChainItem {
   id: number;
   name: string;
+  coin_name: string;
 }
