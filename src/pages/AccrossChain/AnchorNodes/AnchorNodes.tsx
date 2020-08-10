@@ -67,6 +67,7 @@ const AnchorNodes = (props: PropsType) => {
     const sourceRes = await getNodeByChain({ chain_id: record.chain_a_id });
     const targetRes = await getNodeByChain({ chain_id: record.chain_b_id });
     setNodeList({ sourceNode: sourceRes.data, targetNode: targetRes.data });
+    onReset();
     handleDeleteModalVisible(true);
   };
 
