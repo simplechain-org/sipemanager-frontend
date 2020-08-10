@@ -22,6 +22,7 @@ export default function PoundageCard() {
   const [chainList, setChainList] = useState<ChainItem[]>([]);
   const [curChain, setCurChain] = useState<undefined | number>(undefined);
   const [chartData, setChartData] = useState([]);
+  const [coinName, setCoinName] = useState<undefined | string>('');
 
   const getFee = async (params: FeeChartParams) => {
     const res = await queryFee(params);
@@ -35,6 +36,7 @@ export default function PoundageCard() {
       setChainList(res.data.page_data);
       console.log(res.data.page_data[0].id);
       setCurChain(res.data.page_data.length ? res.data.page_data[0].id : undefined);
+      setCoinName(res.data.page_data[0].coinName || '');
     }
   };
 
@@ -102,7 +104,8 @@ export default function PoundageCard() {
       formatter: (value: number) => {
         return Web3Utils.fromWei(new BigNumber(value).toFixed());
       },
-      alias: 'SIPC',
+      // alias: 'SIPC',
+      alias: coinName,
     },
   };
 
@@ -126,7 +129,10 @@ export default function PoundageCard() {
             }}
             placeholder="选择链"
             value={curChain}
-            onChange={(value) => setCurChain(value)}
+            onChange={(value) => {
+              setCurChain(value);
+              setCoinName(chainList.find((item) => item.id === value)?.coinName);
+            }}
           >
             {chainList.map((option) => (
               <Select.Option key={option.id} value={option.id}>

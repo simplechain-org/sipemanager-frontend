@@ -83,7 +83,7 @@ request.interceptors.response.use(async (response) => {
   }
 
   if (data.code !== 0) {
-    message.error(msgConstant[data.code] || '请求失败，请稍后再试');
+    message.error(msgConstant[data.code] || data.msg);
   }
   return response;
 });
