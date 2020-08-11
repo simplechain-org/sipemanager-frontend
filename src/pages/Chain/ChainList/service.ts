@@ -7,6 +7,12 @@ export async function queryChainList(params?: TableListParams) {
   });
 }
 
+export async function queryAllChain(params?: TableListParams) {
+  return request('/api/v1/chain/list/all', {
+    params,
+  });
+}
+
 export async function removeRule(id: number) {
   return request(`/api/v1/chain/${id}`, {
     method: 'DELETE',
