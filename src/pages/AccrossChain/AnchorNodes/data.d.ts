@@ -83,7 +83,7 @@ export interface FormPropsType {
   // isTips?: boolean;
   handle?: (value: number) => Promise<void> | null | undefined | void;
   needChange?: boolean;
-  children?: React.ReactNode | undefined;
+  children?: React.ReactNode;
   renderInBefore?: boolean;
   rules?: any;
 }
