@@ -40,15 +40,15 @@ export default function NodeCard(props: NodeProps) {
       title: 'A链账户余额',
       dataIndex: 'SourceBalance',
       key: 'SourceBalance',
-      render: (text: React.ReactNode) =>
-        `${Web3Utils.fromWei(new BigNumber(text || 0).toFixed())}sipc`,
+      render: (text: React.ReactNode, record: any) =>
+        `${Web3Utils.fromWei(new BigNumber(text || 0).toFixed())}${record.SourceChain.symbol}`,
     },
     {
       title: 'B链账户余额',
       dataIndex: 'TargetBalance',
       key: 'TargetBalance',
-      render: (text: React.ReactNode) =>
-        `${Web3Utils.fromWei(new BigNumber(text || 0).toFixed())}sipc`,
+      render: (text: React.ReactNode, record: any) =>
+        `${Web3Utils.fromWei(new BigNumber(text || 0).toFixed())}${record.TargetChain.symbol}`,
     },
     // {
     //   title: '是否在线',

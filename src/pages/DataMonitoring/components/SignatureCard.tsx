@@ -80,14 +80,14 @@ export default function SignatureCard(props: SignatureProps) {
           formatStr = 'YYYY-MM-DD HH:mm:ss';
           startTime = moment().subtract(24, 'hours');
           break;
+        case 'week':
+          formatStr = 'YYYYww';
+          startTime = moment().subtract(7, 'weeks');
+          break;
         case 'day':
         default:
           formatStr = 'YYYY-MM-DD';
           startTime = moment().subtract(7, 'days');
-          break;
-        case 'week':
-          formatStr = 'YYYYww';
-          startTime = moment().subtract(7, 'weeks');
           break;
       }
       getChartData({

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'umi';
 import { Card, Form, Select, Radio, Empty } from 'antd';
 import { Chart, Legend, Axis, Tooltip, Geom } from 'bizcharts';
-import { queryChainList } from '@/pages/Chain/ChainList/service';
+import { queryAllChain } from '@/pages/Chain/ChainList/service';
 import moment from 'moment';
 import { queryFee } from '../service';
 import { FeeChartParams, ChainItem } from '../data.d';
@@ -22,7 +22,7 @@ export default function PoundageCard() {
   const [chainList, setChainList] = useState<ChainItem[]>([]);
   const [curChain, setCurChain] = useState<undefined | number>(undefined);
   const [chartData, setChartData] = useState([]);
-  const [coinName, setCoinName] = useState<undefined | string>('');
+  const [coinName, setCoinName] = useState<undefined | string>(undefined);
 
   const getFee = async (params: FeeChartParams) => {
     const res = await queryFee(params);
@@ -31,12 +31,11 @@ export default function PoundageCard() {
   };
 
   const getChainList = async () => {
-    const res = await queryChainList();
-    if (res.data && res.data.page_data) {
-      setChainList(res.data.page_data);
-      console.log(res.data.page_data[0].id);
-      setCurChain(res.data.page_data.length ? res.data.page_data[0].id : undefined);
-      setCoinName(res.data.page_data[0].coinName || '');
+    const res = await queryAllChain();
+    if (res.data) {
+      setChainList(res.data);
+      setCurChain(res.data.length ? res.data[0].id : undefined);
+      setCoinName(res.data[0].coin_name || '');
     }
   };
 
@@ -104,7 +103,6 @@ export default function PoundageCard() {
       formatter: (value: number) => {
         return Web3Utils.fromWei(new BigNumber(value).toFixed());
       },
-      // alias: 'SIPC',
       alias: coinName,
     },
   };
@@ -131,7 +129,7 @@ export default function PoundageCard() {
             value={curChain}
             onChange={(value) => {
               setCurChain(value);
-              setCoinName(chainList.find((item) => item.id === value)?.coinName);
+              setCoinName(chainList.find((item) => item.id === value)?.coin_name);
             }}
           >
             {chainList.map((option) => (

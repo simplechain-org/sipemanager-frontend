@@ -8,6 +8,9 @@ import FormItem from '../components/FormItem';
 import { TableListItem, FormPropsType, NodeListItem } from './data';
 import CreateForm from './components/CreateForm';
 
+const Web3Utils = require('web3-utils');
+const BigNumber = require('bignumber.js');
+
 interface PropsType {
   publicList: any;
 }
@@ -408,6 +411,7 @@ const AnchorNodes = (props: PropsType) => {
       key: 'pledge',
       hideInSearch: true,
       hideInForm: true,
+      renderText: (text) => `${Web3Utils.fromWei(new BigNumber(text || 0).toFixed())}`,
     },
     {
       title: '身份状态',
